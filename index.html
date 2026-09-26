@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classio</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f4f7f7;
+      color: #17252a;
+      min-height: 100vh;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 245px;
+      background: #0e6f68;
+      color: white;
+      padding: 24px 16px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      padding: 0 12px 28px;
+      letter-spacing: -1px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav button {
+      border: 0;
+      background: transparent;
+      color: rgba(255,255,255,.85);
+      padding: 13px 14px;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 15px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      background: rgba(255,255,255,.16);
+      color: white;
+    }
+
+    /* MAIN */
+    .main {
+      margin-left: 245px;
+      width: calc(100% - 245px);
+      padding: 30px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .welcome h1 {
+      font-size: 30px;
+      margin-bottom: 6px;
+    }
+
+    .welcome p {
+      color: #66777a;
+    }
+
+    .date {
+      background: white;
+      padding: 12px 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      font-size: 14px;
+    }
+
+    /* CARDS */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.05);
+    }
+
+    .card-label {
+      color: #718084;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .card-value {
+      font-size: 28px;
+      font-weight: 750;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 20px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.05);
+    }
+
+    .section h2 {
+      font-size: 19px;
+      margin-bottom: 18px;
+    }
+
+    .lesson {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid #edf1f1;
+    }
+
+    .lesson:last-child {
+      border-bottom: none;
+    }
+
+    .lesson-info strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .lesson-info span {
+      color: #758386;
+      font-size: 13px;
+    }
+
+    .status {
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status.next {
+      background: #fff1dc;
+      color: #a76500;
+    }
+
+    .status.done {
+      background: #e1f5ed;
+      color: #177653;
+    }
+
+    /* PAGE */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .class-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .class-card {
+      background: white;
+      padding: 22px;
+      border-radius: 16px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.05);
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .class-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .class-card h3 {
+      font-size: 23px;
+      margin-bottom: 8px;
+    }
+
+    .class-card p {
+      color: #718084;
+      font-size: 14px;
+    }
+
+    .back {
+      border: 0;
+      background: #e3eeee;
+      color: #0e6f68;
+      padding: 9px 13px;
+      border-radius: 9px;
+      cursor: pointer;
+      margin-bottom: 18px;
+    }
+
+    /* MOBILE / IPAD */
+    @media (max-width: 900px) {
+      .sidebar {
+        width: 210px;
+      }
+
+      .main {
+        margin-left: 210px;
+        width: calc(100% - 210px);
+        padding: 22px;
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .class-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      .sidebar {
+        width: 75px;
+        padding: 18px 8px;
+      }
+
+      .logo {
+        font-size: 18px;
+        text-align: center;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .nav button {
+        font-size: 0;
+        text-align: center;
+      }
+
+      .nav button::first-letter {
+        font-size: 18px;
+      }
+
+      .main {
+        margin-left: 75px;
+        width: calc(100% - 75px);
+        padding: 16px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .class-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">Classio</div>
+
+    <nav class="nav">
+      <button class="active" onclick="showPage('home', this)">⌂ &nbsp; Home</button>
+      <button onclick="showPage('classi', this)">▣ &nbsp; Classi</button>
+      <button onclick="showPage('orario', this)">◷ &nbsp; Orario</button>
+      <button onclick="showPage('lezioni', this)">▤ &nbsp; Lezioni</button>
+      <button onclick="showPage('voti', this)">★ &nbsp; Voti</button>
+      <button onclick="showPage('presenze', this)">✓ &nbsp; Presenze</button>
+      <button onclick="showPage('statistiche', this)">▥ &nbsp; Statistiche</button>
+      <button onclick="showPage('impostazioni', this)">⚙ &nbsp; Impostazioni</button>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HOME -->
+    <section id="home" class="page active">
+
+      <div class="topbar">
+        <div class="welcome">
+          <h1>Buongiorno 👋</h1>
+          <p>Benvenuto in Classio.</p>
+        </div>
+
+        <div class="date" id="currentDate"></div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="card-label">Classi</div>
+          <div class="card-value">5</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Studenti</div>
+          <div class="card-value">0</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Lezioni oggi</div>
+          <div class="card-value">0</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Media generale</div>
+          <div class="card-value">—</div>
+        </div>
+      </div>
+
+      <div class="content-grid">
+
+        <div class="section">
+          <h2>Lezioni di oggi</h2>
+
+          <div class="lesson">
+            <div class="lesson-info">
+              <strong>Nessuna lezione programmata</strong>
+              <span>Configura l'orario per visualizzare le lezioni.</span>
+            </div>
+            <span class="status next">Da configurare</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Prossime attività</h2>
+
+          <div class="lesson">
+            <div class="lesson-info">
+              <strong>Nessuna attività</strong>
+              <span>Le attività future appariranno qui.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- CLASSI -->
+    <section id="classi" class="page">
+
+      <div class="topbar">
+        <div class="welcome">
+          <h1>Classi</h1>
+          <p>Le tue classi scolastiche.</p>
+        </div>
+      </div>
+
+      <div class="class-grid">
+
+        <div class="class-card" onclick="openClass('1Bi')">
+          <h3>1Bi</h3>
+          <p>Informatica · AI · 5 ore/settimana</p>
+        </div>
+
+        <div class="class-card" onclick="openClass('2Ci')">
+          <h3>2Ci</h3>
+          <p>Informatica · AI · 5 ore/settimana</p>
+        </div>
+
+        <div class="class-card" onclick="openClass('3De')">
+          <h3>3De</h3>
+          <p>Informatica · 2 ore/settimana</p>
+        </div>
+
+        <div class="class-card" onclick="openClass('4Ae')">
+          <h3>4Ae</h3>
+          <p>Informatica · 2 ore/settimana</p>
+        </div>
+
+        <div class="class-card" onclick="openClass('5Bi')">
+          <h3>5Bi</h3>
+          <p>Informatica · AI · 5 ore/settimana</p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- DETTAGLIO CLASSE -->
+    <section id="classDetail" class="page">
+
+      <button class="back" onclick="showPage('classi')">← Torna alle classi</button>
+
+      <div class="topbar">
+        <div class="welcome">
+          <h1 id="classTitle">Classe</h1>
+          <p id="classDescription"></p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="card-label">Studenti</div>
+          <div class="card-value">0</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Voti</div>
+          <div class="card-value">0</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Assenze</div>
+          <div class="card-value">0</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Media</div>
+          <div class="card-value">—</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Registro della classe</h2>
+        <p style="color:#718084;">
+          Qui costruiremo successivamente studenti, voti, presenze,
+          lezioni, attività svolte, compiti e note.
+        </p>
+      </div>
+
+    </section>
+
+    <!-- ALTRE PAGINE -->
+    <section id="orario" class="page">
+      <div class="topbar">
+        <div class="welcome">
+          <h1>Orario</h1>
+          <p>Gestione dell'orario settimanale.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Orario settimanale</h2>
+        <p>La gestione dell'orario sarà disponibile nella prossima versione.</p>
+      </div>
+    </section>
+
+    <section id="lezioni" class="page">
+      <div class="topbar">
+        <div class="welcome">
+          <h1>Lezioni</h1>
+          <p>Registro delle lezioni svolte.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Lezioni</h2>
+        <p>Qui verranno registrate le lezioni e le attività svolte.</p>
+      </div>
+    </section>
+
+    <section id="voti" class="page">
+      <div class="topbar">
+        <div class="welcome">
+          <h1>Voti</h1>
+          <p>Gestione delle valutazioni.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Registro voti</h2>
+        <p>Qui verranno gestiti i voti degli studenti.</p>
+      </div>
+    </section>
+
+    <section id="presenze" class="page">
+      <div class="topbar">
+        <div class="welcome">
+          <h1>Presenze</h1>
+          <p>Assenze, presenze e ritardi.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Registro presenze</h2>
+        <p>Qui verranno gestite presenze, assenze e ritardi.</p>
+      </div>
+    </section>
+
+    <section id="statistiche" class="page">
+      <div class="topbar">
+        <div class="welcome">
+          <h1>Statistiche</h1>
+          <p>Panoramica dei dati di Classio.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Statistiche generali</h2>
+        <p>Le statistiche verranno collegate ai dati reali del registro.</p>
+      </div>
+    </section>
+
+    <section id="impostazioni" class="page">
+      <div class="topbar">
+        <div class="welcome">
+          <h1>Impostazioni</h1>
+          <p>Configura Classio.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Impostazioni</h2>
+        <p>Qui aggiungeremo tema, backup, importazione ed eliminazione dati.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  function showPage(pageId, button) {
+
+    document.querySelectorAll(".page").forEach(page => {
+      page.classList.remove("active");
+    });
+
+    const page = document.getElementById(pageId);
+
+    if (page) {
+      page.classList.add("active");
+    }
+
+    document.querySelectorAll(".nav button").forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+    if (button) {
+      button.classList.add("active");
+    }
+  }
+
+  function openClass(className) {
+
+    document.querySelectorAll(".page").forEach(page => {
+      page.classList.remove("active");
+    });
+
+    document.getElementById("classDetail").classList.add("active");
+
+    document.getElementById("classTitle").textContent = className;
+
+    const descriptions = {
+      "1Bi": "Informatica · AI · 5 ore settimanali",
+      "2Ci": "Informatica · AI · 5 ore settimanali",
+      "3De": "Informatica · 2 ore settimanali",
+      "4Ae": "Informatica · 2 ore settimanali",
+      "5Bi": "Informatica · AI · 5 ore settimanali"
+    };
+
+    document.getElementById("classDescription").textContent =
+      descriptions[className] || "";
+  }
+
+  const today = new Date();
+
+  document.getElementById("currentDate").textContent =
+    today.toLocaleDateString("it-IT", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+</script>
+
+</body>
+</html>
