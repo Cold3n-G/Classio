@@ -1,2617 +1,2926 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Classio</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f4f7f7;
-      color: #17252a;
-      min-height: 100vh;
-    }
-
-    button,
-    input {
-      font-family: inherit;
-    }
-
-    .app {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      width: 245px;
-      background: #0e6f68;
-      color: white;
-      padding: 24px 16px;
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-    }
-
-    .logo {
-      font-size: 28px;
-      font-weight: 800;
-      padding: 0 12px 28px;
-      letter-spacing: -1px;
-    }
-
-    .nav {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .nav button {
-      border: 0;
-      background: transparent;
-      color: rgba(255,255,255,.85);
-      padding: 13px 14px;
-      border-radius: 10px;
-      text-align: left;
-      font-size: 15px;
-      cursor: pointer;
-      transition: .2s;
-    }
-
-    .nav button:hover,
-    .nav button.active {
-      background: rgba(255,255,255,.16);
-      color: white;
-    }
-
-    /* MAIN */
-    .main {
-      margin-left: 245px;
-      width: calc(100% - 245px);
-      padding: 30px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 28px;
-      gap: 15px;
-    }
-
-    .welcome h1 {
-      font-size: 30px;
-      margin-bottom: 6px;
-    }
-
-    .welcome p {
-      color: #66777a;
-    }
-
-    .date {
-      background: white;
-      padding: 12px 16px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.05);
-      font-size: 14px;
-    }
-
-    /* BUTTONS */
-    .primary-btn {
-      border: 0;
-      background: #0e6f68;
-      color: white;
-      padding: 11px 16px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: .2s;
-    }
-
-    .primary-btn:hover {
-      background: #095b55;
-    }
-
-    .secondary-btn {
-      border: 0;
-      background: #e3eeee;
-      color: #0e6f68;
-      padding: 10px 15px;
-      border-radius: 9px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    /* CARDS */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 3px 14px rgba(0,0,0,.05);
-    }
-
-    .card-label {
-      color: #718084;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .card-value {
-      font-size: 28px;
-      font-weight: 750;
-    }
-
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 20px;
-    }
-
-    .section {
-      background: white;
-      border-radius: 16px;
-      padding: 22px;
-      box-shadow: 0 3px 14px rgba(0,0,0,.05);
-    }
-
-    .section h2 {
-      font-size: 19px;
-      margin-bottom: 18px;
-    }
-
-    .lesson {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 1px solid #edf1f1;
-    }
-
-    .lesson:last-child {
-      border-bottom: none;
-    }
-
-    .lesson-info strong {
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .lesson-info span {
-      color: #758386;
-      font-size: 13px;
-    }
-
-    .status {
-      padding: 6px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .status.next {
-      background: #fff1dc;
-      color: #a76500;
-    }
-
-    /* PAGE */
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    /* CLASSI */
-    .class-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .class-card {
-      background: white;
-      padding: 22px;
-      border-radius: 16px;
-      box-shadow: 0 3px 14px rgba(0,0,0,.05);
-      transition: .2s;
-      position: relative;
-    }
-
-    .class-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(0,0,0,.08);
-    }
-
-    .class-card h3 {
-      font-size: 23px;
-      margin-bottom: 8px;
-      cursor: pointer;
-    }
-
-    .class-card p {
-      color: #718084;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .class-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 16px;
-    }
-
-    .small-btn {
-      border: 0;
-      padding: 8px 11px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .edit-btn {
-      background: #edf5ff;
-      color: #2467a8;
-    }
-
-    .delete-btn {
-      background: #fff0f0;
-      color: #c33b3b;
-    }
-
-    .empty-state {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 45px 20px;
-      color: #718084;
-    }
-
-    .empty-state strong {
-      display: block;
-      color: #17252a;
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-
-    /* MODALE */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(20, 35, 38, .45);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
-    .modal {
-      background: white;
-      width: 100%;
-      max-width: 500px;
-      border-radius: 18px;
-      padding: 25px;
-      box-shadow: 0 15px 50px rgba(0,0,0,.2);
-    }
-
-    .modal h2 {
-      margin-bottom: 6px;
-      font-size: 22px;
-    }
-
-    .modal-subtitle {
-      color: #718084;
-      font-size: 14px;
-      margin-bottom: 22px;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 650;
-      margin-bottom: 7px;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 11px 12px;
-      border: 1px solid #d9e2e2;
-      border-radius: 9px;
-      outline: none;
-      font-size: 14px;
-    }
-
-    .form-group input:focus {
-      border-color: #0e6f68;
-      box-shadow: 0 0 0 3px rgba(14,111,104,.1);
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 22px;
-    }
-
-    /* DETTAGLIO CLASSE */
-    .back {
-      border: 0;
-      background: #e3eeee;
-      color: #0e6f68;
-      padding: 9px 13px;
-      border-radius: 9px;
-      cursor: pointer;
-      margin-bottom: 18px;
-    }
-
-    .detail-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      overflow-x: auto;
-    }
-
-    .detail-tab {
-      border: 0;
-      background: white;
-      color: #66777a;
-      padding: 10px 15px;
-      border-radius: 9px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .detail-tab.active {
-      background: #0e6f68;
-      color: white;
-    }
-
-    /* STUDENTI */
-    .students-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 18px;
-    }
-
-    .students-header h2 {
-      margin-bottom: 4px;
-    }
-
-    .students-subtitle {
-      color: #718084;
-      font-size: 14px;
-    }
-
-    .student-list {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .student-row {
-      display: grid;
-      grid-template-columns: 55px 1fr auto;
-      align-items: center;
-      gap: 15px;
-      padding: 14px 4px;
-      border-bottom: 1px solid #edf1f1;
-    }
-
-    .student-row:last-child {
-      border-bottom: none;
-    }
-
-    .student-number {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: #e3eeee;
-      color: #0e6f68;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .student-name {
-      font-weight: 650;
-    }
-
-    .student-actions {
-      display: flex;
-      gap: 7px;
-    }
-
-    .student-empty {
-      text-align: center;
-      padding: 35px 15px;
-      color: #718084;
-    }
-
-    .student-empty strong {
-      display: block;
-      color: #17252a;
-      font-size: 17px;
-      margin-bottom: 7px;
-    }
-
-    .student-badge {
-      display: inline-block;
-      margin-top: 4px;
-      padding: 3px 7px;
-      border-radius: 6px;
-      background: #f0f4f4;
-      color: #718084;
-      font-size: 11px;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-
-      .sidebar {
-        width: 210px;
-      }
-
-      .main {
-        margin-left: 210px;
-        width: calc(100% - 210px);
-        padding: 22px;
-      }
-
-      .cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .content-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .class-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 650px) {
-
-      .sidebar {
-        width: 75px;
-        padding: 18px 8px;
-      }
-
-      .logo {
-        font-size: 18px;
-        text-align: center;
-        padding-left: 0;
-        padding-right: 0;
-      }
-
-      .nav button {
-        font-size: 0;
-        text-align: center;
-      }
-
-      .nav button::first-letter {
-        font-size: 18px;
-      }
-
-      .main {
-        margin-left: 75px;
-        width: calc(100% - 75px);
-        padding: 16px;
-      }
-
-      .cards {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .class-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .topbar {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .students-header {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .student-row {
-        grid-template-columns: 45px 1fr;
-      }
-
-      .student-actions {
-        grid-column: 2;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classio — Registro Docente</title>
+
+<style>
+:root{
+  --primary:#18a999;
+  --primary-dark:#108579;
+  --bg:#f3f6f7;
+  --card:#ffffff;
+  --text:#172126;
+  --muted:#718087;
+  --border:#e1e7e9;
+  --green:#20a464;
+  --orange:#ed9b2f;
+  --red:#dc4d55;
+  --purple:#7a63c7;
+  --blue:#4b83d4;
+  --shadow:0 4px 18px rgba(20,40,45,.07);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+button,input,select,textarea{font:inherit}
+
+.app{
+  display:flex;
+  min-height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:245px;
+  background:#fff;
+  border-right:1px solid var(--border);
+  padding:22px 15px;
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  z-index:20;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:5px 10px 25px;
+  font-size:24px;
+  font-weight:800;
+  color:var(--primary-dark);
+}
+
+.logo-icon{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  background:var(--primary);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.nav button{
+  border:0;
+  background:transparent;
+  padding:12px 13px;
+  border-radius:10px;
+  text-align:left;
+  color:#59666c;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.nav button:hover{background:#edf8f6}
+.nav button.active{
+  background:#dff5f1;
+  color:var(--primary-dark);
+}
+
+.main{
+  margin-left:245px;
+  width:calc(100% - 245px);
+  padding:30px;
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:25px;
+}
+
+.page-header h1{
+  margin:0;
+  font-size:29px;
+}
+
+.page-header p{
+  color:var(--muted);
+  margin:5px 0 0;
+}
+
+/* BUTTONS */
+.btn{
+  border:0;
+  border-radius:10px;
+  padding:10px 15px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+}
+
+.btn-primary:hover{background:var(--primary-dark)}
+
+.btn-secondary{
+  background:#edf1f2;
+  color:#39464b;
+}
+
+.btn-danger{
+  background:#fde9ea;
+  color:#b6333c;
+}
+
+.btn-small{
+  padding:7px 10px;
+  font-size:13px;
+}
+
+/* CARDS */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:15px;
+  box-shadow:var(--shadow);
+}
+
+.card-pad{padding:20px}
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:25px;
+}
+
+.stat-card{
+  padding:20px;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+.stat-value{
+  font-size:28px;
+  font-weight:800;
+}
+
+.stat-icon{
+  float:right;
+  font-size:25px;
+}
+
+.grid{
+  display:grid;
+  gap:18px;
+}
+
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+
+.section-title{
+  font-size:18px;
+  font-weight:800;
+  margin:0 0 15px;
+}
+
+/* CLASSI */
+.classes-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:18px;
+}
+
+.class-card{
+  padding:20px;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.class-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px rgba(20,40,45,.11);
+}
+
+.class-card h3{
+  margin:0 0 8px;
+  font-size:21px;
+}
+
+.class-subject{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.class-footer{
+  display:flex;
+  justify-content:space-between;
+  margin-top:20px;
+  padding-top:15px;
+  border-top:1px solid var(--border);
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* TABLE */
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:12px 13px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  font-size:14px;
+}
+
+th{
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+}
+
+tr:last-child td{border-bottom:0}
+
+.empty{
+  text-align:center;
+  padding:35px 15px;
+  color:var(--muted);
+}
+
+/* BADGES */
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.badge-green{background:#e3f7ed;color:#16804e}
+.badge-orange{background:#fff1dd;color:#a96a14}
+.badge-red{background:#fde5e7;color:#b7333e}
+.badge-purple{background:#eeeafb;color:#654db1}
+.badge-blue{background:#e6f0fc;color:#3568aa}
+.badge-gray{background:#edf0f1;color:#657177}
+
+/* MODAL */
+.modal-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(10,20,25,.48);
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal-overlay.open{display:flex}
+
+.modal{
+  width:min(620px,100%);
+  max-height:90vh;
+  overflow-y:auto;
+  background:#fff;
+  border-radius:17px;
+  padding:25px;
+  box-shadow:0 20px 70px rgba(0,0,0,.2);
+}
+
+.modal h2{
+  margin:0 0 20px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.form-group.full{grid-column:1/-1}
+
+.form-group label{
+  font-size:13px;
+  font-weight:700;
+  color:#4e5b60;
+}
+
+input,select,textarea{
+  width:100%;
+  border:1px solid #d7dfe1;
+  border-radius:9px;
+  padding:10px 11px;
+  outline:none;
+  background:#fff;
+  color:var(--text);
+}
+
+input:focus,select:focus,textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(24,169,153,.12);
+}
+
+textarea{
+  resize:vertical;
+  min-height:90px;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:22px;
+}
+
+/* CLASS DETAIL */
+.back-btn{
+  margin-bottom:18px;
+}
+
+.class-detail-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.class-detail-header h1{
+  margin:0;
+}
+
+.tabs{
+  display:flex;
+  gap:5px;
+  overflow-x:auto;
+  background:#fff;
+  border:1px solid var(--border);
+  padding:6px;
+  border-radius:12px;
+  margin-bottom:18px;
+}
+
+.tab{
+  border:0;
+  background:transparent;
+  padding:10px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  white-space:nowrap;
+  color:#637076;
+  font-weight:600;
+}
+
+.tab.active{
+  background:#dff5f1;
+  color:var(--primary-dark);
+}
+
+.detail-panel{display:none}
+.detail-panel.active{display:block}
+
+.toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.actions{
+  display:flex;
+  gap:6px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+
+.student-name{
+  font-weight:700;
+}
+
+.student-number{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:#edf7f5;
+  color:var(--primary-dark);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+/* HOME */
+.today-card{
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.lesson-item{
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.lesson-item:last-child{border-bottom:0}
+
+.lesson-time{
+  font-weight:800;
+  color:var(--primary-dark);
+}
+
+.quick-actions{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.quick-actions button{
+  padding:15px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.quick-actions button:hover{
+  border-color:var(--primary);
+  background:#f3fbfa;
+}
+
+/* GRADE */
+.grade{
+  font-size:16px;
+  font-weight:800;
+}
+
+.grade-good{color:var(--green)}
+.grade-mid{color:var(--orange)}
+.grade-bad{color:var(--red)}
+
+.average-box{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:10px;
+  background:#e7f7f4;
+  color:var(--primary-dark);
+  font-weight:800;
+}
+
+/* NOTES */
+.note{
+  border-left:5px solid #aaa;
+  padding:14px;
+  background:#fafafa;
+  border-radius:7px;
+  margin-bottom:10px;
+}
+
+.note-avviso{border-color:var(--orange)}
+.note-generica{border-color:#9aa4a8}
+.note-disciplinare{border-color:var(--red)}
+
+.note-title{
+  font-weight:800;
+}
+
+.note-date{
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* SCHEDULE */
+.schedule-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+}
+
+.day-column{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  min-height:180px;
+  padding:12px;
+}
+
+.day-title{
+  font-weight:800;
+  text-align:center;
+  margin-bottom:10px;
+  color:var(--primary-dark);
+}
+
+.schedule-item{
+  padding:9px;
+  background:#eef8f6;
+  border-radius:8px;
+  margin-bottom:7px;
+  font-size:12px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .quick-actions{grid-template-columns:repeat(2,1fr)}
+  .schedule-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:720px){
+  .sidebar{
+    width:70px;
+    padding:15px 8px;
+  }
+
+  .logo{
+    justify-content:center;
+    padding:5px 0 20px;
+  }
+
+  .logo span{display:none}
+
+  .nav button{
+    font-size:0;
+    text-align:center;
+    padding:12px 5px;
+  }
+
+  .nav button::first-letter{
+    font-size:20px;
+  }
+
+  .main{
+    margin-left:70px;
+    width:calc(100% - 70px);
+    padding:18px;
+  }
+
+  .page-header{
+    align-items:flex-start;
+  }
+
+  .page-header h1{font-size:24px}
+
+  .form-grid{grid-template-columns:1fr}
+  .form-group.full{grid-column:auto}
+
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .schedule-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr}
+  .quick-actions{grid-template-columns:1fr}
+}
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">C</div>
+    <span>Classio</span>
+  </div>
 
-    <div class="logo">
-      Classio
+  <nav class="nav">
+    <button onclick="showPage('home')" id="nav-home" class="active">🏠 Home</button>
+    <button onclick="showPage('classi')" id="nav-classi">👥 Classi</button>
+    <button onclick="showPage('orario')" id="nav-orario">🕐 Orario</button>
+    <button onclick="showPage('lezioni')" id="nav-lezioni">📚 Lezioni</button>
+    <button onclick="showPage('voti')" id="nav-voti">📊 Voti</button>
+    <button onclick="showPage('presenze')" id="nav-presenze">✅ Presenze</button>
+    <button onclick="showPage('statistiche')" id="nav-statistiche">📈 Statistiche</button>
+    <button onclick="showPage('impostazioni')" id="nav-impostazioni">⚙️ Impostazioni</button>
+  </nav>
+</aside>
+
+<main class="main">
+
+<!-- HOME -->
+<section id="page-home" class="page active">
+  <div class="page-header">
+    <div>
+      <h1>Buongiorno 👋</h1>
+      <p id="home-date"></p>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="card stat-card">
+      <span class="stat-icon">👥</span>
+      <div class="stat-label">Studenti</div>
+      <div class="stat-value" id="home-students">0</div>
     </div>
 
-    <nav class="nav">
+    <div class="card stat-card">
+      <span class="stat-icon">🏫</span>
+      <div class="stat-label">Classi</div>
+      <div class="stat-value" id="home-classes">0</div>
+    </div>
 
-      <button class="active"
-        onclick="showPage('home', this)">
-        ⌂ &nbsp; Home
-      </button>
+    <div class="card stat-card">
+      <span class="stat-icon">📚</span>
+      <div class="stat-label">Lezioni</div>
+      <div class="stat-value" id="home-lessons">0</div>
+    </div>
 
-      <button
-        onclick="showPage('classi', this)">
-        ▣ &nbsp; Classi
-      </button>
+    <div class="card stat-card">
+      <span class="stat-icon">📝</span>
+      <div class="stat-label">Voti</div>
+      <div class="stat-value" id="home-grades">0</div>
+    </div>
+  </div>
 
-      <button
-        onclick="showPage('orario', this)">
-        ◷ &nbsp; Orario
-      </button>
+  <div class="card today-card">
+    <h2 class="section-title">Lezioni di oggi</h2>
+    <div id="today-lessons"></div>
+  </div>
 
-      <button
-        onclick="showPage('lezioni', this)">
-        ▤ &nbsp; Lezioni
-      </button>
-
-      <button
-        onclick="showPage('voti', this)">
-        ★ &nbsp; Voti
-      </button>
-
-      <button
-        onclick="showPage('presenze', this)">
-        ✓ &nbsp; Presenze
-      </button>
-
-      <button
-        onclick="showPage('statistiche', this)">
-        ▥ &nbsp; Statistiche
-      </button>
-
-      <button
-        onclick="showPage('impostazioni', this)">
-        ⚙ &nbsp; Impostazioni
-      </button>
-
-    </nav>
-
-  </aside>
+  <div class="card card-pad">
+    <h2 class="section-title">Azioni rapide</h2>
+    <div class="quick-actions">
+      <button onclick="showPage('classi')">👥 Gestisci classi</button>
+      <button onclick="openGradeModal()">➕ Inserisci voto</button>
+      <button onclick="openAttendanceModal()">✅ Registra presenza</button>
+      <button onclick="openLessonModal()">📚 Registra lezione</button>
+    </div>
+  </div>
+</section>
 
 
-  <!-- MAIN -->
-  <main class="main">
+<!-- CLASSI -->
+<section id="page-classi" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Classi</h1>
+      <p>Gestisci le tue classi e i tuoi studenti.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openClassModal()">＋ Nuova classe</button>
+  </div>
+
+  <div id="classes-grid" class="classes-grid"></div>
+</section>
 
 
-    <!-- HOME -->
-    <section id="home" class="page active">
+<!-- DETTAGLIO CLASSE -->
+<section id="page-class-detail" class="page">
 
-      <div class="topbar">
+  <button class="btn btn-secondary back-btn" onclick="showPage('classi')">← Torna alle classi</button>
 
-        <div class="welcome">
+  <div class="class-detail-header">
+    <div>
+      <h1 id="detail-class-name"></h1>
+      <p id="detail-class-info"></p>
+    </div>
+  </div>
 
-          <h1>
-            Buongiorno 👋
-          </h1>
+  <div class="tabs">
+    <button class="tab active" onclick="showClassTab('studenti',this)">Studenti</button>
+    <button class="tab" onclick="showClassTab('voti',this)">Voti</button>
+    <button class="tab" onclick="showClassTab('presenze',this)">Presenze</button>
+    <button class="tab" onclick="showClassTab('lezioni',this)">Lezioni</button>
+    <button class="tab" onclick="showClassTab('attivita',this)">Attività</button>
+    <button class="tab" onclick="showClassTab('compiti',this)">Compiti</button>
+    <button class="tab" onclick="showClassTab('note',this)">Note</button>
+  </div>
 
-          <p>
-            Benvenuto in Classio.
-          </p>
+  <!-- STUDENTI -->
+  <div id="detail-studenti" class="detail-panel active">
+    <div class="toolbar">
+      <h2 class="section-title">Studenti</h2>
+      <button class="btn btn-primary" onclick="openStudentModal()">＋ Aggiungi studente</button>
+    </div>
 
-        </div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>N.</th>
+            <th>Studente</th>
+            <th>Media</th>
+            <th>Presenze</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="student-table"></tbody>
+      </table>
+    </div>
+  </div>
 
-        <div
-          class="date"
-          id="currentDate">
-        </div>
+  <!-- VOTI -->
+  <div id="detail-voti" class="detail-panel">
+    <div class="toolbar">
+      <h2 class="section-title">Voti</h2>
+      <button class="btn btn-primary" onclick="openGradeModal(currentClassId)">＋ Inserisci voto</button>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Studente</th>
+            <th>Materia</th>
+            <th>Voto</th>
+            <th>Descrizione</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="class-grades-table"></tbody>
+      </table>
+    </div>
+  </div>
 
+  <!-- PRESENZE -->
+  <div id="detail-presenze" class="detail-panel">
+    <div class="toolbar">
+      <h2 class="section-title">Presenze</h2>
+      <button class="btn btn-primary" onclick="openAttendanceModal(currentClassId)">＋ Registra</button>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Studente</th>
+            <th>Stato</th>
+            <th>Note</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="class-attendance-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LEZIONI -->
+  <div id="detail-lezioni" class="detail-panel">
+    <div class="toolbar">
+      <h2 class="section-title">Lezioni</h2>
+      <button class="btn btn-primary" onclick="openLessonModal(currentClassId)">＋ Nuova lezione</button>
+    </div>
+    <div id="class-lessons-list"></div>
+  </div>
+
+  <!-- ATTIVITA -->
+  <div id="detail-attivita" class="detail-panel">
+    <div class="toolbar">
+      <h2 class="section-title">Attività svolta</h2>
+      <button class="btn btn-primary" onclick="openActivityModal(currentClassId)">＋ Nuova attività</button>
+    </div>
+    <div id="class-activities-list"></div>
+  </div>
+
+  <!-- COMPITI -->
+  <div id="detail-compiti" class="detail-panel">
+    <div class="toolbar">
+      <h2 class="section-title">Compiti</h2>
+      <button class="btn btn-primary" onclick="openHomeworkModal(currentClassId)">＋ Nuovi compiti</button>
+    </div>
+    <div id="class-homework-list"></div>
+  </div>
+
+  <!-- NOTE -->
+  <div id="detail-note" class="detail-panel">
+    <div class="toolbar">
+      <h2 class="section-title">Note</h2>
+      <button class="btn btn-primary" onclick="openNoteModal(currentClassId)">＋ Nuova nota</button>
+    </div>
+    <div id="class-notes-list"></div>
+  </div>
+
+</section>
+
+
+<!-- ORARIO -->
+<section id="page-orario" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Orario</h1>
+      <p>Il tuo orario settimanale.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openScheduleModal()">＋ Aggiungi</button>
+  </div>
+
+  <div class="schedule-grid" id="schedule-grid"></div>
+</section>
+
+
+<!-- LEZIONI -->
+<section id="page-lezioni" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Lezioni</h1>
+      <p>Registro delle lezioni svolte.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openLessonModal()">＋ Nuova lezione</button>
+  </div>
+
+  <div id="all-lessons-list"></div>
+</section>
+
+
+<!-- VOTI -->
+<section id="page-voti" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Voti</h1>
+      <p>Registro completo dei voti.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openGradeModal()">＋ Inserisci voto</button>
+  </div>
+
+  <div class="card table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Classe</th>
+          <th>Studente</th>
+          <th>Materia</th>
+          <th>Voto</th>
+          <th>Descrizione</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody id="all-grades-table"></tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- PRESENZE -->
+<section id="page-presenze" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Presenze</h1>
+      <p>Registro delle presenze, assenze e ritardi.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAttendanceModal()">＋ Registra</button>
+  </div>
+
+  <div class="card table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Classe</th>
+          <th>Studente</th>
+          <th>Stato</th>
+          <th>Note</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody id="all-attendance-table"></tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- STATISTICHE -->
+<section id="page-statistiche" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Statistiche</h1>
+      <p>Panoramica del registro.</p>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="card stat-card">
+      <div class="stat-label">Studenti</div>
+      <div class="stat-value" id="stat-students">0</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">Classi</div>
+      <div class="stat-value" id="stat-classes">0</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">Lezioni</div>
+      <div class="stat-value" id="stat-lessons">0</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">Voti</div>
+      <div class="stat-value" id="stat-grades">0</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">Media generale</div>
+      <div class="stat-value" id="stat-average">—</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">Presenze</div>
+      <div class="stat-value" id="stat-present">0</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">Assenze</div>
+      <div class="stat-value" id="stat-absent">0</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">Ritardi</div>
+      <div class="stat-value" id="stat-late">0</div>
+    </div>
+  </div>
+
+  <div class="card card-pad">
+    <h2 class="section-title">Statistiche per classe</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Classe</th>
+            <th>Studenti</th>
+            <th>Voti</th>
+            <th>Media</th>
+            <th>Presenze</th>
+            <th>Assenze</th>
+            <th>Ritardi</th>
+          </tr>
+        </thead>
+        <tbody id="class-statistics-table"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- IMPOSTAZIONI -->
+<section id="page-impostazioni" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Impostazioni</h1>
+      <p>Gestisci i dati di Classio.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+
+    <div class="card card-pad">
+      <h2 class="section-title">Dati</h2>
+
+      <p style="color:var(--muted);font-size:14px">
+        Puoi esportare un backup completo del registro oppure importarlo
+        successivamente.
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="exportBackup()">⬇️ Esporta backup</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">⬆️ Importa backup</button>
+        <input id="import-file" type="file" accept=".json" style="display:none" onchange="importBackup(event)">
       </div>
-
-
-      <div class="cards">
-
-        <div class="card">
-
-          <div class="card-label">
-            Classi
-          </div>
-
-          <div
-            class="card-value"
-            id="homeClasses">
-            0
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <div class="card-label">
-            Studenti
-          </div>
-
-          <div
-            class="card-value"
-            id="homeStudents">
-            0
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <div class="card-label">
-            Lezioni oggi
-          </div>
-
-          <div class="card-value">
-            0
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <div class="card-label">
-            Media generale
-          </div>
-
-          <div class="card-value">
-            —
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="content-grid">
-
-
-        <div class="section">
-
-          <h2>
-            Lezioni di oggi
-          </h2>
-
-          <div class="lesson">
-
-            <div class="lesson-info">
-
-              <strong>
-                Nessuna lezione programmata
-              </strong>
-
-              <span>
-                Configura l'orario per visualizzare le lezioni.
-              </span>
-
-            </div>
-
-            <span class="status next">
-              Da configurare
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <div class="section">
-
-          <h2>
-            Prossime attività
-          </h2>
-
-          <div class="lesson">
-
-            <div class="lesson-info">
-
-              <strong>
-                Nessuna attività
-              </strong>
-
-              <span>
-                Le attività future appariranno qui.
-              </span>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- CLASSI -->
-    <section id="classi" class="page">
-
-      <div class="topbar">
-
-        <div class="welcome">
-
-          <h1>
-            Classi
-          </h1>
-
-          <p>
-            Gestisci le tue classi scolastiche.
-          </p>
-
-        </div>
-
-
-        <button
-          class="primary-btn"
-          onclick="openClassModal()">
-
-          + Aggiungi classe
-
-        </button>
-
-      </div>
-
-
-      <div
-        id="classGrid"
-        class="class-grid">
-      </div>
-
-    </section>
-
-
-    <!-- DETTAGLIO CLASSE -->
-    <section
-      id="classDetail"
-      class="page">
-
-      <button
-        class="back"
-        onclick="showPage('classi')">
-
-        ← Torna alle classi
-
-      </button>
-
-
-      <div class="topbar">
-
-        <div class="welcome">
-
-          <h1 id="classTitle">
-            Classe
-          </h1>
-
-          <p id="classDescription">
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="cards">
-
-        <div class="card">
-
-          <div class="card-label">
-            Studenti
-          </div>
-
-          <div
-            class="card-value"
-            id="detailStudents">
-            0
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <div class="card-label">
-            Voti
-          </div>
-
-          <div class="card-value">
-            0
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <div class="card-label">
-            Assenze
-          </div>
-
-          <div class="card-value">
-            0
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <div class="card-label">
-            Media
-          </div>
-
-          <div class="card-value">
-            —
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="detail-tabs">
-
-        <button
-          class="detail-tab active"
-          onclick="showClassTab('registro', this)">
-          Registro
-        </button>
-
-        <button
-          class="detail-tab"
-          onclick="showClassTab('studenti', this)">
-          Studenti
-        </button>
-
-        <button
-          class="detail-tab">
-          Voti
-        </button>
-
-        <button
-          class="detail-tab">
-          Presenze
-        </button>
-
-        <button
-          class="detail-tab">
-          Lezioni
-        </button>
-
-        <button
-          class="detail-tab">
-          Attività svolta
-        </button>
-
-        <button
-          class="detail-tab">
-          Compiti
-        </button>
-
-        <button
-          class="detail-tab">
-          Note
-        </button>
-
-      </div>
-
-
-      <!-- REGISTRO -->
-      <div
-        id="classTabRegistro"
-        class="section">
-
-        <h2>
-          Registro della classe
-        </h2>
-
-        <p style="color:#718084;">
-
-          Le funzioni del registro verranno aggiunte
-          nei prossimi aggiornamenti.
-
-        </p>
-
-      </div>
-
-
-      <!-- STUDENTI -->
-      <div
-        id="classTabStudenti"
-        class="section"
-        style="display:none;">
-
-        <div class="students-header">
-
-          <div>
-
-            <h2>
-              Studenti
-            </h2>
-
-            <div
-              id="studentsSubtitle"
-              class="students-subtitle">
-              0 studenti
-            </div>
-
-          </div>
-
-
-          <button
-            class="primary-btn"
-            onclick="openStudentModal()">
-
-            + Aggiungi studente
-
-          </button>
-
-        </div>
-
-
-        <div
-          id="studentList"
-          class="student-list">
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- ORARIO -->
-    <section id="orario" class="page">
-
-      <div class="topbar">
-
-        <div class="welcome">
-
-          <h1>
-            Orario
-          </h1>
-
-          <p>
-            Gestione dell'orario settimanale.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="section">
-
-        <h2>
-          Orario settimanale
-        </h2>
-
-        <p>
-          La gestione dell'orario sarà disponibile
-          nei prossimi aggiornamenti.
-        </p>
-
-      </div>
-
-    </section>
-
-
-    <!-- LEZIONI -->
-    <section id="lezioni" class="page">
-
-      <div class="topbar">
-
-        <div class="welcome">
-
-          <h1>
-            Lezioni
-          </h1>
-
-          <p>
-            Registro delle lezioni svolte.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="section">
-
-        <h2>
-          Lezioni
-        </h2>
-
-        <p>
-          Qui verranno registrate le lezioni e
-          le attività svolte.
-        </p>
-
-      </div>
-
-    </section>
-
-
-    <!-- VOTI -->
-    <section id="voti" class="page">
-
-      <div class="topbar">
-
-        <div class="welcome">
-
-          <h1>
-            Voti
-          </h1>
-
-          <p>
-            Gestione delle valutazioni.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="section">
-
-        <h2>
-          Registro voti
-        </h2>
-
-        <p>
-          Qui verranno gestiti i voti degli studenti.
-        </p>
-
-      </div>
-
-    </section>
-
-
-    <!-- PRESENZE -->
-    <section id="presenze" class="page">
-
-      <div class="topbar">
-
-        <div class="welcome">
-
-          <h1>
-            Presenze
-          </h1>
-
-          <p>
-            Assenze, presenze e ritardi.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="section">
-
-        <h2>
-          Registro presenze
-        </h2>
-
-        <p>
-          Qui verranno gestite presenze,
-          assenze e ritardi.
-        </p>
-
-      </div>
-
-    </section>
-
-
-    <!-- STATISTICHE -->
-    <section id="statistiche" class="page">
-
-      <div class="topbar">
-
-        <div class="welcome">
-
-          <h1>
-            Statistiche
-          </h1>
-
-          <p>
-            Panoramica dei dati di Classio.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="section">
-
-        <h2>
-          Statistiche generali
-        </h2>
-
-        <p>
-          Le statistiche verranno collegate
-          ai dati reali del registro.
-        </p>
-
-      </div>
-
-    </section>
-
-
-    <!-- IMPOSTAZIONI -->
-    <section id="impostazioni" class="page">
-
-      <div class="topbar">
-
-        <div class="welcome">
-
-          <h1>
-            Impostazioni
-          </h1>
-
-          <p>
-            Configura Classio.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="section">
-
-        <h2>
-          Impostazioni
-        </h2>
-
-        <p>
-          Qui aggiungeremo tema, backup,
-          importazione ed eliminazione dati.
-        </p>
-
-      </div>
-
-    </section>
-
-  </main>
-
+    </div>
+
+    <div class="card card-pad">
+      <h2 class="section-title">Dati demo</h2>
+      <p style="color:var(--muted);font-size:14px">
+        Ripristina le classi demo iniziali. Questa operazione aggiunge
+        nuovamente le classi demo senza eliminare gli altri dati.
+      </p>
+      <button class="btn btn-secondary" onclick="restoreDemo()">Ripristina demo</button>
+    </div>
+
+    <div class="card card-pad">
+      <h2 class="section-title">Zona pericolosa</h2>
+      <p style="color:var(--muted);font-size:14px">
+        Elimina tutti i dati presenti nel registro da questo dispositivo.
+      </p>
+      <button class="btn btn-danger" onclick="deleteAllData()">🗑️ Elimina tutti i dati</button>
+    </div>
+
+    <div class="card card-pad">
+      <h2 class="section-title">Informazioni</h2>
+      <p style="margin:6px 0"><strong>Registro Docente</strong></p>
+      <p style="margin:6px 0;color:var(--muted)">Classio</p>
+      <p style="margin:6px 0;color:var(--muted)">Versione 1.2</p>
+      <p style="margin:6px 0;color:var(--muted)">Anno scolastico 2026/27</p>
+    </div>
+
+  </div>
+</section>
+
+</main>
 </div>
 
 
-<!-- MODALE CLASSE -->
-<div
-  id="classModal"
-  class="modal-overlay">
+<!-- ================= MODALI ================= -->
 
-  <div class="modal">
+<!-- CLASSE -->
+<div class="modal-overlay" id="class-modal">
+<div class="modal">
+  <h2 id="class-modal-title">Nuova classe</h2>
 
-    <h2 id="modalTitle">
-      Aggiungi classe
-    </h2>
-
-    <p class="modal-subtitle">
-      Inserisci le informazioni principali della classe.
-    </p>
-
-
-    <div class="form-group">
-
-      <label for="className">
-        Nome classe
-      </label>
-
-      <input
-        id="className"
-        type="text"
-        placeholder="Es. 1Bi">
-
+  <div class="form-grid">
+    <div class="form-group full">
+      <label>Nome classe</label>
+      <input id="class-name" placeholder="Es. 1Bi">
     </div>
 
-
     <div class="form-group">
-
-      <label for="classSubjects">
-        Materie
-      </label>
-
-      <input
-        id="classSubjects"
-        type="text"
-        placeholder="Es. Informatica · AI">
-
+      <label>Materia/e</label>
+      <input id="class-subjects" placeholder="Es. Informatica, AI">
     </div>
 
-
     <div class="form-group">
+      <label>Ore settimanali</label>
+      <input id="class-hours" type="number" min="1" placeholder="Es. 5">
+    </div>
+  </div>
 
-      <label for="classHours">
-        Ore settimanali
-      </label>
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeModal('class-modal')">Annulla</button>
+    <button class="btn btn-primary" onclick="saveClass()">Salva</button>
+  </div>
+</div>
+</div>
 
-      <input
-        id="classHours"
-        type="number"
-        min="0"
-        step="1"
-        placeholder="Es. 5">
 
+<!-- STUDENTE -->
+<div class="modal-overlay" id="student-modal">
+<div class="modal">
+  <h2 id="student-modal-title">Nuovo studente</h2>
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Nome</label>
+      <input id="student-first">
     </div>
 
+    <div class="form-group">
+      <label>Cognome</label>
+      <input id="student-last">
+    </div>
+  </div>
 
-    <div class="modal-actions">
+  <p style="color:var(--muted);font-size:13px;margin-top:15px">
+    Il numero progressivo viene assegnato automaticamente da Classio.
+  </p>
 
-      <button
-        class="secondary-btn"
-        onclick="closeClassModal()">
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeModal('student-modal')">Annulla</button>
+    <button class="btn btn-primary" onclick="saveStudent()">Salva</button>
+  </div>
+</div>
+</div>
 
-        Annulla
 
-      </button>
+<!-- VOTO -->
+<div class="modal-overlay" id="grade-modal">
+<div class="modal">
+  <h2 id="grade-modal-title">Inserisci voto</h2>
+
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label>Classe</label>
+      <select id="grade-class" onchange="populateGradeStudents()"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Studente</label>
+      <select id="grade-student"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Materia</label>
+      <input id="grade-subject" placeholder="Es. Informatica">
+    </div>
+
+    <div class="form-group">
+      <label>Voto</label>
+      <input id="grade-value" type="number" min="1" max="10" step="0.25" placeholder="Es. 8">
+    </div>
+
+    <div class="form-group">
+      <label>Data</label>
+      <input id="grade-date" type="date">
+    </div>
+
+    <div class="form-group full">
+      <label>Descrizione</label>
+      <input id="grade-description" placeholder="Es. Verifica di laboratorio">
+    </div>
+  </div>
+
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeModal('grade-modal')">Annulla</button>
+    <button class="btn btn-primary" onclick="saveGrade()">Salva</button>
+  </div>
+</div>
+</div>
 
 
-      <button
-        class="primary-btn"
-        onclick="saveClass()">
+<!-- PRESENZA -->
+<div class="modal-overlay" id="attendance-modal">
+<div class="modal">
+  <h2>Registra presenza</h2>
 
-        Salva classe
+  <div class="form-grid">
 
-      </button>
+    <div class="form-group">
+      <label>Classe</label>
+      <select id="attendance-class" onchange="populateAttendanceStudents()"></select>
+    </div>
 
+    <div class="form-group">
+      <label>Studente</label>
+      <select id="attendance-student"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Data</label>
+      <input id="attendance-date" type="date">
+    </div>
+
+    <div class="form-group">
+      <label>Stato</label>
+      <select id="attendance-status">
+        <option value="presente">Presente</option>
+        <option value="assente">Assente</option>
+        <option value="ritardo">Ritardo</option>
+      </select>
+    </div>
+
+    <div class="form-group full">
+      <label>Note</label>
+      <input id="attendance-note" placeholder="Facoltativo">
+    </div>
+  </div>
+
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeModal('attendance-modal')">Annulla</button>
+    <button class="btn btn-primary" onclick="saveAttendance()">Salva</button>
+  </div>
+</div>
+</div>
+
+
+<!-- LEZIONE -->
+<div class="modal-overlay" id="lesson-modal">
+<div class="modal">
+  <h2>Nuova lezione</h2>
+
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label>Classe</label>
+      <select id="lesson-class"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Materia</label>
+      <input id="lesson-subject" placeholder="Es. Informatica">
+    </div>
+
+    <div class="form-group">
+      <label>Data</label>
+      <input id="lesson-date" type="date">
+    </div>
+
+    <div class="form-group">
+      <label>Orario</label>
+      <input id="lesson-time" placeholder="Es. 08:00 - 10:00">
+    </div>
+
+    <div class="form-group full">
+      <label>Argomento</label>
+      <input id="lesson-topic" placeholder="Argomento della lezione">
+    </div>
+
+    <div class="form-group full">
+      <label>Descrizione</label>
+      <textarea id="lesson-description"></textarea>
+    </div>
+
+    <div class="form-group full">
+      <label>Note</label>
+      <textarea id="lesson-notes"></textarea>
     </div>
 
   </div>
 
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeModal('lesson-modal')">Annulla</button>
+    <button class="btn btn-primary" onclick="saveLesson()">Salva</button>
+  </div>
+</div>
 </div>
 
 
-<!-- MODALE STUDENTE -->
-<div
-  id="studentModal"
-  class="modal-overlay">
+<!-- ATTIVITA -->
+<div class="modal-overlay" id="activity-modal">
+<div class="modal">
+  <h2>Nuova attività</h2>
 
-  <div class="modal">
-
-    <h2 id="studentModalTitle">
-      Aggiungi studente
-    </h2>
-
-    <p class="modal-subtitle">
-      Inserisci i dati dello studente.
-    </p>
-
+  <div class="form-grid">
 
     <div class="form-group">
-
-      <label for="studentFirstName">
-        Nome
-      </label>
-
-      <input
-        id="studentFirstName"
-        type="text"
-        placeholder="Es. Marco">
-
+      <label>Classe</label>
+      <select id="activity-class"></select>
     </div>
-
 
     <div class="form-group">
-
-      <label for="studentLastName">
-        Cognome
-      </label>
-
-      <input
-        id="studentLastName"
-        type="text"
-        placeholder="Es. Rossi">
-
+      <label>Materia</label>
+      <input id="activity-subject">
     </div>
-
 
     <div class="form-group">
-
-      <label for="studentNumber">
-        Numero progressivo
-      </label>
-
-      <input
-        id="studentNumber"
-        type="number"
-        min="1"
-        step="1"
-        placeholder="Es. 1">
-
+      <label>Data</label>
+      <input id="activity-date" type="date">
     </div>
 
+    <div class="form-group">
+      <label>Orario</label>
+      <input id="activity-time" placeholder="Es. 10:00 - 11:00">
+    </div>
 
-    <div class="modal-actions">
+    <div class="form-group full">
+      <label>Argomento</label>
+      <input id="activity-topic">
+    </div>
 
-      <button
-        class="secondary-btn"
-        onclick="closeStudentModal()">
+    <div class="form-group full">
+      <label>Descrizione</label>
+      <textarea id="activity-description"></textarea>
+    </div>
 
-        Annulla
-
-      </button>
-
-
-      <button
-        class="primary-btn"
-        onclick="saveStudent()">
-
-        Salva studente
-
-      </button>
-
+    <div class="form-group full">
+      <label>Note</label>
+      <textarea id="activity-notes"></textarea>
     </div>
 
   </div>
 
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeModal('activity-modal')">Annulla</button>
+    <button class="btn btn-primary" onclick="saveActivity()">Salva</button>
+  </div>
+</div>
+</div>
+
+
+<!-- COMPITI -->
+<div class="modal-overlay" id="homework-modal">
+<div class="modal">
+  <h2>Nuovi compiti</h2>
+
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label>Classe</label>
+      <select id="homework-class"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Materia</label>
+      <input id="homework-subject">
+    </div>
+
+    <div class="form-group">
+      <label>Data assegnazione</label>
+      <input id="homework-date" type="date">
+    </div>
+
+    <div class="form-group">
+      <label>Scadenza</label>
+      <input id="homework-due" type="date">
+    </div>
+
+    <div class="form-group full">
+      <label>Descrizione</label>
+      <textarea id="homework-description"></textarea>
+    </div>
+
+    <div class="form-group full">
+      <label>Note</label>
+      <textarea id="homework-notes"></textarea>
+    </div>
+
+  </div>
+
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeModal('homework-modal')">Annulla</button>
+    <button class="btn btn-primary" onclick="saveHomework()">Salva</button>
+  </div>
+</div>
+</div>
+
+
+<!-- NOTE -->
+<div class="modal-overlay" id="note-modal">
+<div class="modal">
+  <h2>Nuova nota</h2>
+
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label>Classe</label>
+      <select id="note-class" onchange="populateNoteStudents()"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Studente</label>
+      <select id="note-student">
+        <option value="">Tutta la classe</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Tipo</label>
+      <select id="note-type">
+        <option value="avviso">Avviso</option>
+        <option value="generica">Generica</option>
+        <option value="disciplinare">Disciplinare</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Data</label>
+      <input id="note-date" type="date">
+    </div>
+
+    <div class="form-group full">
+      <label>Testo</label>
+      <textarea id="note-text"></textarea>
+    </div>
+
+  </div>
+
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeModal('note-modal')">Annulla</button>
+    <button class="btn btn-primary" onclick="saveNote()">Salva</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ORARIO -->
+<div class="modal-overlay" id="schedule-modal">
+<div class="modal">
+  <h2>Aggiungi all'orario</h2>
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Giorno</label>
+      <select id="schedule-day">
+        <option value="Lunedì">Lunedì</option>
+        <option value="Martedì">Martedì</option>
+        <option value="Mercoledì">Mercoledì</option>
+        <option value="Giovedì">Giovedì</option>
+        <option value="Venerdì">Venerdì</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Ora</label>
+      <input id="schedule-time" placeholder="Es. 08:00 - 09:00">
+    </div>
+
+    <div class="form-group">
+      <label>Classe</label>
+      <select id="schedule-class"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Materia</label>
+      <input id="schedule-subject">
+    </div>
+  </div>
+
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeModal('schedule-modal')">Annulla</button>
+    <button class="btn btn-primary" onclick="saveSchedule()">Salva</button>
+  </div>
+</div>
 </div>
 
 
 <script>
+/* =========================================================
+   STORAGE
+========================================================= */
 
-  /* =========================
-     DATI CLASSI
-  ========================= */
+const KEYS = {
+  classes:"classio_classes",
+  students:"classio_students",
+  grades:"classio_grades",
+  attendance:"classio_attendance",
+  lessons:"classio_lessons",
+  activities:"classio_activities",
+  homework:"classio_homework",
+  notes:"classio_notes",
+  schedule:"classio_schedule"
+};
 
-  const defaultClasses = [
+let classes = load(KEYS.classes, []);
+let students = load(KEYS.students, []);
+let grades = load(KEYS.grades, []);
+let attendance = load(KEYS.attendance, []);
+let lessons = load(KEYS.lessons, []);
+let activities = load(KEYS.activities, []);
+let homework = load(KEYS.homework, []);
+let notes = load(KEYS.notes, []);
+let schedule = load(KEYS.schedule, []);
 
-    {
-      id: 1,
-      name: "1Bi",
-      subjects: "Informatica · AI",
-      hours: 5,
-      students: 0
-    },
+let currentClassId = null;
+let editingClassId = null;
+let editingStudentId = null;
 
-    {
-      id: 2,
-      name: "2Ci",
-      subjects: "Informatica · AI",
-      hours: 5,
-      students: 0
-    },
+function load(key,fallback){
+  try{
+    const value=localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  }catch(e){
+    return fallback;
+  }
+}
 
-    {
-      id: 3,
-      name: "3De",
-      subjects: "Informatica",
-      hours: 2,
-      students: 0
-    },
+function save(key,value){
+  localStorage.setItem(key,JSON.stringify(value));
+}
 
-    {
-      id: 4,
-      name: "4Ae",
-      subjects: "Informatica",
-      hours: 2,
-      students: 0
-    },
+function id(){
+  return Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+}
 
-    {
-      id: 5,
-      name: "5Bi",
-      subjects: "Informatica · AI",
-      hours: 5,
-      students: 0
-    }
+function today(){
+  return new Date().toISOString().split("T")[0];
+}
 
-  ];
+function formatDate(value){
+  if(!value)return "—";
+  const p=value.split("-");
+  if(p.length!==3)return value;
+  return `${p[2]}/${p[1]}/${p[0]}`;
+}
 
+function escapeHTML(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
 
-  let classes =
-    JSON.parse(
-      localStorage.getItem("classio_classes")
-    ) || defaultClasses;
+function getClass(id){
+  return classes.find(c=>c.id===id);
+}
 
+function getStudent(id){
+  return students.find(s=>s.id===id);
+}
 
-  /*
-    Gli studenti vengono salvati separatamente
-    per mantenere la struttura pronta per
-    voti, presenze e note.
-  */
+function getStudentsForClass(classId){
+  return students
+    .filter(s=>s.classId===classId)
+    .sort((a,b)=>a.number-b.number);
+}
 
-  let students =
-    JSON.parse(
-      localStorage.getItem("classio_students")
-    ) || [];
+function getClassName(classId){
+  const c=getClass(classId);
+  return c ? c.name : "Classe eliminata";
+}
 
+function getStudentName(studentId){
+  const s=getStudent(studentId);
+  return s ? `${s.lastName} ${s.firstName}` : "Studente eliminato";
+}
 
-  let editingClassId = null;
-  let selectedClassId = null;
-  let editingStudentId = null;
+function averageForStudent(studentId){
+  const list=grades.filter(g=>g.studentId===studentId);
+  if(!list.length)return null;
+  return list.reduce((sum,g)=>sum+Number(g.value),0)/list.length;
+}
 
+function averageForClass(classId){
+  const list=grades.filter(g=>g.classId===classId);
+  if(!list.length)return null;
+  return list.reduce((sum,g)=>sum+Number(g.value),0)/list.length;
+}
 
-  /* =========================
-     NAVIGAZIONE
-  ========================= */
+function overallAverage(){
+  if(!grades.length)return null;
+  return grades.reduce((sum,g)=>sum+Number(g.value),0)/grades.length;
+}
 
-  function showPage(pageId, button) {
-
-    document
-      .querySelectorAll(".page")
-      .forEach(page => {
-        page.classList.remove("active");
-      });
-
-
-    const page =
-      document.getElementById(pageId);
-
-
-    if (page) {
-      page.classList.add("active");
-    }
-
-
-    document
-      .querySelectorAll(".nav button")
-      .forEach(btn => {
-        btn.classList.remove("active");
-      });
-
-
-    if (button) {
-      button.classList.add("active");
-    }
+function statusBadge(status){
+  if(status==="presente")return `<span class="badge badge-green">Presente</span>`;
+  if(status==="assente")return `<span class="badge badge-red">Assente</span>`;
+  return `<span class="badge badge-orange">Ritardo</span>`;
+}
 
 
-    updateHomeStats();
+/* =========================================================
+   NAVIGAZIONE
+========================================================= */
 
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+
+  const target=document.getElementById("page-"+page);
+  if(target)target.classList.add("active");
+
+  const nav=document.getElementById("nav-"+page);
+  if(nav)nav.classList.add("active");
+
+  if(page==="home")renderHome();
+  if(page==="classi")renderClasses();
+  if(page==="orario")renderSchedule();
+  if(page==="lezioni")renderAllLessons();
+  if(page==="voti")renderAllGrades();
+  if(page==="presenze")renderAllAttendance();
+  if(page==="statistiche")renderStatistics();
+}
+
+function showClassDetail(classId){
+  currentClassId=classId;
+
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("page-class-detail").classList.add("active");
+
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+  document.getElementById("nav-classi").classList.add("active");
+
+  renderClassDetail();
+  showClassTab("studenti");
+}
+
+function showClassTab(tab,button){
+  document.querySelectorAll(".detail-panel").forEach(p=>p.classList.remove("active"));
+  const panel=document.getElementById("detail-"+tab);
+  if(panel)panel.classList.add("active");
+
+  document.querySelectorAll(".tabs .tab").forEach(b=>b.classList.remove("active"));
+  if(button)button.classList.add("active");
+
+  if(tab==="studenti")renderStudents();
+  if(tab==="voti")renderClassGrades();
+  if(tab==="presenze")renderClassAttendance();
+  if(tab==="lezioni")renderClassLessons();
+  if(tab==="attivita")renderClassActivities();
+  if(tab==="compiti")renderClassHomework();
+  if(tab==="note")renderClassNotes();
+}
+
+
+/* =========================================================
+   CLASSI
+========================================================= */
+
+function renderClasses(){
+  const box=document.getElementById("classes-grid");
+
+  if(!classes.length){
+    box.innerHTML=`<div class="card empty">Nessuna classe presente.<br>Aggiungine una per iniziare.</div>`;
+    return;
   }
 
+  box.innerHTML=classes.map(c=>`
+    <div class="card class-card" onclick="showClassDetail('${c.id}')">
+      <h3>${escapeHTML(c.name)}</h3>
+      <div class="class-subject">${escapeHTML(c.subjects||"Nessuna materia indicata")}</div>
 
-  /* =========================
-     SALVATAGGIO CLASSI
-  ========================= */
+      <div class="class-footer">
+        <span>👥 ${getStudentsForClass(c.id).length} studenti</span>
+        <span>${c.hours||0}h/settimana</span>
+      </div>
 
-  function saveClassesToStorage() {
+      <div class="actions" style="margin-top:13px">
+        <button class="btn btn-secondary btn-small" onclick="event.stopPropagation();openClassModal('${c.id}')">Modifica</button>
+        <button class="btn btn-danger btn-small" onclick="event.stopPropagation();deleteClass('${c.id}')">Elimina</button>
+      </div>
+    </div>
+  `).join("");
+}
 
-    localStorage.setItem(
-      "classio_classes",
-      JSON.stringify(classes)
-    );
+function openClassModal(classId=null){
+  editingClassId=classId;
 
+  document.getElementById("class-modal-title").textContent=
+    classId ? "Modifica classe" : "Nuova classe";
+
+  if(classId){
+    const c=getClass(classId);
+    document.getElementById("class-name").value=c.name||"";
+    document.getElementById("class-subjects").value=c.subjects||"";
+    document.getElementById("class-hours").value=c.hours||"";
+  }else{
+    document.getElementById("class-name").value="";
+    document.getElementById("class-subjects").value="";
+    document.getElementById("class-hours").value="";
   }
 
+  openModal("class-modal");
+}
 
-  /* =========================
-     SALVATAGGIO STUDENTI
-  ========================= */
+function saveClass(){
+  const name=document.getElementById("class-name").value.trim();
+  const subjects=document.getElementById("class-subjects").value.trim();
+  const hours=Number(document.getElementById("class-hours").value)||0;
 
-  function saveStudentsToStorage() {
-
-    localStorage.setItem(
-      "classio_students",
-      JSON.stringify(students)
-    );
-
+  if(!name){
+    alert("Inserisci il nome della classe.");
+    return;
   }
 
-
-  /* =========================
-     CONTEGGIO STUDENTI
-  ========================= */
-
-  function getStudentsForClass(classId) {
-
-    return students.filter(
-      student => student.classId === classId
-    );
-
+  if(editingClassId){
+    const c=getClass(editingClassId);
+    c.name=name;
+    c.subjects=subjects;
+    c.hours=hours;
+  }else{
+    classes.push({
+      id:id(),
+      name,
+      subjects,
+      hours
+    });
   }
 
-
-  function getStudentCount(classId) {
-
-    return getStudentsForClass(classId).length;
-
-  }
-
-
-  /* =========================
-     VISUALIZZA CLASSI
-  ========================= */
-
-  function renderClasses() {
-
-    const grid =
-      document.getElementById("classGrid");
-
-
-    if (!classes.length) {
-
-      grid.innerHTML = `
-
-        <div class="empty-state">
-
-          <strong>
-            Nessuna classe presente
-          </strong>
-
-          <span>
-            Aggiungi la tua prima classe per iniziare.
-          </span>
-
-        </div>
-
-      `;
-
-      updateHomeStats();
-
-      return;
-    }
-
-
-    grid.innerHTML =
-
-      classes.map(cls => {
-
-        const studentCount =
-          getStudentCount(cls.id);
-
-        return `
-
-          <div class="class-card">
-
-            <div
-              onclick="openClass(${cls.id})">
-
-              <h3>
-                ${escapeHTML(cls.name)}
-              </h3>
-
-              <p>
-                ${escapeHTML(
-                  cls.subjects || "Nessuna materia"
-                )}
-                · ${cls.hours || 0} ore/settimana
-              </p>
-
-              <p style="margin-top:6px;">
-
-                ${studentCount}
-                ${studentCount === 1 ? "studente" : "studenti"}
-
-              </p>
-
-            </div>
-
-
-            <div class="class-actions">
-
-              <button
-                class="small-btn edit-btn"
-                onclick="
-                  event.stopPropagation();
-                  editClass(${cls.id})
-                ">
-
-                ✏️ Modifica
-
-              </button>
-
-
-              <button
-                class="small-btn delete-btn"
-                onclick="
-                  event.stopPropagation();
-                  deleteClass(${cls.id})
-                ">
-
-                🗑️ Elimina
-
-              </button>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-
-    updateHomeStats();
-
-  }
-
-
-  /* =========================
-     MODALE AGGIUNTA CLASSE
-  ========================= */
-
-  function openClassModal() {
-
-    editingClassId = null;
-
-
-    document
-      .getElementById("modalTitle")
-      .textContent =
-      "Aggiungi classe";
-
-
-    document
-      .getElementById("className")
-      .value = "";
-
-
-    document
-      .getElementById("classSubjects")
-      .value = "";
-
-
-    document
-      .getElementById("classHours")
-      .value = "";
-
-
-    document
-      .getElementById("classModal")
-      .classList.add("active");
-
-
-    setTimeout(() => {
-
-      document
-        .getElementById("className")
-        .focus();
-
-    }, 50);
-
-  }
-
-
-  /* =========================
-     CHIUDI MODALE CLASSE
-  ========================= */
-
-  function closeClassModal() {
-
-    document
-      .getElementById("classModal")
-      .classList.remove("active");
-
-
-    editingClassId = null;
-
-  }
-
-
-  /* =========================
-     MODIFICA CLASSE
-  ========================= */
-
-  function editClass(id) {
-
-    const cls =
-      classes.find(c => c.id === id);
-
-
-    if (!cls) return;
-
-
-    editingClassId = id;
-
-
-    document
-      .getElementById("modalTitle")
-      .textContent =
-      "Modifica classe";
-
-
-    document
-      .getElementById("className")
-      .value =
-      cls.name;
-
-
-    document
-      .getElementById("classSubjects")
-      .value =
-      cls.subjects;
-
-
-    document
-      .getElementById("classHours")
-      .value =
-      cls.hours;
-
-
-    document
-      .getElementById("classModal")
-      .classList.add("active");
-
-  }
-
-
-  /* =========================
-     SALVA CLASSE
-  ========================= */
-
-  function saveClass() {
-
-    const name =
-      document
-        .getElementById("className")
-        .value
-        .trim();
-
-
-    const subjects =
-      document
-        .getElementById("classSubjects")
-        .value
-        .trim();
-
-
-    const hours =
-      Number(
-        document
-          .getElementById("classHours")
-          .value
-      ) || 0;
-
-
-    if (!name) {
-
-      alert(
-        "Inserisci il nome della classe."
-      );
-
-      return;
-
-    }
-
-
-    if (editingClassId !== null) {
-
-      const cls =
-        classes.find(
-          c => c.id === editingClassId
-        );
-
-
-      if (cls) {
-
-        cls.name = name;
-        cls.subjects = subjects;
-        cls.hours = hours;
-
-      }
-
-    } else {
-
-      classes.push({
-
-        id: Date.now(),
-
-        name: name,
-
-        subjects: subjects,
-
-        hours: hours
-
-      });
-
-    }
-
-
-    saveClassesToStorage();
-
-    renderClasses();
-
-    closeClassModal();
-
-  }
-
-
-  /* =========================
-     ELIMINA CLASSE
-  ========================= */
-
-  function deleteClass(id) {
-
-    const cls =
-      classes.find(c => c.id === id);
-
-
-    if (!cls) return;
-
-
-    const confirmed =
-      confirm(
-        `Vuoi davvero eliminare la classe "${cls.name}"?\n\nVerranno eliminati anche gli studenti della classe.`
-      );
-
-
-    if (!confirmed) return;
-
-
-    classes =
-      classes.filter(
-        c => c.id !== id
-      );
-
-
-    students =
-      students.filter(
-        student => student.classId !== id
-      );
-
-
-    saveClassesToStorage();
-    saveStudentsToStorage();
-
-    renderClasses();
-
-
-    if (selectedClassId === id) {
-
-      showPage("classi");
-
-      selectedClassId = null;
-
-    }
-
-  }
-
-
-  /* =========================
-     DETTAGLIO CLASSE
-  ========================= */
-
-  function openClass(id) {
-
-    const cls =
-      classes.find(c => c.id === id);
-
-
-    if (!cls) return;
-
-
-    selectedClassId = id;
-
-
-    document
-      .querySelectorAll(".page")
-      .forEach(page => {
-        page.classList.remove("active");
-      });
-
-
-    document
-      .getElementById("classDetail")
-      .classList.add("active");
-
-
-    document
-      .getElementById("classTitle")
-      .textContent =
-      cls.name;
-
-
-    document
-      .getElementById("classDescription")
-      .textContent =
-
-      `${cls.subjects || "Nessuna materia"} · ${cls.hours || 0} ore settimanali`;
-
-
-    document
-      .getElementById("detailStudents")
-      .textContent =
-      getStudentCount(id);
-
-
-    showClassTab("registro");
-
-
-    document
-      .querySelectorAll(".nav button")
-      .forEach(btn => {
-        btn.classList.remove("active");
-      });
-
-  }
-
-
-  /* =========================
-     TAB DELLA CLASSE
-  ========================= */
-
-  function showClassTab(tab, button) {
-
-    const registro =
-      document.getElementById("classTabRegistro");
-
-    const studenti =
-      document.getElementById("classTabStudenti");
-
-
-    if (registro) {
-      registro.style.display =
-        tab === "registro"
-          ? "block"
-          : "none";
-    }
-
-
-    if (studenti) {
-      studenti.style.display =
-        tab === "studenti"
-          ? "block"
-          : "none";
-    }
-
-
-    document
-      .querySelectorAll(".detail-tab")
-      .forEach(btn => {
-        btn.classList.remove("active");
-      });
-
-
-    if (button) {
-
-      button.classList.add("active");
-
-    } else {
-
-      const tabs =
-        document.querySelectorAll(".detail-tab");
-
-      if (tabs[0]) {
-        tabs[0].classList.add("active");
-      }
-
-    }
-
-
-    if (tab === "studenti") {
-
-      renderStudents();
-
-    }
-
-  }
-
-
-  /* =========================
-     MODALE STUDENTE
-  ========================= */
-
-  function openStudentModal() {
-
-    if (selectedClassId === null) {
-
-      alert(
-        "Seleziona prima una classe."
-      );
-
-      return;
-
-    }
-
-
-    editingStudentId = null;
-
-
-    document
-      .getElementById("studentModalTitle")
-      .textContent =
-      "Aggiungi studente";
-
-
-    document
-      .getElementById("studentFirstName")
-      .value = "";
-
-
-    document
-      .getElementById("studentLastName")
-      .value = "";
-
-
-    const classStudents =
-      getStudentsForClass(selectedClassId);
-
-
-    const usedNumbers =
-      classStudents
-        .map(student => Number(student.number))
-        .filter(number => number > 0);
-
-
-    let nextNumber = 1;
-
-
-    while (
-      usedNumbers.includes(nextNumber)
-    ) {
-
-      nextNumber++;
-
-    }
-
-
-    document
-      .getElementById("studentNumber")
-      .value =
-      nextNumber;
-
-
-    document
-      .getElementById("studentModal")
-      .classList.add("active");
-
-
-    setTimeout(() => {
-
-      document
-        .getElementById("studentFirstName")
-        .focus();
-
-    }, 50);
-
-  }
-
-
-  /* =========================
-     CHIUDI MODALE STUDENTE
-  ========================= */
-
-  function closeStudentModal() {
-
-    document
-      .getElementById("studentModal")
-      .classList.remove("active");
-
-
-    editingStudentId = null;
-
-  }
-
-
-  /* =========================
-     MODIFICA STUDENTE
-  ========================= */
-
-  function editStudent(id) {
-
-    const student =
-      students.find(
-        item => item.id === id
-      );
-
-
-    if (!student) return;
-
-
-    editingStudentId = id;
-
-
-    document
-      .getElementById("studentModalTitle")
-      .textContent =
-      "Modifica studente";
-
-
-    document
-      .getElementById("studentFirstName")
-      .value =
-      student.firstName;
-
-
-    document
-      .getElementById("studentLastName")
-      .value =
-      student.lastName;
-
-
-    document
-      .getElementById("studentNumber")
-      .value =
-      student.number || "";
-
-
-    document
-      .getElementById("studentModal")
-      .classList.add("active");
-
-
-  }
-
-
-  /* =========================
-     SALVA STUDENTE
-  ========================= */
-
-  function saveStudent() {
-
-    const firstName =
-      document
-        .getElementById("studentFirstName")
-        .value
-        .trim();
-
-
-    const lastName =
-      document
-        .getElementById("studentLastName")
-        .value
-        .trim();
-
-
-    const number =
-      Number(
-        document
-          .getElementById("studentNumber")
-          .value
-      ) || 0;
-
-
-    if (!firstName || !lastName) {
-
-      alert(
-        "Inserisci nome e cognome dello studente."
-      );
-
-      return;
-
-    }
-
-
-    if (selectedClassId === null) {
-
-      alert(
-        "Nessuna classe selezionata."
-      );
-
-      return;
-
-    }
-
-
-    if (number < 1) {
-
-      alert(
-        "Inserisci un numero progressivo valido."
-      );
-
-      return;
-
-    }
-
-
-    const duplicate =
-      students.find(student =>
-
-        student.classId === selectedClassId &&
-
-        Number(student.number) === number &&
-
-        student.id !== editingStudentId
-
-      );
-
-
-    if (duplicate) {
-
-      alert(
-        `Il numero ${number} è già utilizzato nella classe.`
-      );
-
-      return;
-
-    }
-
-
-    if (editingStudentId !== null) {
-
-      const student =
-        students.find(
-          item => item.id === editingStudentId
-        );
-
-
-      if (student) {
-
-        student.firstName = firstName;
-        student.lastName = lastName;
-        student.number = number;
-
-      }
-
-    } else {
-
-      students.push({
-
-        id: Date.now(),
-
-        classId: selectedClassId,
-
-        firstName: firstName,
-
-        lastName: lastName,
-
-        number: number
-
-      });
-
-    }
-
-
-    saveStudentsToStorage();
-
-    renderStudents();
-
-    renderClasses();
-
-    updateHomeStats();
-
-    updateDetailStudentCount();
-
-    closeStudentModal();
-
-  }
-
-
-  /* =========================
-     VISUALIZZA STUDENTI
-  ========================= */
-
-  function renderStudents() {
-
-    const list =
-      document.getElementById("studentList");
-
-
-    const subtitle =
-      document.getElementById("studentsSubtitle");
-
-
-    if (!list || selectedClassId === null) {
-      return;
-    }
-
-
-    const classStudents =
-      getStudentsForClass(selectedClassId);
-
-
-    classStudents.sort(
-      (a, b) =>
-        Number(a.number) -
-        Number(b.number)
-    );
-
-
-    if (subtitle) {
-
-      subtitle.textContent =
-
-        `${classStudents.length} ${
-          classStudents.length === 1
-            ? "studente"
-            : "studenti"
-        }`;
-
-    }
-
-
-    if (!classStudents.length) {
-
-      list.innerHTML = `
-
-        <div class="student-empty">
-
-          <strong>
-            Nessuno studente presente
-          </strong>
-
-          <span>
-            Aggiungi il primo studente della classe.
-          </span>
-
-        </div>
-
-      `;
-
-      return;
-
-    }
-
-
-    list.innerHTML =
-
-      classStudents.map(student => `
-
-        <div class="student-row">
-
-          <div class="student-number">
-
-            ${student.number}
-
-          </div>
-
-
-          <div>
-
-            <div class="student-name">
-
-              ${escapeHTML(
-                student.lastName
-              )}
-
-              ${escapeHTML(
-                student.firstName
-              )}
-
-            </div>
-
-            <span class="student-badge">
-              Studente
-            </span>
-
-          </div>
-
-
-          <div class="student-actions">
-
-            <button
-              class="small-btn edit-btn"
-              onclick="editStudent(${student.id})">
-
-              ✏️ Modifica
-
-            </button>
-
-
-            <button
-              class="small-btn delete-btn"
-              onclick="deleteStudent(${student.id})">
-
-              🗑️ Elimina
-
-            </button>
-
-          </div>
-
-        </div>
-
-      `).join("");
-
-  }
-
-
-  /* =========================
-     AGGIORNA NUMERO STUDENTI
-  ========================= */
-
-  function updateDetailStudentCount() {
-
-    if (selectedClassId === null) {
-      return;
-    }
-
-
-    const count =
-      getStudentCount(selectedClassId);
-
-
-    const element =
-      document.getElementById("detailStudents");
-
-
-    if (element) {
-
-      element.textContent = count;
-
-    }
-
-  }
-
-
-  /* =========================
-     ELIMINA STUDENTE
-  ========================= */
-
-  function deleteStudent(id) {
-
-    const student =
-      students.find(
-        item => item.id === id
-      );
-
-
-    if (!student) return;
-
-
-    const confirmed =
-      confirm(
-        `Vuoi davvero eliminare lo studente "${student.firstName} ${student.lastName}"?`
-      );
-
-
-    if (!confirmed) return;
-
-
-    students =
-      students.filter(
-        item => item.id !== id
-      );
-
-
-    saveStudentsToStorage();
-
-    renderStudents();
-
-    renderClasses();
-
-    updateHomeStats();
-
-    updateDetailStudentCount();
-
-  }
-
-
-  /* =========================
-     HOME
-  ========================= */
-
-  function updateHomeStats() {
-
-    const totalStudents =
-      students.length;
-
-
-    document
-      .getElementById("homeClasses")
-      .textContent =
-      classes.length;
-
-
-    document
-      .getElementById("homeStudents")
-      .textContent =
-      totalStudents;
-
-  }
-
-
-  /* =========================
-     PROTEZIONE HTML
-  ========================= */
-
-  function escapeHTML(text) {
-
-    return String(text)
-
-      .replace(/&/g, "&amp;")
-
-      .replace(/</g, "&lt;")
-
-      .replace(/>/g, "&gt;")
-
-      .replace(/"/g, "&quot;")
-
-      .replace(/'/g, "&#039;");
-
-  }
-
-
-  /* =========================
-     DATA
-  ========================= */
-
-  const today =
-    new Date();
-
-
-  document
-    .getElementById("currentDate")
-    .textContent =
-
-    today.toLocaleDateString(
-      "it-IT",
-      {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      }
-    );
-
-
-  /* =========================
-     AVVIO
-  ========================= */
+  save(KEYS.classes,classes);
+  closeModal("class-modal");
+  renderClasses();
+  updateAll();
+}
+
+function deleteClass(classId){
+  const c=getClass(classId);
+  if(!c)return;
+
+  if(!confirm(`Eliminare la classe ${c.name}?\n\nVerranno eliminati anche tutti i dati collegati agli studenti della classe.`))return;
+
+  const studentIds=students.filter(s=>s.classId===classId).map(s=>s.id);
+
+  classes=classes.filter(c=>c.id!==classId);
+  students=students.filter(s=>s.classId!==classId);
+  grades=grades.filter(g=>g.classId!==classId && !studentIds.includes(g.studentId));
+  attendance=attendance.filter(a=>a.classId!==classId && !studentIds.includes(a.studentId));
+  lessons=lessons.filter(l=>l.classId!==classId);
+  activities=activities.filter(a=>a.classId!==classId);
+  homework=homework.filter(h=>h.classId!==classId);
+  notes=notes.filter(n=>n.classId!==classId);
+  schedule=schedule.filter(s=>s.classId!==classId);
+
+  Object.entries({
+    [KEYS.classes]:classes,
+    [KEYS.students]:students,
+    [KEYS.grades]:grades,
+    [KEYS.attendance]:attendance,
+    [KEYS.lessons]:lessons,
+    [KEYS.activities]:activities,
+    [KEYS.homework]:homework,
+    [KEYS.notes]:notes,
+    [KEYS.schedule]:schedule
+  }).forEach(([k,v])=>save(k,v));
 
   renderClasses();
+  updateAll();
+}
 
-  updateHomeStats();
+function renderClassDetail(){
+  const c=getClass(currentClassId);
+  if(!c)return;
+
+  document.getElementById("detail-class-name").textContent=c.name;
+  document.getElementById("detail-class-info").textContent=
+    `${c.subjects||"Nessuna materia"} · ${getStudentsForClass(c.id).length} studenti · ${c.hours||0}h/settimana`;
+
+  renderStudents();
+}
 
 
-  /* =========================
-     CHIUSURA MODALI
-  ========================= */
+/* =========================================================
+   STUDENTI
+========================================================= */
 
-  document
-    .getElementById("classModal")
-    .addEventListener(
-      "click",
-      function(event) {
+function nextStudentNumber(classId){
+  const list=getStudentsForClass(classId);
 
-        if (event.target === this) {
+  if(!list.length)return 1;
 
-          closeClassModal();
+  return Math.max(...list.map(s=>Number(s.number)||0))+1;
+}
 
+function openStudentModal(studentId=null){
+  editingStudentId=studentId;
+
+  if(studentId){
+    const s=getStudent(studentId);
+    document.getElementById("student-modal-title").textContent="Modifica studente";
+    document.getElementById("student-first").value=s.firstName||"";
+    document.getElementById("student-last").value=s.lastName||"";
+  }else{
+    document.getElementById("student-modal-title").textContent="Nuovo studente";
+    document.getElementById("student-first").value="";
+    document.getElementById("student-last").value="";
+  }
+
+  openModal("student-modal");
+}
+
+function saveStudent(){
+  if(!currentClassId)return;
+
+  const first=document.getElementById("student-first").value.trim();
+  const last=document.getElementById("student-last").value.trim();
+
+  if(!first || !last){
+    alert("Inserisci nome e cognome.");
+    return;
+  }
+
+  if(editingStudentId){
+    const s=getStudent(editingStudentId);
+    s.firstName=first;
+    s.lastName=last;
+  }else{
+    students.push({
+      id:id(),
+      classId:currentClassId,
+      firstName:first,
+      lastName:last,
+      number:nextStudentNumber(currentClassId)
+    });
+  }
+
+  save(KEYS.students,students);
+  closeModal("student-modal");
+  renderStudents();
+  renderClassDetail();
+  renderClasses();
+  updateAll();
+}
+
+function renderStudents(){
+  const box=document.getElementById("student-table");
+  if(!box)return;
+
+  const list=getStudentsForClass(currentClassId);
+
+  if(!list.length){
+    box.innerHTML=`<tr><td colspan="5" class="empty">Nessuno studente presente.</td></tr>`;
+    return;
+  }
+
+  box.innerHTML=list.map(s=>{
+    const avg=averageForStudent(s.id);
+    const att=attendance.filter(a=>a.studentId===s.id);
+
+    return `
+      <tr>
+        <td><span class="student-number">${s.number}</span></td>
+        <td>
+          <div class="student-name">${escapeHTML(s.lastName)} ${escapeHTML(s.firstName)}</div>
+        </td>
+        <td>
+          ${avg===null ? "—" :
+            `<span class="average-box">${avg.toFixed(2)}</span>`}
+        </td>
+        <td>
+          ${att.filter(a=>a.status==="presente").length} P ·
+          ${att.filter(a=>a.status==="assente").length} A ·
+          ${att.filter(a=>a.status==="ritardo").length} R
+        </td>
+        <td>
+          <div class="actions">
+            <button class="btn btn-secondary btn-small" onclick="openStudentModal('${s.id}')">Modifica</button>
+            <button class="btn btn-danger btn-small" onclick="deleteStudent('${s.id}')">Elimina</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function deleteStudent(studentId){
+  const s=getStudent(studentId);
+  if(!s)return;
+
+  if(!confirm(`Eliminare ${s.firstName} ${s.lastName}?`))return;
+
+  students=students.filter(x=>x.id!==studentId);
+  grades=grades.filter(g=>g.studentId!==studentId);
+  attendance=attendance.filter(a=>a.studentId!==studentId);
+  notes=notes.filter(n=>n.studentId!==studentId);
+
+  save(KEYS.students,students);
+  save(KEYS.grades,grades);
+  save(KEYS.attendance,attendance);
+  save(KEYS.notes,notes);
+
+  renderStudents();
+  renderClasses();
+  updateAll();
+}
+
+
+/* =========================================================
+   VOTI
+========================================================= */
+
+function populateClassSelect(selectId,selectedId=null){
+  const select=document.getElementById(selectId);
+  if(!select)return;
+
+  select.innerHTML=classes.map(c=>
+    `<option value="${c.id}">${escapeHTML(c.name)}</option>`
+  ).join("");
+
+  if(selectedId && classes.some(c=>c.id===selectedId)){
+    select.value=selectedId;
+  }
+}
+
+function populateGradeStudents(){
+  const classId=document.getElementById("grade-class").value;
+  const select=document.getElementById("grade-student");
+
+  const list=getStudentsForClass(classId);
+
+  select.innerHTML=list.map(s=>
+    `<option value="${s.id}">${s.number} — ${escapeHTML(s.lastName)} ${escapeHTML(s.firstName)}</option>`
+  ).join("");
+
+  if(!list.length){
+    select.innerHTML=`<option value="">Nessuno studente</option>`;
+  }
+}
+
+function openGradeModal(classId=null){
+  if(!classes.length){
+    alert("Prima crea almeno una classe.");
+    return;
+  }
+
+  populateClassSelect("grade-class",classId||currentClassId||classes[0].id);
+  populateGradeStudents();
+
+  document.getElementById("grade-subject").value="";
+  document.getElementById("grade-value").value="";
+  document.getElementById("grade-date").value=today();
+  document.getElementById("grade-description").value="";
+
+  openModal("grade-modal");
+}
+
+function saveGrade(){
+  const classId=document.getElementById("grade-class").value;
+  const studentId=document.getElementById("grade-student").value;
+  const subject=document.getElementById("grade-subject").value.trim();
+  const value=Number(document.getElementById("grade-value").value);
+  const date=document.getElementById("grade-date").value;
+  const description=document.getElementById("grade-description").value.trim();
+
+  if(!classId || !studentId || !subject || !value || !date){
+    alert("Compila tutti i campi obbligatori.");
+    return;
+  }
+
+  if(value<1 || value>10){
+    alert("Il voto deve essere compreso tra 1 e 10.");
+    return;
+  }
+
+  grades.push({
+    id:id(),
+    classId,
+    studentId,
+    subject,
+    value,
+    date,
+    description
+  });
+
+  save(KEYS.grades,grades);
+  closeModal("grade-modal");
+
+  renderAllGrades();
+  renderClassGrades();
+  renderStudents();
+  updateAll();
+}
+
+function renderGradeRows(list,showClass=true){
+  if(!list.length){
+    return `<tr><td colspan="${showClass?7:6}" class="empty">Nessun voto presente.</td></tr>`;
+  }
+
+  const sorted=[...list].sort((a,b)=>
+    String(b.date).localeCompare(String(a.date))
+  );
+
+  return sorted.map(g=>{
+    const v=Number(g.value);
+    const cls=v>=7?"grade-good":v>=6?"grade-mid":"grade-bad";
+
+    return `
+      <tr>
+        <td>${formatDate(g.date)}</td>
+        ${showClass?`<td>${escapeHTML(getClassName(g.classId))}</td>`:""}
+        <td>${escapeHTML(getStudentName(g.studentId))}</td>
+        <td>${escapeHTML(g.subject)}</td>
+        <td><span class="grade ${cls}">${v}</span></td>
+        <td>${escapeHTML(g.description||"—")}</td>
+        <td>
+          <button class="btn btn-danger btn-small" onclick="deleteGrade('${g.id}')">Elimina</button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function renderAllGrades(){
+  const box=document.getElementById("all-grades-table");
+  if(box)box.innerHTML=renderGradeRows(grades,true);
+}
+
+function renderClassGrades(){
+  const box=document.getElementById("class-grades-table");
+  if(!box)return;
+
+  box.innerHTML=renderGradeRows(
+    grades.filter(g=>g.classId===currentClassId),
+    false
+  );
+}
+
+function deleteGrade(idValue){
+  if(!confirm("Eliminare questo voto?"))return;
+
+  grades=grades.filter(g=>g.id!==idValue);
+  save(KEYS.grades,grades);
+
+  renderAllGrades();
+  renderClassGrades();
+  renderStudents();
+  updateAll();
+}
+
+
+/* =========================================================
+   PRESENZE
+========================================================= */
+
+function populateAttendanceStudents(){
+  const classId=document.getElementById("attendance-class").value;
+  const select=document.getElementById("attendance-student");
+
+  const list=getStudentsForClass(classId);
+
+  select.innerHTML=list.map(s=>
+    `<option value="${s.id}">${s.number} — ${escapeHTML(s.lastName)} ${escapeHTML(s.firstName)}</option>`
+  ).join("");
+
+  if(!list.length){
+    select.innerHTML=`<option value="">Nessuno studente</option>`;
+  }
+}
+
+function openAttendanceModal(classId=null){
+  if(!classes.length){
+    alert("Prima crea almeno una classe.");
+    return;
+  }
+
+  populateClassSelect("attendance-class",classId||currentClassId||classes[0].id);
+  populateAttendanceStudents();
+
+  document.getElementById("attendance-date").value=today();
+  document.getElementById("attendance-status").value="presente";
+  document.getElementById("attendance-note").value="";
+
+  openModal("attendance-modal");
+}
+
+function saveAttendance(){
+  const classId=document.getElementById("attendance-class").value;
+  const studentId=document.getElementById("attendance-student").value;
+  const date=document.getElementById("attendance-date").value;
+  const status=document.getElementById("attendance-status").value;
+  const note=document.getElementById("attendance-note").value.trim();
+
+  if(!classId || !studentId || !date){
+    alert("Compila i campi obbligatori.");
+    return;
+  }
+
+  attendance.push({
+    id:id(),
+    classId,
+    studentId,
+    date,
+    status,
+    note
+  });
+
+  save(KEYS.attendance,attendance);
+  closeModal("attendance-modal");
+
+  renderAllAttendance();
+  renderClassAttendance();
+  renderStudents();
+  updateAll();
+}
+
+function renderAttendanceRows(list,showClass=true){
+  if(!list.length){
+    return `<tr><td colspan="${showClass?6:5}" class="empty">Nessuna registrazione presente.</td></tr>`;
+  }
+
+  const sorted=[...list].sort((a,b)=>
+    String(b.date).localeCompare(String(a.date))
+  );
+
+  return sorted.map(a=>`
+    <tr>
+      <td>${formatDate(a.date)}</td>
+      ${showClass?`<td>${escapeHTML(getClassName(a.classId))}</td>`:""}
+      <td>${escapeHTML(getStudentName(a.studentId))}</td>
+      <td>${statusBadge(a.status)}</td>
+      <td>${escapeHTML(a.note||"—")}</td>
+      <td>
+        <button class="btn btn-danger btn-small" onclick="deleteAttendance('${a.id}')">Elimina</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function renderAllAttendance(){
+  const box=document.getElementById("all-attendance-table");
+  if(box)box.innerHTML=renderAttendanceRows(attendance,true);
+}
+
+function renderClassAttendance(){
+  const box=document.getElementById("class-attendance-table");
+  if(!box)return;
+
+  box.innerHTML=renderAttendanceRows(
+    attendance.filter(a=>a.classId===currentClassId),
+    false
+  );
+}
+
+function deleteAttendance(idValue){
+  if(!confirm("Eliminare questa registrazione?"))return;
+
+  attendance=attendance.filter(a=>a.id!==idValue);
+  save(KEYS.attendance,attendance);
+
+  renderAllAttendance();
+  renderClassAttendance();
+  renderStudents();
+  updateAll();
+}
+
+
+/* =========================================================
+   LEZIONI
+========================================================= */
+
+function openLessonModal(classId=null){
+  if(!classes.length){
+    alert("Prima crea almeno una classe.");
+    return;
+  }
+
+  populateClassSelect("lesson-class",classId||currentClassId||classes[0].id);
+
+  document.getElementById("lesson-subject").value="";
+  document.getElementById("lesson-date").value=today();
+  document.getElementById("lesson-time").value="";
+  document.getElementById("lesson-topic").value="";
+  document.getElementById("lesson-description").value="";
+  document.getElementById("lesson-notes").value="";
+
+  openModal("lesson-modal");
+}
+
+function saveLesson(){
+  const classId=document.getElementById("lesson-class").value;
+
+  const lesson={
+    id:id(),
+    classId,
+    subject:document.getElementById("lesson-subject").value.trim(),
+    date:document.getElementById("lesson-date").value,
+    time:document.getElementById("lesson-time").value.trim(),
+    topic:document.getElementById("lesson-topic").value.trim(),
+    description:document.getElementById("lesson-description").value.trim(),
+    notes:document.getElementById("lesson-notes").value.trim()
+  };
+
+  if(!lesson.classId || !lesson.subject || !lesson.date || !lesson.topic){
+    alert("Compila almeno classe, materia, data e argomento.");
+    return;
+  }
+
+  lessons.push(lesson);
+  save(KEYS.lessons,lessons);
+
+  closeModal("lesson-modal");
+
+  renderAllLessons();
+  renderClassLessons();
+  updateAll();
+}
+
+function lessonCard(l){
+  return `
+    <div class="card card-pad" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;gap:15px">
+        <div>
+          <strong>${escapeHTML(l.topic)}</strong>
+          <div style="color:var(--muted);font-size:13px;margin-top:5px">
+            ${formatDate(l.date)} · ${escapeHTML(l.time||"")} ·
+            ${escapeHTML(getClassName(l.classId))} ·
+            ${escapeHTML(l.subject)}
+          </div>
+        </div>
+
+        <button class="btn btn-danger btn-small" onclick="deleteLesson('${l.id}')">Elimina</button>
+      </div>
+
+      ${l.description?`<p>${escapeHTML(l.description)}</p>`:""}
+      ${l.notes?`<p style="color:var(--muted);font-size:13px">📝 ${escapeHTML(l.notes)}</p>`:""}
+    </div>
+  `;
+}
+
+function renderAllLessons(){
+  const box=document.getElementById("all-lessons-list");
+  if(!box)return;
+
+  const list=[...lessons].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+
+  box.innerHTML=list.length
+    ? list.map(lessonCard).join("")
+    : `<div class="card empty">Nessuna lezione registrata.</div>`;
+}
+
+function renderClassLessons(){
+  const box=document.getElementById("class-lessons-list");
+  if(!box)return;
+
+  const list=lessons
+    .filter(l=>l.classId===currentClassId)
+    .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+
+  box.innerHTML=list.length
+    ? list.map(lessonCard).join("")
+    : `<div class="card empty">Nessuna lezione registrata per questa classe.</div>`;
+}
+
+function deleteLesson(idValue){
+  if(!confirm("Eliminare questa lezione?"))return;
+
+  lessons=lessons.filter(l=>l.id!==idValue);
+  save(KEYS.lessons,lessons);
+
+  renderAllLessons();
+  renderClassLessons();
+  updateAll();
+}
+
+
+/* =========================================================
+   ATTIVITA'
+========================================================= */
+
+function openActivityModal(classId=null){
+  if(!classes.length){
+    alert("Prima crea almeno una classe.");
+    return;
+  }
+
+  populateClassSelect("activity-class",classId||currentClassId||classes[0].id);
+
+  ["activity-subject","activity-time","activity-topic",
+   "activity-description","activity-notes"].forEach(idName=>{
+    document.getElementById(idName).value="";
+  });
+
+  document.getElementById("activity-date").value=today();
+
+  openModal("activity-modal");
+}
+
+function saveActivity(){
+  const item={
+    id:id(),
+    classId:document.getElementById("activity-class").value,
+    subject:document.getElementById("activity-subject").value.trim(),
+    date:document.getElementById("activity-date").value,
+    time:document.getElementById("activity-time").value.trim(),
+    topic:document.getElementById("activity-topic").value.trim(),
+    description:document.getElementById("activity-description").value.trim(),
+    notes:document.getElementById("activity-notes").value.trim()
+  };
+
+  if(!item.classId || !item.subject || !item.date || !item.topic){
+    alert("Compila almeno classe, materia, data e argomento.");
+    return;
+  }
+
+  activities.push(item);
+  save(KEYS.activities,activities);
+
+  closeModal("activity-modal");
+  renderClassActivities();
+}
+
+function activityCard(a){
+  return `
+    <div class="card card-pad" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;gap:15px">
+        <div>
+          <strong>${escapeHTML(a.topic)}</strong>
+          <div style="color:var(--muted);font-size:13px;margin-top:5px">
+            ${formatDate(a.date)} · ${escapeHTML(a.time||"")} · ${escapeHTML(a.subject)}
+          </div>
+        </div>
+        <button class="btn btn-danger btn-small" onclick="deleteActivity('${a.id}')">Elimina</button>
+      </div>
+
+      ${a.description?`<p>${escapeHTML(a.description)}</p>`:""}
+      ${a.notes?`<p style="color:var(--muted);font-size:13px">📝 ${escapeHTML(a.notes)}</p>`:""}
+    </div>
+  `;
+}
+
+function renderClassActivities(){
+  const box=document.getElementById("class-activities-list");
+  if(!box)return;
+
+  const list=activities
+    .filter(a=>a.classId===currentClassId)
+    .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+
+  box.innerHTML=list.length
+    ? list.map(activityCard).join("")
+    : `<div class="card empty">Nessuna attività registrata.</div>`;
+}
+
+function deleteActivity(idValue){
+  if(!confirm("Eliminare questa attività?"))return;
+
+  activities=activities.filter(a=>a.id!==idValue);
+  save(KEYS.activities,activities);
+
+  renderClassActivities();
+}
+
+
+/* =========================================================
+   COMPITI
+========================================================= */
+
+function openHomeworkModal(classId=null){
+  if(!classes.length){
+    alert("Prima crea almeno una classe.");
+    return;
+  }
+
+  populateClassSelect("homework-class",classId||currentClassId||classes[0].id);
+
+  document.getElementById("homework-subject").value="";
+  document.getElementById("homework-date").value=today();
+  document.getElementById("homework-due").value="";
+  document.getElementById("homework-description").value="";
+  document.getElementById("homework-notes").value="";
+
+  openModal("homework-modal");
+}
+
+function saveHomework(){
+  const item={
+    id:id(),
+    classId:document.getElementById("homework-class").value,
+    subject:document.getElementById("homework-subject").value.trim(),
+    date:document.getElementById("homework-date").value,
+    due:document.getElementById("homework-due").value,
+    description:document.getElementById("homework-description").value.trim(),
+    notes:document.getElementById("homework-notes").value.trim(),
+    completed:false
+  };
+
+  if(!item.classId || !item.subject || !item.date || !item.due || !item.description){
+    alert("Compila i campi obbligatori.");
+    return;
+  }
+
+  homework.push(item);
+  save(KEYS.homework,homework);
+
+  closeModal("homework-modal");
+  renderClassHomework();
+}
+
+function homeworkCard(h){
+  const expired=!h.completed && h.due<today();
+
+  return `
+    <div class="card card-pad" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;gap:15px">
+        <div>
+          <strong>${escapeHTML(h.subject)}</strong>
+          <div style="color:var(--muted);font-size:13px;margin-top:5px">
+            Assegnati ${formatDate(h.date)} · Scadenza ${formatDate(h.due)}
+          </div>
+        </div>
+
+        <div class="actions">
+          ${h.completed
+            ? `<span class="badge badge-green">Completati</span>`
+            : expired
+              ? `<span class="badge badge-red">Scaduti</span>`
+              : `<span class="badge badge-orange">Da svolgere</span>`}
+
+          <button class="btn btn-secondary btn-small" onclick="toggleHomework('${h.id}')">
+            ${h.completed?"Riapri":"Completa"}
+          </button>
+
+          <button class="btn btn-danger btn-small" onclick="deleteHomework('${h.id}')">Elimina</button>
+        </div>
+      </div>
+
+      <p>${escapeHTML(h.description)}</p>
+      ${h.notes?`<p style="color:var(--muted);font-size:13px">📝 ${escapeHTML(h.notes)}</p>`:""}
+    </div>
+  `;
+}
+
+function renderClassHomework(){
+  const box=document.getElementById("class-homework-list");
+  if(!box)return;
+
+  const list=homework
+    .filter(h=>h.classId===currentClassId)
+    .sort((a,b)=>String(a.due).localeCompare(String(b.due)));
+
+  box.innerHTML=list.length
+    ? list.map(homeworkCard).join("")
+    : `<div class="card empty">Nessun compito registrato.</div>`;
+}
+
+function toggleHomework(idValue){
+  const h=homework.find(x=>x.id===idValue);
+  if(!h)return;
+
+  h.completed=!h.completed;
+  save(KEYS.homework,homework);
+  renderClassHomework();
+}
+
+function deleteHomework(idValue){
+  if(!confirm("Eliminare questi compiti?"))return;
+
+  homework=homework.filter(h=>h.id!==idValue);
+  save(KEYS.homework,homework);
+
+  renderClassHomework();
+}
+
+
+/* =========================================================
+   NOTE
+========================================================= */
+
+function populateNoteStudents(){
+  const classId=document.getElementById("note-class").value;
+  const select=document.getElementById("note-student");
+
+  select.innerHTML=
+    `<option value="">Tutta la classe</option>`+
+    getStudentsForClass(classId).map(s=>
+      `<option value="${s.id}">${s.number} — ${escapeHTML(s.lastName)} ${escapeHTML(s.firstName)}</option>`
+    ).join("");
+}
+
+function openNoteModal(classId=null){
+  if(!classes.length){
+    alert("Prima crea almeno una classe.");
+    return;
+  }
+
+  populateClassSelect("note-class",classId||currentClassId||classes[0].id);
+  populateNoteStudents();
+
+  document.getElementById("note-type").value="avviso";
+  document.getElementById("note-date").value=today();
+  document.getElementById("note-text").value="";
+
+  openModal("note-modal");
+}
+
+function saveNote(){
+  const item={
+    id:id(),
+    classId:document.getElementById("note-class").value,
+    studentId:document.getElementById("note-student").value||null,
+    type:document.getElementById("note-type").value,
+    date:document.getElementById("note-date").value,
+    text:document.getElementById("note-text").value.trim()
+  };
+
+  if(!item.classId || !item.date || !item.text){
+    alert("Compila i campi obbligatori.");
+    return;
+  }
+
+  notes.push(item);
+  save(KEYS.notes,notes);
+
+  closeModal("note-modal");
+  renderClassNotes();
+}
+
+function noteCard(n){
+  const target=n.studentId
+    ? getStudentName(n.studentId)
+    : getClassName(n.classId);
+
+  const typeLabel={
+    avviso:"Avviso",
+    generica:"Generica",
+    disciplinare:"Disciplinare"
+  }[n.type]||n.type;
+
+  return `
+    <div class="note note-${escapeHTML(n.type)}">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <div>
+          <div class="note-title">${typeLabel}</div>
+          <div class="note-date">${formatDate(n.date)} · ${escapeHTML(target)}</div>
+        </div>
+
+        <button class="btn btn-danger btn-small" onclick="deleteNote('${n.id}')">Elimina</button>
+      </div>
+
+      <div style="margin-top:9px">${escapeHTML(n.text)}</div>
+    </div>
+  `;
+}
+
+function renderClassNotes(){
+  const box=document.getElementById("class-notes-list");
+  if(!box)return;
+
+  const list=notes
+    .filter(n=>n.classId===currentClassId)
+    .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+
+  box.innerHTML=list.length
+    ? list.map(noteCard).join("")
+    : `<div class="card empty">Nessuna nota presente.</div>`;
+}
+
+function deleteNote(idValue){
+  if(!confirm("Eliminare questa nota?"))return;
+
+  notes=notes.filter(n=>n.id!==idValue);
+  save(KEYS.notes,notes);
+
+  renderClassNotes();
+}
+
+
+/* =========================================================
+   ORARIO
+========================================================= */
+
+const days=["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì"];
+
+function openScheduleModal(){
+  if(!classes.length){
+    alert("Prima crea almeno una classe.");
+    return;
+  }
+
+  populateClassSelect("schedule-class",currentClassId||classes[0].id);
+
+  document.getElementById("schedule-time").value="";
+  document.getElementById("schedule-subject").value="";
+
+  openModal("schedule-modal");
+}
+
+function saveSchedule(){
+  const item={
+    id:id(),
+    day:document.getElementById("schedule-day").value,
+    time:document.getElementById("schedule-time").value.trim(),
+    classId:document.getElementById("schedule-class").value,
+    subject:document.getElementById("schedule-subject").value.trim()
+  };
+
+  if(!item.time || !item.classId || !item.subject){
+    alert("Compila tutti i campi.");
+    return;
+  }
+
+  schedule.push(item);
+  save(KEYS.schedule,schedule);
+
+  closeModal("schedule-modal");
+  renderSchedule();
+}
+
+function renderSchedule(){
+  const box=document.getElementById("schedule-grid");
+  if(!box)return;
+
+  box.innerHTML=days.map(day=>{
+    const list=schedule
+      .filter(s=>s.day===day)
+      .sort((a,b)=>String(a.time).localeCompare(String(b.time)));
+
+    return `
+      <div class="day-column">
+        <div class="day-title">${day}</div>
+
+        ${list.length
+          ? list.map(s=>`
+            <div class="schedule-item">
+              <strong>${escapeHTML(s.time)}</strong><br>
+              ${escapeHTML(getClassName(s.classId))}<br>
+              ${escapeHTML(s.subject)}
+              <button
+                class="btn btn-danger btn-small"
+                style="margin-top:6px;width:100%"
+                onclick="deleteSchedule('${s.id}')">
+                Elimina
+              </button>
+            </div>
+          `).join("")
+          : `<div style="text-align:center;color:var(--muted);font-size:12px">Nessuna lezione</div>`
         }
+      </div>
+    `;
+  }).join("");
+}
 
+function deleteSchedule(idValue){
+  schedule=schedule.filter(s=>s.id!==idValue);
+  save(KEYS.schedule,schedule);
+  renderSchedule();
+}
+
+
+/* =========================================================
+   STATISTICHE
+========================================================= */
+
+function renderStatistics(){
+  document.getElementById("stat-students").textContent=students.length;
+  document.getElementById("stat-classes").textContent=classes.length;
+  document.getElementById("stat-lessons").textContent=lessons.length;
+  document.getElementById("stat-grades").textContent=grades.length;
+
+  const avg=overallAverage();
+  document.getElementById("stat-average").textContent=
+    avg===null?"—":avg.toFixed(2);
+
+  document.getElementById("stat-present").textContent=
+    attendance.filter(a=>a.status==="presente").length;
+
+  document.getElementById("stat-absent").textContent=
+    attendance.filter(a=>a.status==="assente").length;
+
+  document.getElementById("stat-late").textContent=
+    attendance.filter(a=>a.status==="ritardo").length;
+
+  const box=document.getElementById("class-statistics-table");
+
+  box.innerHTML=classes.length
+    ? classes.map(c=>{
+        const gs=grades.filter(g=>g.classId===c.id);
+        const ats=attendance.filter(a=>a.classId===c.id);
+        const avg=averageForClass(c.id);
+
+        return `
+          <tr>
+            <td><strong>${escapeHTML(c.name)}</strong></td>
+            <td>${getStudentsForClass(c.id).length}</td>
+            <td>${gs.length}</td>
+            <td>${avg===null?"—":avg.toFixed(2)}</td>
+            <td>${ats.filter(a=>a.status==="presente").length}</td>
+            <td>${ats.filter(a=>a.status==="assente").length}</td>
+            <td>${ats.filter(a=>a.status==="ritardo").length}</td>
+          </tr>
+        `;
+      }).join("")
+    : `<tr><td colspan="7" class="empty">Nessuna classe presente.</td></tr>`;
+}
+
+
+/* =========================================================
+   HOME
+========================================================= */
+
+function renderHome(){
+  const now=new Date();
+
+  document.getElementById("home-date").textContent=
+    now.toLocaleDateString("it-IT",{
+      weekday:"long",
+      day:"numeric",
+      month:"long",
+      year:"numeric"
+    });
+
+  document.getElementById("home-students").textContent=students.length;
+  document.getElementById("home-classes").textContent=classes.length;
+  document.getElementById("home-lessons").textContent=lessons.length;
+  document.getElementById("home-grades").textContent=grades.length;
+
+  const dayNames=[
+    "Domenica",
+    "Lunedì",
+    "Martedì",
+    "Mercoledì",
+    "Giovedì",
+    "Venerdì",
+    "Sabato"
+  ];
+
+  const currentDay=dayNames[now.getDay()];
+  const list=schedule
+    .filter(s=>s.day===currentDay)
+    .sort((a,b)=>String(a.time).localeCompare(String(b.time)));
+
+  const box=document.getElementById("today-lessons");
+
+  if(!list.length){
+    box.innerHTML=`<div class="empty">Nessuna lezione in orario per oggi.</div>`;
+    return;
+  }
+
+  box.innerHTML=list.map(s=>`
+    <div class="lesson-item">
+      <div class="lesson-time">${escapeHTML(s.time)}</div>
+      <strong>${escapeHTML(getClassName(s.classId))} — ${escapeHTML(s.subject)}</strong>
+    </div>
+  `).join("");
+}
+
+
+/* =========================================================
+   BACKUP
+========================================================= */
+
+function exportBackup(){
+  const backup={
+    version:"1.2",
+    exportedAt:new Date().toISOString(),
+    classes,
+    students,
+    grades,
+    attendance,
+    lessons,
+    activities,
+    homework,
+    notes,
+    schedule
+  };
+
+  const blob=new Blob(
+    [JSON.stringify(backup,null,2)],
+    {type:"application/json"}
+  );
+
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download=`classio-backup-${today()}.json`;
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function importBackup(event){
+  const file=event.target.files[0];
+  if(!file)return;
+
+  const reader=new FileReader();
+
+  reader.onload=function(e){
+    try{
+      const data=JSON.parse(e.target.result);
+
+      if(!data.classes || !data.students){
+        throw new Error("Backup non valido");
       }
-    );
+
+      if(!confirm("Importare questo backup?\nI dati attuali verranno sostituiti."))return;
+
+      classes=data.classes||[];
+      students=data.students||[];
+      grades=data.grades||[];
+      attendance=data.attendance||[];
+      lessons=data.lessons||[];
+      activities=data.activities||[];
+      homework=data.homework||[];
+      notes=data.notes||[];
+      schedule=data.schedule||[];
+
+      Object.entries({
+        [KEYS.classes]:classes,
+        [KEYS.students]:students,
+        [KEYS.grades]:grades,
+        [KEYS.attendance]:attendance,
+        [KEYS.lessons]:lessons,
+        [KEYS.activities]:activities,
+        [KEYS.homework]:homework,
+        [KEYS.notes]:notes,
+        [KEYS.schedule]:schedule
+      }).forEach(([k,v])=>save(k,v));
+
+      alert("Backup importato correttamente.");
+      location.reload();
+
+    }catch(err){
+      alert("Il file selezionato non è un backup Classio valido.");
+    }
+  };
+
+  reader.readAsText(file);
+  event.target.value="";
+}
+
+function restoreDemo(){
+  const demo=[
+    {id:id(),name:"1Bi",subjects:"Informatica, AI",hours:5},
+    {id:id(),name:"2Ci",subjects:"Informatica, AI",hours:5},
+    {id:id(),name:"3De",subjects:"Informatica",hours:2},
+    {id:id(),name:"4Ae",subjects:"Informatica",hours:2},
+    {id:id(),name:"5Bi",subjects:"Informatica, AI",hours:5}
+  ];
+
+  const existingNames=classes.map(c=>c.name);
+
+  demo.forEach(c=>{
+    if(!existingNames.includes(c.name))classes.push(c);
+  });
+
+  save(KEYS.classes,classes);
+
+  alert("Classi demo ripristinate.");
+  renderClasses();
+  updateAll();
+}
+
+function deleteAllData(){
+  if(!confirm("ATTENZIONE!\n\nQuesta operazione eliminerà classi, studenti, voti, presenze, lezioni, attività, compiti, note e orario.\n\nContinuare?"))return;
+
+  Object.values(KEYS).forEach(key=>localStorage.removeItem(key));
+
+  classes=[];
+  students=[];
+  grades=[];
+  attendance=[];
+  lessons=[];
+  activities=[];
+  homework=[];
+  notes=[];
+  schedule=[];
+
+  currentClassId=null;
+
+  alert("Tutti i dati sono stati eliminati.");
+  location.reload();
+}
 
 
-  document
-    .getElementById("studentModal")
-    .addEventListener(
-      "click",
-      function(event) {
+/* =========================================================
+   MODALI
+========================================================= */
 
-        if (event.target === this) {
+function openModal(idValue){
+  document.getElementById(idValue).classList.add("open");
+}
 
-          closeStudentModal();
+function closeModal(idValue){
+  document.getElementById(idValue).classList.remove("open");
+}
 
-        }
+document.querySelectorAll(".modal-overlay").forEach(overlay=>{
+  overlay.addEventListener("click",e=>{
+    if(e.target===overlay){
+      overlay.classList.remove("open");
+    }
+  });
+});
 
-      }
-    );
+
+/* =========================================================
+   AGGIORNAMENTO GENERALE
+========================================================= */
+
+function updateAll(){
+  renderHome();
+  renderClasses();
+  renderAllGrades();
+  renderAllAttendance();
+  renderAllLessons();
+  renderStatistics();
+
+  if(currentClassId && getClass(currentClassId)){
+    renderClassDetail();
+  }
+}
+
+
+/* =========================================================
+   DATI DEMO INIZIALI
+========================================================= */
+
+function initializeDemo(){
+  if(localStorage.getItem(KEYS.classes)!==null)return;
+
+  classes=[
+    {id:id(),name:"1Bi",subjects:"Informatica, AI",hours:5},
+    {id:id(),name:"2Ci",subjects:"Informatica, AI",hours:5},
+    {id:id(),name:"3De",subjects:"Informatica",hours:2},
+    {id:id(),name:"4Ae",subjects:"Informatica",hours:2},
+    {id:id(),name:"5Bi",subjects:"Informatica, AI",hours:5}
+  ];
+
+  students=[];
+  grades=[];
+  attendance=[];
+  lessons=[];
+  activities=[];
+  homework=[];
+  notes=[];
+  schedule=[];
+
+  Object.entries({
+    [KEYS.classes]:classes,
+    [KEYS.students]:students,
+    [KEYS.grades]:grades,
+    [KEYS.attendance]:attendance,
+    [KEYS.lessons]:lessons,
+    [KEYS.activities]:activities,
+    [KEYS.homework]:homework,
+    [KEYS.notes]:notes,
+    [KEYS.schedule]:schedule
+  }).forEach(([k,v])=>save(k,v));
+}
+
+
+/* =========================================================
+   AVVIO
+========================================================= */
+
+initializeDemo();
+updateAll();
 
 </script>
-
 </body>
 </html>
