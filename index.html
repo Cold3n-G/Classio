@@ -19,6 +19,11 @@
       min-height: 100vh;
     }
 
+    button,
+    input {
+      font-family: inherit;
+    }
+
     .app {
       display: flex;
       min-height: 100vh;
@@ -79,6 +84,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 28px;
+      gap: 15px;
     }
 
     .welcome h1 {
@@ -96,6 +102,33 @@
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0,0,0,.05);
       font-size: 14px;
+    }
+
+    /* BUTTONS */
+    .primary-btn {
+      border: 0;
+      background: #0e6f68;
+      color: white;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .primary-btn:hover {
+      background: #095b55;
+    }
+
+    .secondary-btn {
+      border: 0;
+      background: #e3eeee;
+      color: #0e6f68;
+      padding: 10px 15px;
+      border-radius: 9px;
+      font-size: 14px;
+      cursor: pointer;
     }
 
     /* CARDS */
@@ -176,11 +209,6 @@
       color: #a76500;
     }
 
-    .status.done {
-      background: #e1f5ed;
-      color: #177653;
-    }
-
     /* PAGE */
     .page {
       display: none;
@@ -190,6 +218,7 @@
       display: block;
     }
 
+    /* CLASSI */
     .class-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -201,24 +230,135 @@
       padding: 22px;
       border-radius: 16px;
       box-shadow: 0 3px 14px rgba(0,0,0,.05);
-      cursor: pointer;
       transition: .2s;
+      position: relative;
     }
 
     .class-card:hover {
       transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,.08);
     }
 
     .class-card h3 {
       font-size: 23px;
       margin-bottom: 8px;
+      cursor: pointer;
     }
 
     .class-card p {
       color: #718084;
       font-size: 14px;
+      line-height: 1.5;
     }
 
+    .class-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .small-btn {
+      border: 0;
+      padding: 8px 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .edit-btn {
+      background: #edf5ff;
+      color: #2467a8;
+    }
+
+    .delete-btn {
+      background: #fff0f0;
+      color: #c33b3b;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 45px 20px;
+      color: #718084;
+    }
+
+    .empty-state strong {
+      display: block;
+      color: #17252a;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    /* MODALE */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 35, 38, .45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 15px 50px rgba(0,0,0,.2);
+    }
+
+    .modal h2 {
+      margin-bottom: 6px;
+      font-size: 22px;
+    }
+
+    .modal-subtitle {
+      color: #718084;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 650;
+      margin-bottom: 7px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d9e2e2;
+      border-radius: 9px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .form-group input:focus {
+      border-color: #0e6f68;
+      box-shadow: 0 0 0 3px rgba(14,111,104,.1);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    /* DETTAGLIO CLASSE */
     .back {
       border: 0;
       background: #e3eeee;
@@ -229,8 +369,31 @@
       margin-bottom: 18px;
     }
 
-    /* MOBILE / IPAD */
+    .detail-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .detail-tab {
+      border: 0;
+      background: white;
+      color: #66777a;
+      padding: 10px 15px;
+      border-radius: 9px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .detail-tab.active {
+      background: #0e6f68;
+      color: white;
+    }
+
+    /* RESPONSIVE */
     @media (max-width: 900px) {
+
       .sidebar {
         width: 210px;
       }
@@ -255,6 +418,7 @@
     }
 
     @media (max-width: 650px) {
+
       .sidebar {
         width: 75px;
         padding: 18px 8px;
@@ -289,6 +453,11 @@
       .class-grid {
         grid-template-columns: 1fr;
       }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -299,312 +468,1340 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="logo">Classio</div>
+
+    <div class="logo">
+      Classio
+    </div>
 
     <nav class="nav">
-      <button class="active" onclick="showPage('home', this)">⌂ &nbsp; Home</button>
-      <button onclick="showPage('classi', this)">▣ &nbsp; Classi</button>
-      <button onclick="showPage('orario', this)">◷ &nbsp; Orario</button>
-      <button onclick="showPage('lezioni', this)">▤ &nbsp; Lezioni</button>
-      <button onclick="showPage('voti', this)">★ &nbsp; Voti</button>
-      <button onclick="showPage('presenze', this)">✓ &nbsp; Presenze</button>
-      <button onclick="showPage('statistiche', this)">▥ &nbsp; Statistiche</button>
-      <button onclick="showPage('impostazioni', this)">⚙ &nbsp; Impostazioni</button>
+
+      <button class="active"
+        onclick="showPage('home', this)">
+        ⌂ &nbsp; Home
+      </button>
+
+      <button
+        onclick="showPage('classi', this)">
+        ▣ &nbsp; Classi
+      </button>
+
+      <button
+        onclick="showPage('orario', this)">
+        ◷ &nbsp; Orario
+      </button>
+
+      <button
+        onclick="showPage('lezioni', this)">
+        ▤ &nbsp; Lezioni
+      </button>
+
+      <button
+        onclick="showPage('voti', this)">
+        ★ &nbsp; Voti
+      </button>
+
+      <button
+        onclick="showPage('presenze', this)">
+        ✓ &nbsp; Presenze
+      </button>
+
+      <button
+        onclick="showPage('statistiche', this)">
+        ▥ &nbsp; Statistiche
+      </button>
+
+      <button
+        onclick="showPage('impostazioni', this)">
+        ⚙ &nbsp; Impostazioni
+      </button>
+
     </nav>
+
   </aside>
+
 
   <!-- MAIN -->
   <main class="main">
+
 
     <!-- HOME -->
     <section id="home" class="page active">
 
       <div class="topbar">
+
         <div class="welcome">
-          <h1>Buongiorno 👋</h1>
-          <p>Benvenuto in Classio.</p>
+
+          <h1>
+            Buongiorno 👋
+          </h1>
+
+          <p>
+            Benvenuto in Classio.
+          </p>
+
         </div>
 
-        <div class="date" id="currentDate"></div>
+        <div
+          class="date"
+          id="currentDate">
+        </div>
+
       </div>
+
 
       <div class="cards">
-        <div class="card">
-          <div class="card-label">Classi</div>
-          <div class="card-value">5</div>
-        </div>
 
         <div class="card">
-          <div class="card-label">Studenti</div>
-          <div class="card-value">0</div>
+
+          <div class="card-label">
+            Classi
+          </div>
+
+          <div
+            class="card-value"
+            id="homeClasses">
+            0
+          </div>
+
         </div>
 
-        <div class="card">
-          <div class="card-label">Lezioni oggi</div>
-          <div class="card-value">0</div>
-        </div>
 
         <div class="card">
-          <div class="card-label">Media generale</div>
-          <div class="card-value">—</div>
+
+          <div class="card-label">
+            Studenti
+          </div>
+
+          <div
+            class="card-value"
+            id="homeStudents">
+            0
+          </div>
+
         </div>
+
+
+        <div class="card">
+
+          <div class="card-label">
+            Lezioni oggi
+          </div>
+
+          <div class="card-value">
+            0
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-label">
+            Media generale
+          </div>
+
+          <div class="card-value">
+            —
+          </div>
+
+        </div>
+
       </div>
+
 
       <div class="content-grid">
 
+
         <div class="section">
-          <h2>Lezioni di oggi</h2>
+
+          <h2>
+            Lezioni di oggi
+          </h2>
 
           <div class="lesson">
+
             <div class="lesson-info">
-              <strong>Nessuna lezione programmata</strong>
-              <span>Configura l'orario per visualizzare le lezioni.</span>
+
+              <strong>
+                Nessuna lezione programmata
+              </strong>
+
+              <span>
+                Configura l'orario per visualizzare le lezioni.
+              </span>
+
             </div>
-            <span class="status next">Da configurare</span>
+
+            <span class="status next">
+              Da configurare
+            </span>
+
           </div>
+
         </div>
 
+
         <div class="section">
-          <h2>Prossime attività</h2>
+
+          <h2>
+            Prossime attività
+          </h2>
 
           <div class="lesson">
+
             <div class="lesson-info">
-              <strong>Nessuna attività</strong>
-              <span>Le attività future appariranno qui.</span>
+
+              <strong>
+                Nessuna attività
+              </strong>
+
+              <span>
+                Le attività future appariranno qui.
+              </span>
+
             </div>
+
           </div>
+
         </div>
 
       </div>
 
     </section>
+
 
     <!-- CLASSI -->
     <section id="classi" class="page">
 
       <div class="topbar">
+
         <div class="welcome">
-          <h1>Classi</h1>
-          <p>Le tue classi scolastiche.</p>
+
+          <h1>
+            Classi
+          </h1>
+
+          <p>
+            Gestisci le tue classi scolastiche.
+          </p>
+
         </div>
+
+
+        <button
+          class="primary-btn"
+          onclick="openClassModal()">
+
+          + Aggiungi classe
+
+        </button>
+
       </div>
 
-      <div class="class-grid">
 
-        <div class="class-card" onclick="openClass('1Bi')">
-          <h3>1Bi</h3>
-          <p>Informatica · AI · 5 ore/settimana</p>
-        </div>
-
-        <div class="class-card" onclick="openClass('2Ci')">
-          <h3>2Ci</h3>
-          <p>Informatica · AI · 5 ore/settimana</p>
-        </div>
-
-        <div class="class-card" onclick="openClass('3De')">
-          <h3>3De</h3>
-          <p>Informatica · 2 ore/settimana</p>
-        </div>
-
-        <div class="class-card" onclick="openClass('4Ae')">
-          <h3>4Ae</h3>
-          <p>Informatica · 2 ore/settimana</p>
-        </div>
-
-        <div class="class-card" onclick="openClass('5Bi')">
-          <h3>5Bi</h3>
-          <p>Informatica · AI · 5 ore/settimana</p>
-        </div>
-
+      <div
+        id="classGrid"
+        class="class-grid">
       </div>
 
     </section>
+
 
     <!-- DETTAGLIO CLASSE -->
-    <section id="classDetail" class="page">
+    <section
+      id="classDetail"
+      class="page">
 
-      <button class="back" onclick="showPage('classi')">← Torna alle classi</button>
+      <button
+        class="back"
+        onclick="showPage('classi')">
+
+        ← Torna alle classi
+
+      </button>
+
 
       <div class="topbar">
+
         <div class="welcome">
-          <h1 id="classTitle">Classe</h1>
-          <p id="classDescription"></p>
+
+          <h1 id="classTitle">
+            Classe
+          </h1>
+
+          <p id="classDescription">
+          </p>
+
         </div>
+
       </div>
+
 
       <div class="cards">
-        <div class="card">
-          <div class="card-label">Studenti</div>
-          <div class="card-value">0</div>
-        </div>
 
         <div class="card">
-          <div class="card-label">Voti</div>
-          <div class="card-value">0</div>
+
+          <div class="card-label">
+            Studenti
+          </div>
+
+          <div
+            class="card-value"
+            id="detailStudents">
+            0
+          </div>
+
         </div>
 
-        <div class="card">
-          <div class="card-label">Assenze</div>
-          <div class="card-value">0</div>
-        </div>
 
         <div class="card">
-          <div class="card-label">Media</div>
-          <div class="card-value">—</div>
+
+          <div class="card-label">
+            Voti
+          </div>
+
+          <div class="card-value">
+            0
+          </div>
+
         </div>
+
+
+        <div class="card">
+
+          <div class="card-label">
+            Assenze
+          </div>
+
+          <div class="card-value">
+            0
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-label">
+            Media
+          </div>
+
+          <div class="card-value">
+            —
+          </div>
+
+        </div>
+
       </div>
 
+
+      <div class="detail-tabs">
+
+        <button class="detail-tab active">
+          Registro
+        </button>
+
+        <button class="detail-tab">
+          Studenti
+        </button>
+
+        <button class="detail-tab">
+          Voti
+        </button>
+
+        <button class="detail-tab">
+          Presenze
+        </button>
+
+        <button class="detail-tab">
+          Lezioni
+        </button>
+
+        <button class="detail-tab">
+          Attività svolta
+        </button>
+
+        <button class="detail-tab">
+          Compiti
+        </button>
+
+        <button class="detail-tab">
+          Note
+        </button>
+
+      </div>
+
+
       <div class="section">
-        <h2>Registro della classe</h2>
+
+        <h2>
+          Registro della classe
+        </h2>
+
         <p style="color:#718084;">
-          Qui costruiremo successivamente studenti, voti, presenze,
-          lezioni, attività svolte, compiti e note.
+
+          Le funzioni del registro verranno aggiunte
+          nei prossimi aggiornamenti.
+
         </p>
+
       </div>
 
     </section>
 
-    <!-- ALTRE PAGINE -->
+
+    <!-- ORARIO -->
     <section id="orario" class="page">
+
       <div class="topbar">
+
         <div class="welcome">
-          <h1>Orario</h1>
-          <p>Gestione dell'orario settimanale.</p>
+
+          <h1>
+            Orario
+          </h1>
+
+          <p>
+            Gestione dell'orario settimanale.
+          </p>
+
         </div>
+
       </div>
+
 
       <div class="section">
-        <h2>Orario settimanale</h2>
-        <p>La gestione dell'orario sarà disponibile nella prossima versione.</p>
+
+        <h2>
+          Orario settimanale
+        </h2>
+
+        <p>
+          La gestione dell'orario sarà disponibile
+          nei prossimi aggiornamenti.
+        </p>
+
       </div>
+
     </section>
 
+
+    <!-- LEZIONI -->
     <section id="lezioni" class="page">
+
       <div class="topbar">
+
         <div class="welcome">
-          <h1>Lezioni</h1>
-          <p>Registro delle lezioni svolte.</p>
+
+          <h1>
+            Lezioni
+          </h1>
+
+          <p>
+            Registro delle lezioni svolte.
+          </p>
+
         </div>
+
       </div>
+
 
       <div class="section">
-        <h2>Lezioni</h2>
-        <p>Qui verranno registrate le lezioni e le attività svolte.</p>
+
+        <h2>
+          Lezioni
+        </h2>
+
+        <p>
+          Qui verranno registrate le lezioni e
+          le attività svolte.
+        </p>
+
       </div>
+
     </section>
 
+
+    <!-- VOTI -->
     <section id="voti" class="page">
+
       <div class="topbar">
+
         <div class="welcome">
-          <h1>Voti</h1>
-          <p>Gestione delle valutazioni.</p>
+
+          <h1>
+            Voti
+          </h1>
+
+          <p>
+            Gestione delle valutazioni.
+          </p>
+
         </div>
+
       </div>
+
 
       <div class="section">
-        <h2>Registro voti</h2>
-        <p>Qui verranno gestiti i voti degli studenti.</p>
+
+        <h2>
+          Registro voti
+        </h2>
+
+        <p>
+          Qui verranno gestiti i voti degli studenti.
+        </p>
+
       </div>
+
     </section>
 
+
+    <!-- PRESENZE -->
     <section id="presenze" class="page">
+
       <div class="topbar">
+
         <div class="welcome">
-          <h1>Presenze</h1>
-          <p>Assenze, presenze e ritardi.</p>
+
+          <h1>
+            Presenze
+          </h1>
+
+          <p>
+            Assenze, presenze e ritardi.
+          </p>
+
         </div>
+
       </div>
+
 
       <div class="section">
-        <h2>Registro presenze</h2>
-        <p>Qui verranno gestite presenze, assenze e ritardi.</p>
+
+        <h2>
+          Registro presenze
+        </h2>
+
+        <p>
+          Qui verranno gestite presenze,
+          assenze e ritardi.
+        </p>
+
       </div>
+
     </section>
 
+
+    <!-- STATISTICHE -->
     <section id="statistiche" class="page">
+
       <div class="topbar">
+
         <div class="welcome">
-          <h1>Statistiche</h1>
-          <p>Panoramica dei dati di Classio.</p>
+
+          <h1>
+            Statistiche
+          </h1>
+
+          <p>
+            Panoramica dei dati di Classio.
+          </p>
+
         </div>
+
       </div>
 
+
       <div class="section">
-        <h2>Statistiche generali</h2>
-        <p>Le statistiche verranno collegate ai dati reali del registro.</p>
+
+        <h2>
+          Statistiche generali
+        </h2>
+
+        <p>
+          Le statistiche verranno collegate
+          ai dati reali del registro.
+        </p>
+
       </div>
+
     </section>
 
+
+    <!-- IMPOSTAZIONI -->
     <section id="impostazioni" class="page">
+
       <div class="topbar">
+
         <div class="welcome">
-          <h1>Impostazioni</h1>
-          <p>Configura Classio.</p>
+
+          <h1>
+            Impostazioni
+          </h1>
+
+          <p>
+            Configura Classio.
+          </p>
+
         </div>
+
       </div>
 
+
       <div class="section">
-        <h2>Impostazioni</h2>
-        <p>Qui aggiungeremo tema, backup, importazione ed eliminazione dati.</p>
+
+        <h2>
+          Impostazioni
+        </h2>
+
+        <p>
+          Qui aggiungeremo tema, backup,
+          importazione ed eliminazione dati.
+        </p>
+
       </div>
+
     </section>
 
   </main>
+
 </div>
 
+
+<!-- MODALE CLASSE -->
+<div
+  id="classModal"
+  class="modal-overlay">
+
+
+  <div class="modal">
+
+    <h2 id="modalTitle">
+      Aggiungi classe
+    </h2>
+
+    <p class="modal-subtitle">
+      Inserisci le informazioni principali della classe.
+    </p>
+
+
+    <div class="form-group">
+
+      <label for="className">
+        Nome classe
+      </label>
+
+      <input
+        id="className"
+        type="text"
+        placeholder="Es. 1Bi">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="classSubjects">
+        Materie
+      </label>
+
+      <input
+        id="classSubjects"
+        type="text"
+        placeholder="Es. Informatica · AI">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="classHours">
+        Ore settimanali
+      </label>
+
+      <input
+        id="classHours"
+        type="number"
+        min="0"
+        step="1"
+        placeholder="Es. 5">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="classStudents">
+        Numero studenti
+      </label>
+
+      <input
+        id="classStudents"
+        type="number"
+        min="0"
+        step="1"
+        placeholder="Es. 20">
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeClassModal()">
+
+        Annulla
+
+      </button>
+
+
+      <button
+        class="primary-btn"
+        onclick="saveClass()">
+
+        Salva classe
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
 <script>
+
+  /* =========================
+     DATI CLASSI
+  ========================= */
+
+  const defaultClasses = [
+
+    {
+      id: 1,
+      name: "1Bi",
+      subjects: "Informatica · AI",
+      hours: 5,
+      students: 0
+    },
+
+    {
+      id: 2,
+      name: "2Ci",
+      subjects: "Informatica · AI",
+      hours: 5,
+      students: 0
+    },
+
+    {
+      id: 3,
+      name: "3De",
+      subjects: "Informatica",
+      hours: 2,
+      students: 0
+    },
+
+    {
+      id: 4,
+      name: "4Ae",
+      subjects: "Informatica",
+      hours: 2,
+      students: 0
+    },
+
+    {
+      id: 5,
+      name: "5Bi",
+      subjects: "Informatica · AI",
+      hours: 5,
+      students: 0
+    }
+
+  ];
+
+
+  let classes =
+    JSON.parse(
+      localStorage.getItem("classio_classes")
+    ) || defaultClasses;
+
+
+  let editingClassId = null;
+  let selectedClassId = null;
+
+
+  /* =========================
+     NAVIGAZIONE
+  ========================= */
+
   function showPage(pageId, button) {
 
-    document.querySelectorAll(".page").forEach(page => {
-      page.classList.remove("active");
-    });
+    document
+      .querySelectorAll(".page")
+      .forEach(page => {
+        page.classList.remove("active");
+      });
 
-    const page = document.getElementById(pageId);
+
+    const page =
+      document.getElementById(pageId);
+
 
     if (page) {
       page.classList.add("active");
     }
 
-    document.querySelectorAll(".nav button").forEach(btn => {
-      btn.classList.remove("active");
-    });
+
+    document
+      .querySelectorAll(".nav button")
+      .forEach(btn => {
+        btn.classList.remove("active");
+      });
+
 
     if (button) {
       button.classList.add("active");
     }
+
+
+    updateHomeStats();
+
   }
 
-  function openClass(className) {
 
-    document.querySelectorAll(".page").forEach(page => {
-      page.classList.remove("active");
-    });
+  /* =========================
+     SALVATAGGIO
+  ========================= */
 
-    document.getElementById("classDetail").classList.add("active");
+  function saveClassesToStorage() {
 
-    document.getElementById("classTitle").textContent = className;
+    localStorage.setItem(
+      "classio_classes",
+      JSON.stringify(classes)
+    );
 
-    const descriptions = {
-      "1Bi": "Informatica · AI · 5 ore settimanali",
-      "2Ci": "Informatica · AI · 5 ore settimanali",
-      "3De": "Informatica · 2 ore settimanali",
-      "4Ae": "Informatica · 2 ore settimanali",
-      "5Bi": "Informatica · AI · 5 ore settimanali"
-    };
-
-    document.getElementById("classDescription").textContent =
-      descriptions[className] || "";
   }
 
-  const today = new Date();
 
-  document.getElementById("currentDate").textContent =
-    today.toLocaleDateString("it-IT", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    });
+  /* =========================
+     VISUALIZZA CLASSI
+  ========================= */
+
+  function renderClasses() {
+
+    const grid =
+      document.getElementById("classGrid");
+
+
+    if (!classes.length) {
+
+      grid.innerHTML = `
+
+        <div class="empty-state">
+
+          <strong>
+            Nessuna classe presente
+          </strong>
+
+          <span>
+            Aggiungi la tua prima classe per iniziare.
+          </span>
+
+        </div>
+
+      `;
+
+      updateHomeStats();
+
+      return;
+    }
+
+
+    grid.innerHTML =
+
+      classes.map(cls => `
+
+        <div class="class-card">
+
+          <div
+            onclick="openClass(${cls.id})">
+
+            <h3>
+              ${escapeHTML(cls.name)}
+            </h3>
+
+            <p>
+              ${escapeHTML(
+                cls.subjects || "Nessuna materia"
+              )}
+              · ${cls.hours || 0} ore/settimana
+            </p>
+
+            <p style="margin-top:6px;">
+
+              ${cls.students || 0}
+              studenti
+
+            </p>
+
+          </div>
+
+
+          <div class="class-actions">
+
+            <button
+              class="small-btn edit-btn"
+              onclick="
+                event.stopPropagation();
+                editClass(${cls.id})
+              ">
+
+              ✏️ Modifica
+
+            </button>
+
+
+            <button
+              class="small-btn delete-btn"
+              onclick="
+                event.stopPropagation();
+                deleteClass(${cls.id})
+              ">
+
+              🗑️ Elimina
+
+            </button>
+
+          </div>
+
+        </div>
+
+      `).join("");
+
+
+    updateHomeStats();
+
+  }
+
+
+  /* =========================
+     MODALE AGGIUNTA
+  ========================= */
+
+  function openClassModal() {
+
+    editingClassId = null;
+
+
+    document
+      .getElementById("modalTitle")
+      .textContent =
+      "Aggiungi classe";
+
+
+    document
+      .getElementById("className")
+      .value = "";
+
+
+    document
+      .getElementById("classSubjects")
+      .value = "";
+
+
+    document
+      .getElementById("classHours")
+      .value = "";
+
+
+    document
+      .getElementById("classStudents")
+      .value = "";
+
+
+    document
+      .getElementById("classModal")
+      .classList.add("active");
+
+
+    setTimeout(() => {
+
+      document
+        .getElementById("className")
+        .focus();
+
+    }, 50);
+
+  }
+
+
+  /* =========================
+     CHIUDI MODALE
+  ========================= */
+
+  function closeClassModal() {
+
+    document
+      .getElementById("classModal")
+      .classList.remove("active");
+
+
+    editingClassId = null;
+
+  }
+
+
+  /* =========================
+     MODIFICA CLASSE
+  ========================= */
+
+  function editClass(id) {
+
+    const cls =
+      classes.find(c => c.id === id);
+
+
+    if (!cls) return;
+
+
+    editingClassId = id;
+
+
+    document
+      .getElementById("modalTitle")
+      .textContent =
+      "Modifica classe";
+
+
+    document
+      .getElementById("className")
+      .value =
+      cls.name;
+
+
+    document
+      .getElementById("classSubjects")
+      .value =
+      cls.subjects;
+
+
+    document
+      .getElementById("classHours")
+      .value =
+      cls.hours;
+
+
+    document
+      .getElementById("classStudents")
+      .value =
+      cls.students;
+
+
+    document
+      .getElementById("classModal")
+      .classList.add("active");
+
+  }
+
+
+  /* =========================
+     SALVA CLASSE
+  ========================= */
+
+  function saveClass() {
+
+    const name =
+      document
+        .getElementById("className")
+        .value
+        .trim();
+
+
+    const subjects =
+      document
+        .getElementById("classSubjects")
+        .value
+        .trim();
+
+
+    const hours =
+      Number(
+        document
+          .getElementById("classHours")
+          .value
+      ) || 0;
+
+
+    const students =
+      Number(
+        document
+          .getElementById("classStudents")
+          .value
+      ) || 0;
+
+
+    if (!name) {
+
+      alert(
+        "Inserisci il nome della classe."
+      );
+
+      return;
+
+    }
+
+
+    if (editingClassId !== null) {
+
+      const cls =
+        classes.find(
+          c => c.id === editingClassId
+        );
+
+
+      if (cls) {
+
+        cls.name = name;
+        cls.subjects = subjects;
+        cls.hours = hours;
+        cls.students = students;
+
+      }
+
+    } else {
+
+      classes.push({
+
+        id: Date.now(),
+
+        name: name,
+
+        subjects: subjects,
+
+        hours: hours,
+
+        students: students
+
+      });
+
+    }
+
+
+    saveClassesToStorage();
+
+    renderClasses();
+
+    closeClassModal();
+
+  }
+
+
+  /* =========================
+     ELIMINA CLASSE
+  ========================= */
+
+  function deleteClass(id) {
+
+    const cls =
+      classes.find(c => c.id === id);
+
+
+    if (!cls) return;
+
+
+    const confirmed =
+      confirm(
+        `Vuoi davvero eliminare la classe "${cls.name}"?`
+      );
+
+
+    if (!confirmed) return;
+
+
+    classes =
+      classes.filter(
+        c => c.id !== id
+      );
+
+
+    saveClassesToStorage();
+
+    renderClasses();
+
+
+    if (selectedClassId === id) {
+
+      showPage("classi");
+
+      selectedClassId = null;
+
+    }
+
+  }
+
+
+  /* =========================
+     DETTAGLIO CLASSE
+  ========================= */
+
+  function openClass(id) {
+
+    const cls =
+      classes.find(c => c.id === id);
+
+
+    if (!cls) return;
+
+
+    selectedClassId = id;
+
+
+    document
+      .querySelectorAll(".page")
+      .forEach(page => {
+        page.classList.remove("active");
+      });
+
+
+    document
+      .getElementById("classDetail")
+      .classList.add("active");
+
+
+    document
+      .getElementById("classTitle")
+      .textContent =
+      cls.name;
+
+
+    document
+      .getElementById("classDescription")
+      .textContent =
+
+      `${cls.subjects || "Nessuna materia"} · ${cls.hours || 0} ore settimanali`;
+
+
+    document
+      .getElementById("detailStudents")
+      .textContent =
+      cls.students || 0;
+
+
+    document
+      .querySelectorAll(".nav button")
+      .forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+  }
+
+
+  /* =========================
+     HOME
+  ========================= */
+
+  function updateHomeStats() {
+
+    const totalStudents =
+      classes.reduce(
+
+        (total, cls) =>
+
+          total +
+          (Number(cls.students) || 0),
+
+        0
+
+      );
+
+
+    document
+      .getElementById("homeClasses")
+      .textContent =
+      classes.length;
+
+
+    document
+      .getElementById("homeStudents")
+      .textContent =
+      totalStudents;
+
+  }
+
+
+  /* =========================
+     PROTEZIONE HTML
+  ========================= */
+
+  function escapeHTML(text) {
+
+    return String(text)
+
+      .replace(/&/g, "&amp;")
+
+      .replace(/</g, "&lt;")
+
+      .replace(/>/g, "&gt;")
+
+      .replace(/"/g, "&quot;")
+
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =========================
+     DATA
+  ========================= */
+
+  const today =
+    new Date();
+
+
+  document
+    .getElementById("currentDate")
+    .textContent =
+
+    today.toLocaleDateString(
+      "it-IT",
+      {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+
+  /* =========================
+     AVVIO
+  ========================= */
+
+  renderClasses();
+
+  updateHomeStats();
+
+
+  /* Chiudi modale cliccando fuori */
+
+  document
+    .getElementById("classModal")
+    .addEventListener(
+      "click",
+      function(event) {
+
+        if (event.target === this) {
+
+          closeClassModal();
+
+        }
+
+      }
+    );
+
 </script>
 
 </body>
