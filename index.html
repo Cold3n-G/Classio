@@ -391,6 +391,87 @@
       color: white;
     }
 
+    /* STUDENTI */
+    .students-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
+    .students-header h2 {
+      margin-bottom: 4px;
+    }
+
+    .students-subtitle {
+      color: #718084;
+      font-size: 14px;
+    }
+
+    .student-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .student-row {
+      display: grid;
+      grid-template-columns: 55px 1fr auto;
+      align-items: center;
+      gap: 15px;
+      padding: 14px 4px;
+      border-bottom: 1px solid #edf1f1;
+    }
+
+    .student-row:last-child {
+      border-bottom: none;
+    }
+
+    .student-number {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #e3eeee;
+      color: #0e6f68;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .student-name {
+      font-weight: 650;
+    }
+
+    .student-actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .student-empty {
+      text-align: center;
+      padding: 35px 15px;
+      color: #718084;
+    }
+
+    .student-empty strong {
+      display: block;
+      color: #17252a;
+      font-size: 17px;
+      margin-bottom: 7px;
+    }
+
+    .student-badge {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 3px 7px;
+      border-radius: 6px;
+      background: #f0f4f4;
+      color: #718084;
+      font-size: 11px;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 900px) {
 
@@ -457,6 +538,19 @@
       .topbar {
         align-items: flex-start;
         flex-direction: column;
+      }
+
+      .students-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .student-row {
+        grid-template-columns: 45px 1fr;
+      }
+
+      .student-actions {
+        grid-column: 2;
       }
     }
   </style>
@@ -797,42 +891,55 @@
 
       <div class="detail-tabs">
 
-        <button class="detail-tab active">
+        <button
+          class="detail-tab active"
+          onclick="showClassTab('registro', this)">
           Registro
         </button>
 
-        <button class="detail-tab">
+        <button
+          class="detail-tab"
+          onclick="showClassTab('studenti', this)">
           Studenti
         </button>
 
-        <button class="detail-tab">
+        <button
+          class="detail-tab">
           Voti
         </button>
 
-        <button class="detail-tab">
+        <button
+          class="detail-tab">
           Presenze
         </button>
 
-        <button class="detail-tab">
+        <button
+          class="detail-tab">
           Lezioni
         </button>
 
-        <button class="detail-tab">
+        <button
+          class="detail-tab">
           Attività svolta
         </button>
 
-        <button class="detail-tab">
+        <button
+          class="detail-tab">
           Compiti
         </button>
 
-        <button class="detail-tab">
+        <button
+          class="detail-tab">
           Note
         </button>
 
       </div>
 
 
-      <div class="section">
+      <!-- REGISTRO -->
+      <div
+        id="classTabRegistro"
+        class="section">
 
         <h2>
           Registro della classe
@@ -844,6 +951,48 @@
           nei prossimi aggiornamenti.
 
         </p>
+
+      </div>
+
+
+      <!-- STUDENTI -->
+      <div
+        id="classTabStudenti"
+        class="section"
+        style="display:none;">
+
+        <div class="students-header">
+
+          <div>
+
+            <h2>
+              Studenti
+            </h2>
+
+            <div
+              id="studentsSubtitle"
+              class="students-subtitle">
+              0 studenti
+            </div>
+
+          </div>
+
+
+          <button
+            class="primary-btn"
+            onclick="openStudentModal()">
+
+            + Aggiungi studente
+
+          </button>
+
+        </div>
+
+
+        <div
+          id="studentList"
+          class="student-list">
+        </div>
 
       </div>
 
@@ -1074,7 +1223,6 @@
   id="classModal"
   class="modal-overlay">
 
-
   <div class="modal">
 
     <h2 id="modalTitle">
@@ -1130,22 +1278,6 @@
     </div>
 
 
-    <div class="form-group">
-
-      <label for="classStudents">
-        Numero studenti
-      </label>
-
-      <input
-        id="classStudents"
-        type="number"
-        min="0"
-        step="1"
-        placeholder="Es. 20">
-
-    </div>
-
-
     <div class="modal-actions">
 
       <button
@@ -1162,6 +1294,92 @@
         onclick="saveClass()">
 
         Salva classe
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- MODALE STUDENTE -->
+<div
+  id="studentModal"
+  class="modal-overlay">
+
+  <div class="modal">
+
+    <h2 id="studentModalTitle">
+      Aggiungi studente
+    </h2>
+
+    <p class="modal-subtitle">
+      Inserisci i dati dello studente.
+    </p>
+
+
+    <div class="form-group">
+
+      <label for="studentFirstName">
+        Nome
+      </label>
+
+      <input
+        id="studentFirstName"
+        type="text"
+        placeholder="Es. Marco">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="studentLastName">
+        Cognome
+      </label>
+
+      <input
+        id="studentLastName"
+        type="text"
+        placeholder="Es. Rossi">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="studentNumber">
+        Numero progressivo
+      </label>
+
+      <input
+        id="studentNumber"
+        type="number"
+        min="1"
+        step="1"
+        placeholder="Es. 1">
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeStudentModal()">
+
+        Annulla
+
+      </button>
+
+
+      <button
+        class="primary-btn"
+        onclick="saveStudent()">
+
+        Salva studente
 
       </button>
 
@@ -1229,8 +1447,21 @@
     ) || defaultClasses;
 
 
+  /*
+    Gli studenti vengono salvati separatamente
+    per mantenere la struttura pronta per
+    voti, presenze e note.
+  */
+
+  let students =
+    JSON.parse(
+      localStorage.getItem("classio_students")
+    ) || [];
+
+
   let editingClassId = null;
   let selectedClassId = null;
+  let editingStudentId = null;
 
 
   /* =========================
@@ -1273,7 +1504,7 @@
 
 
   /* =========================
-     SALVATAGGIO
+     SALVATAGGIO CLASSI
   ========================= */
 
   function saveClassesToStorage() {
@@ -1282,6 +1513,40 @@
       "classio_classes",
       JSON.stringify(classes)
     );
+
+  }
+
+
+  /* =========================
+     SALVATAGGIO STUDENTI
+  ========================= */
+
+  function saveStudentsToStorage() {
+
+    localStorage.setItem(
+      "classio_students",
+      JSON.stringify(students)
+    );
+
+  }
+
+
+  /* =========================
+     CONTEGGIO STUDENTI
+  ========================= */
+
+  function getStudentsForClass(classId) {
+
+    return students.filter(
+      student => student.classId === classId
+    );
+
+  }
+
+
+  function getStudentCount(classId) {
+
+    return getStudentsForClass(classId).length;
 
   }
 
@@ -1322,64 +1587,71 @@
 
     grid.innerHTML =
 
-      classes.map(cls => `
+      classes.map(cls => {
 
-        <div class="class-card">
+        const studentCount =
+          getStudentCount(cls.id);
 
-          <div
-            onclick="openClass(${cls.id})">
+        return `
 
-            <h3>
-              ${escapeHTML(cls.name)}
-            </h3>
+          <div class="class-card">
 
-            <p>
-              ${escapeHTML(
-                cls.subjects || "Nessuna materia"
-              )}
-              · ${cls.hours || 0} ore/settimana
-            </p>
+            <div
+              onclick="openClass(${cls.id})">
 
-            <p style="margin-top:6px;">
+              <h3>
+                ${escapeHTML(cls.name)}
+              </h3>
 
-              ${cls.students || 0}
-              studenti
+              <p>
+                ${escapeHTML(
+                  cls.subjects || "Nessuna materia"
+                )}
+                · ${cls.hours || 0} ore/settimana
+              </p>
 
-            </p>
+              <p style="margin-top:6px;">
+
+                ${studentCount}
+                ${studentCount === 1 ? "studente" : "studenti"}
+
+              </p>
+
+            </div>
+
+
+            <div class="class-actions">
+
+              <button
+                class="small-btn edit-btn"
+                onclick="
+                  event.stopPropagation();
+                  editClass(${cls.id})
+                ">
+
+                ✏️ Modifica
+
+              </button>
+
+
+              <button
+                class="small-btn delete-btn"
+                onclick="
+                  event.stopPropagation();
+                  deleteClass(${cls.id})
+                ">
+
+                🗑️ Elimina
+
+              </button>
+
+            </div>
 
           </div>
 
+        `;
 
-          <div class="class-actions">
-
-            <button
-              class="small-btn edit-btn"
-              onclick="
-                event.stopPropagation();
-                editClass(${cls.id})
-              ">
-
-              ✏️ Modifica
-
-            </button>
-
-
-            <button
-              class="small-btn delete-btn"
-              onclick="
-                event.stopPropagation();
-                deleteClass(${cls.id})
-              ">
-
-              🗑️ Elimina
-
-            </button>
-
-          </div>
-
-        </div>
-
-      `).join("");
+      }).join("");
 
 
     updateHomeStats();
@@ -1388,7 +1660,7 @@
 
 
   /* =========================
-     MODALE AGGIUNTA
+     MODALE AGGIUNTA CLASSE
   ========================= */
 
   function openClassModal() {
@@ -1418,11 +1690,6 @@
 
 
     document
-      .getElementById("classStudents")
-      .value = "";
-
-
-    document
       .getElementById("classModal")
       .classList.add("active");
 
@@ -1439,7 +1706,7 @@
 
 
   /* =========================
-     CHIUDI MODALE
+     CHIUDI MODALE CLASSE
   ========================= */
 
   function closeClassModal() {
@@ -1495,12 +1762,6 @@
 
 
     document
-      .getElementById("classStudents")
-      .value =
-      cls.students;
-
-
-    document
       .getElementById("classModal")
       .classList.add("active");
 
@@ -1535,14 +1796,6 @@
       ) || 0;
 
 
-    const students =
-      Number(
-        document
-          .getElementById("classStudents")
-          .value
-      ) || 0;
-
-
     if (!name) {
 
       alert(
@@ -1567,7 +1820,6 @@
         cls.name = name;
         cls.subjects = subjects;
         cls.hours = hours;
-        cls.students = students;
 
       }
 
@@ -1581,9 +1833,7 @@
 
         subjects: subjects,
 
-        hours: hours,
-
-        students: students
+        hours: hours
 
       });
 
@@ -1614,7 +1864,7 @@
 
     const confirmed =
       confirm(
-        `Vuoi davvero eliminare la classe "${cls.name}"?`
+        `Vuoi davvero eliminare la classe "${cls.name}"?\n\nVerranno eliminati anche gli studenti della classe.`
       );
 
 
@@ -1627,7 +1877,14 @@
       );
 
 
+    students =
+      students.filter(
+        student => student.classId !== id
+      );
+
+
     saveClassesToStorage();
+    saveStudentsToStorage();
 
     renderClasses();
 
@@ -1687,7 +1944,10 @@
     document
       .getElementById("detailStudents")
       .textContent =
-      cls.students || 0;
+      getStudentCount(id);
+
+
+    showClassTab("registro");
 
 
     document
@@ -1700,22 +1960,553 @@
 
 
   /* =========================
+     TAB DELLA CLASSE
+  ========================= */
+
+  function showClassTab(tab, button) {
+
+    const registro =
+      document.getElementById("classTabRegistro");
+
+    const studenti =
+      document.getElementById("classTabStudenti");
+
+
+    if (registro) {
+      registro.style.display =
+        tab === "registro"
+          ? "block"
+          : "none";
+    }
+
+
+    if (studenti) {
+      studenti.style.display =
+        tab === "studenti"
+          ? "block"
+          : "none";
+    }
+
+
+    document
+      .querySelectorAll(".detail-tab")
+      .forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+
+    if (button) {
+
+      button.classList.add("active");
+
+    } else {
+
+      const tabs =
+        document.querySelectorAll(".detail-tab");
+
+      if (tabs[0]) {
+        tabs[0].classList.add("active");
+      }
+
+    }
+
+
+    if (tab === "studenti") {
+
+      renderStudents();
+
+    }
+
+  }
+
+
+  /* =========================
+     MODALE STUDENTE
+  ========================= */
+
+  function openStudentModal() {
+
+    if (selectedClassId === null) {
+
+      alert(
+        "Seleziona prima una classe."
+      );
+
+      return;
+
+    }
+
+
+    editingStudentId = null;
+
+
+    document
+      .getElementById("studentModalTitle")
+      .textContent =
+      "Aggiungi studente";
+
+
+    document
+      .getElementById("studentFirstName")
+      .value = "";
+
+
+    document
+      .getElementById("studentLastName")
+      .value = "";
+
+
+    const classStudents =
+      getStudentsForClass(selectedClassId);
+
+
+    const usedNumbers =
+      classStudents
+        .map(student => Number(student.number))
+        .filter(number => number > 0);
+
+
+    let nextNumber = 1;
+
+
+    while (
+      usedNumbers.includes(nextNumber)
+    ) {
+
+      nextNumber++;
+
+    }
+
+
+    document
+      .getElementById("studentNumber")
+      .value =
+      nextNumber;
+
+
+    document
+      .getElementById("studentModal")
+      .classList.add("active");
+
+
+    setTimeout(() => {
+
+      document
+        .getElementById("studentFirstName")
+        .focus();
+
+    }, 50);
+
+  }
+
+
+  /* =========================
+     CHIUDI MODALE STUDENTE
+  ========================= */
+
+  function closeStudentModal() {
+
+    document
+      .getElementById("studentModal")
+      .classList.remove("active");
+
+
+    editingStudentId = null;
+
+  }
+
+
+  /* =========================
+     MODIFICA STUDENTE
+  ========================= */
+
+  function editStudent(id) {
+
+    const student =
+      students.find(
+        item => item.id === id
+      );
+
+
+    if (!student) return;
+
+
+    editingStudentId = id;
+
+
+    document
+      .getElementById("studentModalTitle")
+      .textContent =
+      "Modifica studente";
+
+
+    document
+      .getElementById("studentFirstName")
+      .value =
+      student.firstName;
+
+
+    document
+      .getElementById("studentLastName")
+      .value =
+      student.lastName;
+
+
+    document
+      .getElementById("studentNumber")
+      .value =
+      student.number || "";
+
+
+    document
+      .getElementById("studentModal")
+      .classList.add("active");
+
+
+  }
+
+
+  /* =========================
+     SALVA STUDENTE
+  ========================= */
+
+  function saveStudent() {
+
+    const firstName =
+      document
+        .getElementById("studentFirstName")
+        .value
+        .trim();
+
+
+    const lastName =
+      document
+        .getElementById("studentLastName")
+        .value
+        .trim();
+
+
+    const number =
+      Number(
+        document
+          .getElementById("studentNumber")
+          .value
+      ) || 0;
+
+
+    if (!firstName || !lastName) {
+
+      alert(
+        "Inserisci nome e cognome dello studente."
+      );
+
+      return;
+
+    }
+
+
+    if (selectedClassId === null) {
+
+      alert(
+        "Nessuna classe selezionata."
+      );
+
+      return;
+
+    }
+
+
+    if (number < 1) {
+
+      alert(
+        "Inserisci un numero progressivo valido."
+      );
+
+      return;
+
+    }
+
+
+    const duplicate =
+      students.find(student =>
+
+        student.classId === selectedClassId &&
+
+        Number(student.number) === number &&
+
+        student.id !== editingStudentId
+
+      );
+
+
+    if (duplicate) {
+
+      alert(
+        `Il numero ${number} è già utilizzato nella classe.`
+      );
+
+      return;
+
+    }
+
+
+    if (editingStudentId !== null) {
+
+      const student =
+        students.find(
+          item => item.id === editingStudentId
+        );
+
+
+      if (student) {
+
+        student.firstName = firstName;
+        student.lastName = lastName;
+        student.number = number;
+
+      }
+
+    } else {
+
+      students.push({
+
+        id: Date.now(),
+
+        classId: selectedClassId,
+
+        firstName: firstName,
+
+        lastName: lastName,
+
+        number: number
+
+      });
+
+    }
+
+
+    saveStudentsToStorage();
+
+    renderStudents();
+
+    renderClasses();
+
+    updateHomeStats();
+
+    updateDetailStudentCount();
+
+    closeStudentModal();
+
+  }
+
+
+  /* =========================
+     VISUALIZZA STUDENTI
+  ========================= */
+
+  function renderStudents() {
+
+    const list =
+      document.getElementById("studentList");
+
+
+    const subtitle =
+      document.getElementById("studentsSubtitle");
+
+
+    if (!list || selectedClassId === null) {
+      return;
+    }
+
+
+    const classStudents =
+      getStudentsForClass(selectedClassId);
+
+
+    classStudents.sort(
+      (a, b) =>
+        Number(a.number) -
+        Number(b.number)
+    );
+
+
+    if (subtitle) {
+
+      subtitle.textContent =
+
+        `${classStudents.length} ${
+          classStudents.length === 1
+            ? "studente"
+            : "studenti"
+        }`;
+
+    }
+
+
+    if (!classStudents.length) {
+
+      list.innerHTML = `
+
+        <div class="student-empty">
+
+          <strong>
+            Nessuno studente presente
+          </strong>
+
+          <span>
+            Aggiungi il primo studente della classe.
+          </span>
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    list.innerHTML =
+
+      classStudents.map(student => `
+
+        <div class="student-row">
+
+          <div class="student-number">
+
+            ${student.number}
+
+          </div>
+
+
+          <div>
+
+            <div class="student-name">
+
+              ${escapeHTML(
+                student.lastName
+              )}
+
+              ${escapeHTML(
+                student.firstName
+              )}
+
+            </div>
+
+            <span class="student-badge">
+              Studente
+            </span>
+
+          </div>
+
+
+          <div class="student-actions">
+
+            <button
+              class="small-btn edit-btn"
+              onclick="editStudent(${student.id})">
+
+              ✏️ Modifica
+
+            </button>
+
+
+            <button
+              class="small-btn delete-btn"
+              onclick="deleteStudent(${student.id})">
+
+              🗑️ Elimina
+
+            </button>
+
+          </div>
+
+        </div>
+
+      `).join("");
+
+  }
+
+
+  /* =========================
+     AGGIORNA NUMERO STUDENTI
+  ========================= */
+
+  function updateDetailStudentCount() {
+
+    if (selectedClassId === null) {
+      return;
+    }
+
+
+    const count =
+      getStudentCount(selectedClassId);
+
+
+    const element =
+      document.getElementById("detailStudents");
+
+
+    if (element) {
+
+      element.textContent = count;
+
+    }
+
+  }
+
+
+  /* =========================
+     ELIMINA STUDENTE
+  ========================= */
+
+  function deleteStudent(id) {
+
+    const student =
+      students.find(
+        item => item.id === id
+      );
+
+
+    if (!student) return;
+
+
+    const confirmed =
+      confirm(
+        `Vuoi davvero eliminare lo studente "${student.firstName} ${student.lastName}"?`
+      );
+
+
+    if (!confirmed) return;
+
+
+    students =
+      students.filter(
+        item => item.id !== id
+      );
+
+
+    saveStudentsToStorage();
+
+    renderStudents();
+
+    renderClasses();
+
+    updateHomeStats();
+
+    updateDetailStudentCount();
+
+  }
+
+
+  /* =========================
      HOME
   ========================= */
 
   function updateHomeStats() {
 
     const totalStudents =
-      classes.reduce(
-
-        (total, cls) =>
-
-          total +
-          (Number(cls.students) || 0),
-
-        0
-
-      );
+      students.length;
 
 
     document
@@ -1785,7 +2576,9 @@
   updateHomeStats();
 
 
-  /* Chiudi modale cliccando fuori */
+  /* =========================
+     CHIUSURA MODALI
+  ========================= */
 
   document
     .getElementById("classModal")
@@ -1796,6 +2589,22 @@
         if (event.target === this) {
 
           closeClassModal();
+
+        }
+
+      }
+    );
+
+
+  document
+    .getElementById("studentModal")
+    .addEventListener(
+      "click",
+      function(event) {
+
+        if (event.target === this) {
+
+          closeStudentModal();
 
         }
 
