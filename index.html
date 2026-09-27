@@ -7089,6 +7089,777 @@ function populateClassSelect(
 
 
 /* =========================================================
+   PAGELLE
+========================================================= */
+
+function getReportSubjects(classId){
+
+  const c=getClass(classId);
+
+  if(!c||!c.subjects)return [];
+
+  return String(c.subjects)
+    .split(",")
+    .map(s=>s.trim())
+    .filter(Boolean);
+
+}
+
+
+function getGradeAverage(studentId,subject,period){
+
+  const list=grades.filter(g=>{
+
+    if(g.studentId!==studentId)return false;
+    if(g.subject!==subject)return false;
+    if(!g.date)return false;
+
+    const month=
+      Number(String(g.date).split("-")[1]);
+
+    if(!month)return false;
+
+    if(period==="1"){
+      return month>=9||month===1;
+    }
+
+    if(period==="2"){
+      return month>=2&&month<=6;
+    }
+
+    return false;
+
+  });
+
+  const values=list
+    .map(g=>Number(g.value))
+    .filter(v=>Number.isFinite(v));
+
+  if(!values.length)return null;
+
+  const average=
+    values.reduce((a,b)=>a+b,0)/values.length;
+
+  return Math.round(average*100)/100;
+
+}
+
+
+function getReportRecord(studentId,classId){
+
+  let record=reportCards.find(r=>
+    r.studentId===studentId &&
+    r.classId===classId
+  );
+
+  if(!record){
+
+    record={
+      id:id(),
+      studentId:studentId,
+      classId:classId,
+      finals:{},
+      judgment:""
+    };
+
+    reportCards.push(record);
+
+  }
+
+  return record;
+
+}
+
+
+function renderReportCards(){
+
+  const classSelect=
+    document.getElementById("report-class");
+
+  const periodSelect=
+    document.getElementById("report-period");
+
+  const area=
+    document.getElementById("report-cards-area");
+
+  if(!classSelect||!periodSelect||!area)return;
+
+
+  /* CLASSI */
+
+  const currentClass=classSelect.value;
+
+  classSelect.innerHTML=
+    classes.map(c=>`
+      <option value="${c.id}">
+        ${escapeHTML(c.name)}
+      </option>
+    `).join("");
+
+  if(currentClass &&
+     classes.some(c=>c.id===currentClass)){
+
+    classSelect.value=currentClass;
+
+  }
+
+
+  if(!classes.length){
+
+    area.innerHTML=`
+      <div class="card card-pad">
+        Nessuna classe disponibile.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  const classId=classSelect.value;
+  const period=periodSelect.value;
+
+  const classStudents=
+    getStudentsForClass(classId);
+
+  const subjectsList=
+    getReportSubjects(classId);
+
+
+  if(!classStudents.length){
+
+    area.innerHTML=`
+      <div class="card card-pad">
+        Nessuno studente presente in questa classe.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  area.innerHTML=
+    classStudents.map(student=>{
+
+      const record=
+        getReportRecord(
+          student.id,
+          classId
+        );
+
+
+      const subjectHTML=
+        subjectsList.map(subject=>{
+
+          const firstAverage=
+            getGradeAverage(
+              student.id,
+              subject,
+              "1"
+            );
+
+          const secondAverage=
+            getGradeAverage(
+              student.id,
+              subject,
+              "2"
+            );
+
+
+          if(period==="1"){
+
+            return `
+              <div class="report-subject">
+
+                <div class="report-subject-name">
+                  ${escapeHTML(subject)}
+                </div>
+
+                <div>
+                  Media 1° quadrimestre:
+                  <strong>
+                    ${
+                      firstAverage===null
+                      ?"—"
+                      :firstAverage.toFixed(2)
+                    }
+                  </strong>
+                </div>
+
+              </div>
+            `;
+
+          }
+
+
+          const finalKey=
+            `${subject}`;
+
+          const finalValue=
+            record.finals[finalKey] ?? "";
+
+
+          return `
+            <div class="report-subject">
+
+              <div class="report-subject-name">
+                ${escapeHTML(subject)}
+              </div>
+
+              <div>
+                Media 1° quadrimestre:
+                <strong>
+                  ${
+                    firstAverage===null
+                    ?"—"
+                    :firstAverage.toFixed(2)
+                  }
+                </strong>
+              </div>
+
+              <div style="margin-top:6px">
+                Media 2° quadrimestre:
+                <strong>
+                  ${
+                    secondAverage===null
+                    ?"—"
+                    :secondAverage.toFixed(2)
+                  }
+                </strong>
+              </div>
+
+              <div class="report-final-input">
+
+                <label>
+                  Voto finale
+                </label>
+
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  step="0.5"
+                  value="${escapeHTML(String(finalValue))}"
+                  onchange="
+                    saveReportFinal(
+                      '${record.id}',
+                      '${escapeHTML(subject)}',
+                      this.value
+                    )
+                  "
+                >
+
+              </div>
+
+            </div>
+          `;
+
+        }).join("");
+
+
+      let averages=[];
+
+      subjectsList.forEach(subject=>{
+
+        let value=null;
+
+        if(period==="1"){
+
+          value=
+            getGradeAverage(
+              student.id,
+              subject,
+              "1"
+            );
+
+        }else{
+
+          const saved=
+            record.finals[subject];
+
+          if(
+            saved!==undefined &&
+            saved!==null &&
+            saved!==""
+          ){
+
+            value=Number(saved);
+
+          }else{
+
+            value=
+              getGradeAverage(
+                student.id,
+                subject,
+                "2"
+              );
+
+          }
+
+        }
+
+        if(Number.isFinite(value)){
+          averages.push(value);
+        }
+
+      });
+
+
+      const overall=
+        averages.length
+        ?averages.reduce((a,b)=>a+b,0)/averages.length
+        :null;
+
+
+      return `
+        <div class="card card-pad report-student">
+
+          <div class="report-student-header">
+
+            <div class="report-student-name">
+              ${escapeHTML(
+                `${student.lastName} ${student.firstName}`
+              )}
+            </div>
+
+            <div class="report-average">
+              Media generale:
+              ${
+                overall===null
+                ?"—"
+                :overall.toFixed(2)
+              }
+            </div>
+
+          </div>
+
+
+          <div class="report-subject-grid">
+            ${subjectHTML}
+          </div>
+
+
+          ${
+            period==="2"
+            ?`
+              <div class="report-judgment">
+
+                <label>
+                  Giudizio finale
+                </label>
+
+                <textarea
+                  rows="3"
+                  onchange="
+                    saveReportJudgment(
+                      '${record.id}',
+                      this.value
+                    )
+                  "
+                >${escapeHTML(
+                  record.judgment||""
+                )}</textarea>
+
+              </div>
+            `
+            :""
+          }
+
+        </div>
+      `;
+
+    }).join("");
+
+}
+
+
+function saveReportFinal(
+  recordId,
+  subject,
+  value
+){
+
+  const record=
+    reportCards.find(r=>r.id===recordId);
+
+  if(!record)return;
+
+
+  if(value===""){
+
+    delete record.finals[subject];
+
+  }else{
+
+    const number=Number(value);
+
+    if(
+      !Number.isFinite(number) ||
+      number<1 ||
+      number>10
+    ){
+
+      alert("Inserisci un voto compreso tra 1 e 10.");
+
+      renderReportCards();
+
+      return;
+
+    }
+
+    record.finals[subject]=number;
+
+  }
+
+
+  saveAccountValue(
+    "reportCards",
+    reportCards
+  );
+
+  renderReportCards();
+
+}
+
+
+function saveReportJudgment(
+  recordId,
+  value
+){
+
+  const record=
+    reportCards.find(r=>r.id===recordId);
+
+  if(!record)return;
+
+  record.judgment=value;
+
+  saveAccountValue(
+    "reportCards",
+    reportCards
+  );
+
+}
+
+
+/* =========================================================
+   CALENDARIO
+========================================================= */
+
+let calendarDate=new Date();
+
+
+function changeCalendarMonth(delta){
+
+  calendarDate.setMonth(
+    calendarDate.getMonth()+delta
+  );
+
+  renderCalendar();
+
+}
+
+
+function goToCalendarToday(){
+
+  calendarDate=new Date();
+
+  renderCalendar();
+
+}
+
+
+function renderCalendar(){
+
+  const title=
+    document.getElementById("calendar-title");
+
+  const grid=
+    document.getElementById("calendar-grid");
+
+  if(!title||!grid)return;
+
+
+  const year=
+    calendarDate.getFullYear();
+
+  const month=
+    calendarDate.getMonth();
+
+
+  const monthNames=[
+    "Gennaio",
+    "Febbraio",
+    "Marzo",
+    "Aprile",
+    "Maggio",
+    "Giugno",
+    "Luglio",
+    "Agosto",
+    "Settembre",
+    "Ottobre",
+    "Novembre",
+    "Dicembre"
+  ];
+
+
+  title.textContent=
+    `${monthNames[month]} ${year}`;
+
+
+  const firstDay=
+    new Date(year,month,1);
+
+
+  let start=
+    firstDay.getDay();
+
+  start=
+    start===0
+    ?6
+    :start-1;
+
+
+  const daysInMonth=
+    new Date(
+      year,
+      month+1,
+      0
+    ).getDate();
+
+
+  const headers=[
+    "Lun",
+    "Mar",
+    "Mer",
+    "Gio",
+    "Ven",
+    "Sab",
+    "Dom"
+  ];
+
+
+  let html=
+    headers.map(day=>`
+      <div class="calendar-head">
+        ${day}
+      </div>
+    `).join("");
+
+
+  for(let i=0;i<start;i++){
+
+    html+=`
+      <div class="calendar-day empty"></div>
+    `;
+
+  }
+
+
+  const todayDate=new Date();
+
+
+  for(
+    let day=1;
+    day<=daysInMonth;
+    day++
+  ){
+
+    const date=
+      new Date(year,month,day);
+
+
+    const iso=
+      `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+
+
+    const isToday=
+      date.getFullYear()===
+        todayDate.getFullYear() &&
+      date.getMonth()===
+        todayDate.getMonth() &&
+      date.getDate()===
+        todayDate.getDate();
+
+
+    let events=[];
+
+
+    /* LEZIONI */
+
+    lessons
+      .filter(l=>l.date===iso)
+      .forEach(l=>{
+
+        events.push(`
+          <div class="calendar-event">
+
+            📖
+            ${escapeHTML(l.subject)}
+
+            ${
+              l.classId
+              ?` · ${escapeHTML(
+                  getClassName(l.classId)
+                )}`
+              :""
+            }
+
+          </div>
+        `);
+
+      });
+
+
+    /* COMPITI */
+
+    homework
+      .filter(h=>h.due===iso)
+      .forEach(h=>{
+
+        events.push(`
+          <div class="calendar-event homework">
+
+            📝
+            ${escapeHTML(h.subject)}
+
+            ${
+              h.classId
+              ?` · ${escapeHTML(
+                  getClassName(h.classId)
+                )}`
+              :""
+            }
+
+          </div>
+        `);
+
+      });
+
+
+    /* VERIFICHE */
+
+    exams
+      .filter(e=>e.date===iso)
+      .forEach(e=>{
+
+        events.push(`
+          <div class="calendar-event exam">
+
+            📋
+            ${escapeHTML(e.subject)}
+
+            ${
+              e.classId
+              ?` · ${escapeHTML(
+                  getClassName(e.classId)
+                )}`
+              :""
+            }
+
+          </div>
+        `);
+
+      });
+
+
+    /* ATTIVITÀ */
+
+    activities
+      .filter(a=>a.date===iso)
+      .forEach(a=>{
+
+        events.push(`
+          <div class="calendar-event activity">
+
+            🔵
+            ${escapeHTML(a.subject)}
+
+            ${
+              a.classId
+              ?` · ${escapeHTML(
+                  getClassName(a.classId)
+                )}`
+              :""
+            }
+
+          </div>
+        `);
+
+      });
+
+
+    /* ORARIO SETTIMANALE */
+
+    const dayNames=[
+      "Domenica",
+      "Lunedì",
+      "Martedì",
+      "Mercoledì",
+      "Giovedì",
+      "Venerdì",
+      "Sabato"
+    ];
+
+
+    const weekday=
+      dayNames[date.getDay()];
+
+
+    schedule
+      .filter(s=>s.day===weekday)
+      .sort((a,b)=>
+        String(a.time)
+          .localeCompare(String(b.time))
+      )
+      .forEach(s=>{
+
+        events.push(`
+          <div class="calendar-event">
+
+            🕐
+            ${escapeHTML(s.subject)}
+            · ${escapeHTML(s.time)}
+
+            ${
+              s.classId
+              ?` · ${escapeHTML(
+                  getClassName(s.classId)
+                )}`
+              :""
+            }
+
+          </div>
+        `);
+
+      });
+
+
+    html+=`
+      <div class="calendar-day ${
+        isToday ? "today" : ""
+      }">
+
+        <div class="calendar-number">
+          ${day}
+        </div>
+
+        ${events.join("")}
+
+      </div>
+    `;
+
+  }
+
+
+  grid.innerHTML=html;
+
+}
+
+
+/* =========================================================
    AGGIORNAMENTO GENERALE
 ========================================================= */
 
