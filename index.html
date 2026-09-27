@@ -693,6 +693,25 @@ textarea{
   font-size:12px;
 }
 
+.schedule-type{
+  display:inline-block;
+  margin-top:6px;
+  padding:4px 8px;
+  border-radius:8px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.schedule-type.teoria{
+  background:#e8f1ff;
+  color:#2563eb;
+}
+
+.schedule-type.laboratorio{
+  background:#e8f8ef;
+  color:#16a34a;
+}
+
 /* APPPELLO */
 
 .call-header{
@@ -6295,9 +6314,17 @@ function renderSchedule(){
 
                 ${escapeHTML(s.subject)}
 
-                <br>
-                
-                ${escapeHTML(s.type || "Teoria")}
+                <div class="schedule-type ${
+                 (s.type || "Teoria").toLowerCase() === "laboratorio"
+                    ? "laboratorio"
+                    : "teoria"
+                }">
+                  ${
+                    (s.type || "Teoria") === "Laboratorio"
+                      ? "💻 Laboratorio"
+                      : "📚 Teoria"
+                  }
+                </div>
                
                 <button
                   class="btn btn-danger btn-small"
