@@ -1593,6 +1593,101 @@ textarea{
 
 
 <!-- =========================================================
+     PAGELLE
+========================================================= -->
+
+<section id="page-pagelle" class="page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>📋 Pagelle</h1>
+      <p>Consulta e completa le valutazioni degli studenti.</p>
+    </div>
+
+  </div>
+
+  <div class="card card-pad">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Classe</label>
+        <select id="report-class"
+                onchange="renderReportCards()">
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Periodo</label>
+        <select id="report-period"
+                onchange="renderReportCards()">
+          <option value="1">1° Quadrimestre</option>
+          <option value="2">2° Quadrimestre</option>
+        </select>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="report-cards-area"
+       style="margin-top:20px"></div>
+
+</section>
+
+
+<!-- =========================================================
+     CALENDARIO
+========================================================= -->
+
+<section id="page-calendario" class="page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>📅 Calendario</h1>
+      <p>Lezioni, compiti, verifiche e attività.</p>
+    </div>
+
+    <div class="actions">
+
+      <button class="btn btn-secondary"
+              onclick="changeCalendarMonth(-1)">
+        ←
+      </button>
+
+      <button class="btn btn-secondary"
+              onclick="goToCalendarToday()">
+        Oggi
+      </button>
+
+      <button class="btn btn-secondary"
+              onclick="changeCalendarMonth(1)">
+        →
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="card card-pad">
+
+    <h2 id="calendar-title"
+        class="section-title"
+        style="text-align:center">
+    </h2>
+
+    <div id="calendar-grid"
+         class="calendar-grid">
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
      STATISTICHE
 ========================================================= -->
 
