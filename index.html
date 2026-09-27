@@ -936,6 +936,128 @@ textarea{
   .stats-grid{grid-template-columns:1fr}
   .quick-actions{grid-template-columns:1fr}
 }
+
+/* PAGELLE */
+
+.report-student{
+  margin-bottom:18px;
+}
+
+.report-student-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.report-student-name{
+  font-size:18px;
+  font-weight:800;
+}
+
+.report-subject-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:12px;
+}
+
+.report-subject{
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px;
+  background:var(--bg);
+}
+
+.report-subject-name{
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.report-average{
+  font-size:20px;
+  font-weight:800;
+  color:var(--primary-dark);
+}
+
+.report-final-input{
+  margin-top:8px;
+}
+
+.report-judgment{
+  margin-top:12px;
+}
+
+
+/* CALENDARIO */
+
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:7px;
+}
+
+.calendar-head{
+  text-align:center;
+  font-weight:800;
+  color:var(--muted);
+  padding:8px 3px;
+}
+
+.calendar-day{
+  min-height:120px;
+  padding:8px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--card);
+}
+
+.calendar-day.empty{
+  background:var(--bg);
+  opacity:.5;
+}
+
+.calendar-day.today{
+  border:2px solid var(--primary);
+}
+
+.calendar-number{
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.calendar-event{
+  font-size:11px;
+  padding:5px 6px;
+  border-radius:6px;
+  margin-bottom:4px;
+  background:var(--primary-light);
+  overflow:hidden;
+}
+
+.calendar-event.exam{
+  background:#eeeafb;
+}
+
+.calendar-event.homework{
+  background:#fff1dd;
+}
+
+.calendar-event.activity{
+  background:#e6f0fc;
+}
+
+@media(max-width:720px){
+
+  .calendar-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .calendar-head{
+    display:none;
+  }
+
+}
 </style>
 </head>
 
