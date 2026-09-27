@@ -6207,11 +6207,16 @@ function saveSchedule(){
       ).value,
 
     subject:
-      document.getElementById(
-        "schedule-subject"
-      ).value
+  document.getElementById(
+    "schedule-subject"
+  ).value,
 
-  };
+type:
+  document.getElementById(
+    "schedule-type"
+  ).value
+
+};
 
   if(
     !item.time||
@@ -6290,6 +6295,10 @@ function renderSchedule(){
 
                 ${escapeHTML(s.subject)}
 
+                <br>
+                
+                ${escapeHTML(s.type || "Teoria")}
+               
                 <button
                   class="btn btn-danger btn-small"
                   style="margin-top:6px;width:100%"
