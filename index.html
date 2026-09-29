@@ -2743,7 +2743,16 @@ textarea{
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+const SUPABASE_URL="https://hygwtdnvgbcbkenhfgbs.supabase.co";
+const SUPABASE_KEY="sb_publishable_fBg6a17SDJ-UWo_DNFkGIQ_s_sQzkhY";
+
+const supabaseClient=supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
 /* =========================================================
    STORAGE / ACCOUNT
@@ -3068,22 +3077,11 @@ async function handleAuth(event){
     return;
   }
 
-  const accounts=loadAccounts();
 
-  const existing=accounts.find(
-    a=>a.username.toLowerCase()===username.toLowerCase()
-  );
+  const email=`${username.toLowerCase()}@classio.app`;
+
 
   if(mode==="register"){
-
-    if(existing){
-
-      showAuthError(
-        "Questo nome utente è già utilizzato."
-      );
-
-      return;
-    }
 
     if(password!==confirm){
 
@@ -3094,17 +3092,34 @@ async function handleAuth(event){
       return;
     }
 
-    const passwordHash=
-      await hashPassword(password);
 
-    accounts.push({
-      id:id(),
-      username,
-      passwordHash,
-      createdAt:new Date().toISOString()
+    const {
+      data,
+      error
+    }=await supabaseClient.auth.signUp({
+
+      email:email,
+
+      password:password,
+
+      options:{
+        data:{
+          username:username
+        }
+      }
+
     });
 
-    saveAccounts(accounts);
+
+    if(error){
+
+      showAuthError(
+        error.message
+      );
+
+      return;
+    }
+
 
     currentAccount=username;
 
@@ -3112,6 +3127,7 @@ async function handleAuth(event){
       SESSION_KEY,
       username
     );
+
 
     initializeNewAccount();
 
@@ -3121,7 +3137,19 @@ async function handleAuth(event){
   }
 
 
-  if(!existing){
+  const {
+    data,
+    error
+  }=await supabaseClient.auth.signInWithPassword({
+
+    email:email,
+
+    password:password
+
+  });
+
+
+  if(error){
 
     showAuthError(
       "Nome utente o password non corretti."
@@ -3130,24 +3158,17 @@ async function handleAuth(event){
     return;
   }
 
-  const passwordHash=
-    await hashPassword(password);
 
-  if(passwordHash!==existing.passwordHash){
+  currentAccount=
+    data.user.user_metadata?.username ||
+    username;
 
-    showAuthError(
-      "Nome utente o password non corretti."
-    );
-
-    return;
-  }
-
-  currentAccount=existing.username;
 
   localStorage.setItem(
     SESSION_KEY,
     currentAccount
   );
+
 
   loadAccountData();
 
