@@ -2886,10 +2886,14 @@ async function loadAccountData(){
 
     if(!user){
 
-      console.error("Utente Supabase non trovato.");
+      console.error(
+        "Utente Supabase non trovato."
+      );
 
       return;
     }
+
+    currentUser=user;
 
     currentAccount=
       user.user_metadata?.username ||
@@ -2902,46 +2906,66 @@ async function loadAccountData(){
     );
 
 
-    classes=loadAccountArray(BASE_KEYS.classes);
-    students=loadAccountArray(BASE_KEYS.students);
-    grades=loadAccountArray(BASE_KEYS.grades);
-    attendance=loadAccountArray(BASE_KEYS.attendance);
-    lessons=loadAccountArray(BASE_KEYS.lessons);
-    activities=loadAccountArray(BASE_KEYS.activities);
-    homework=loadAccountArray(BASE_KEYS.homework);
-    notes=loadAccountArray(BASE_KEYS.notes);
-    schedule=loadAccountArray(BASE_KEYS.schedule);
-    exams=loadAccountArray(BASE_KEYS.exams);
-    subjects=loadAccountArray(BASE_KEYS.subjects);
-    reportCards=loadAccountArray("reportCards");
+    const {data,error}=
+      await supabaseClient
+        .from("classio_data")
+        .select("data")
+        .eq("user_id",user.id)
+        .maybeSingle();
 
 
-    const storedSettings=
-      loadAccountValue(
-        BASE_KEYS.settings,
-        null
+    if(error){
+
+      console.error(
+        "Errore caricamento dati Supabase:",
+        error
       );
 
+      return;
+    }
 
-    if(storedSettings){
 
-      settings=storedSettings;
+    if(data && data.data){
 
-    }else{
+      const saved=data.data;
 
-      settings={
+      classes=saved.classes||[];
+      students=saved.students||[];
+      grades=saved.grades||[];
+      attendance=saved.attendance||[];
+      lessons=saved.lessons||[];
+      activities=saved.activities||[];
+      homework=saved.homework||[];
+      notes=saved.notes||[];
+      schedule=saved.schedule||[];
+      exams=saved.exams||[];
+      subjects=saved.subjects||[];
+      settings=saved.settings||{
         theme:"light"
       };
 
-      saveAccountValue(
-        BASE_KEYS.settings,
-        settings
-      );
+    }else{
+
+      classes=[];
+      students=[];
+      grades=[];
+      attendance=[];
+      lessons=[];
+      activities=[];
+      homework=[];
+      notes=[];
+      schedule=[];
+      exams=[];
+      subjects=[];
+      settings={
+        theme:"light"
+      };
 
     }
 
 
     applyTheme();
+
 
   }catch(error){
 
@@ -2986,31 +3010,73 @@ function loadAccountValue(key,fallback){
 }
 
 
-function saveAccountValue(key,value){
+async function saveAccountValue(key,value){
 
-  localStorage.setItem(
-    accountKey(currentAccount,key),
-    JSON.stringify(value)
-  );
+  if(key==="classes") classes=value;
+  if(key==="students") students=value;
+  if(key==="grades") grades=value;
+  if(key==="attendance") attendance=value;
+  if(key==="lessons") lessons=value;
+  if(key==="activities") activities=value;
+  if(key==="homework") homework=value;
+  if(key==="notes") notes=value;
+  if(key==="schedule") schedule=value;
+  if(key==="exams") exams=value;
+  if(key==="subjects") subjects=value;
+  if(key==="settings") settings=value;
+
+  await saveAll();
 
 }
 
 
-function saveAll(){
+async function saveAll(){
 
-  saveAccountValue(BASE_KEYS.classes,classes);
-  saveAccountValue(BASE_KEYS.students,students);
-  saveAccountValue(BASE_KEYS.grades,grades);
-  saveAccountValue(BASE_KEYS.attendance,attendance);
-  saveAccountValue(BASE_KEYS.lessons,lessons);
-  saveAccountValue(BASE_KEYS.activities,activities);
-  saveAccountValue(BASE_KEYS.homework,homework);
-  saveAccountValue(BASE_KEYS.notes,notes);
-  saveAccountValue(BASE_KEYS.schedule,schedule);
-  saveAccountValue(BASE_KEYS.exams,exams);
-  saveAccountValue(BASE_KEYS.subjects,subjects);
-  saveAccountValue("reportCards",reportCards);
-  saveAccountValue(BASE_KEYS.settings,settings);
+  if(!currentUser){
+    console.error("Utente Supabase non trovato.");
+    return;
+  }
+
+  const dataObject={
+    classes,
+    students,
+    grades,
+    attendance,
+    lessons,
+    activities,
+    homework,
+    notes,
+    schedule,
+    exams,
+    subjects,
+    settings
+  };
+
+  const {error}=await supabaseClient
+    .from("classio_data")
+    .upsert(
+      {
+        user_id:currentUser.id,
+        data:dataObject,
+        updated_at:new Date().toISOString()
+      },
+      {
+        onConflict:"user_id"
+      }
+    );
+
+  if(error){
+
+    console.error(
+      "Errore salvataggio Supabase:",
+      error
+    );
+
+    showAuthError(
+      "Errore durante il salvataggio online dei dati."
+    );
+
+  }
 
 }
 
