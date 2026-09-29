@@ -2877,34 +2877,81 @@ function accountKey(username,key){
 }
 
 
-function loadAccountData(){
+async function loadAccountData(){
 
-  classes=loadAccountArray(BASE_KEYS.classes);
-  students=loadAccountArray(BASE_KEYS.students);
-  grades=loadAccountArray(BASE_KEYS.grades);
-  attendance=loadAccountArray(BASE_KEYS.attendance);
-  lessons=loadAccountArray(BASE_KEYS.lessons);
-  activities=loadAccountArray(BASE_KEYS.activities);
-  homework=loadAccountArray(BASE_KEYS.homework);
-  notes=loadAccountArray(BASE_KEYS.notes);
-  schedule=loadAccountArray(BASE_KEYS.schedule);
-  exams=loadAccountArray(BASE_KEYS.exams);
-  subjects=loadAccountArray(BASE_KEYS.subjects);
-  reportCards=loadAccountArray("reportCards");
+  try{
 
-  const storedSettings=loadAccountValue(
-    BASE_KEYS.settings,
-    null
-  );
+    const user=
+      (await supabaseClient.auth.getUser()).data.user;
 
-  if(storedSettings){
-    settings=storedSettings;
-  }else{
-    settings={theme:"light"};
-    saveAccountValue(BASE_KEYS.settings,settings);
+    if(!user){
+
+      console.error("Utente Supabase non trovato.");
+
+      return;
+    }
+
+    currentAccount=
+      user.user_metadata?.username ||
+      currentAccount;
+
+
+    console.log(
+      "Classio collegato all'account:",
+      currentAccount
+    );
+
+
+    classes=loadAccountArray(BASE_KEYS.classes);
+    students=loadAccountArray(BASE_KEYS.students);
+    grades=loadAccountArray(BASE_KEYS.grades);
+    attendance=loadAccountArray(BASE_KEYS.attendance);
+    lessons=loadAccountArray(BASE_KEYS.lessons);
+    activities=loadAccountArray(BASE_KEYS.activities);
+    homework=loadAccountArray(BASE_KEYS.homework);
+    notes=loadAccountArray(BASE_KEYS.notes);
+    schedule=loadAccountArray(BASE_KEYS.schedule);
+    exams=loadAccountArray(BASE_KEYS.exams);
+    subjects=loadAccountArray(BASE_KEYS.subjects);
+    reportCards=loadAccountArray("reportCards");
+
+
+    const storedSettings=
+      loadAccountValue(
+        BASE_KEYS.settings,
+        null
+      );
+
+
+    if(storedSettings){
+
+      settings=storedSettings;
+
+    }else{
+
+      settings={
+        theme:"light"
+      };
+
+      saveAccountValue(
+        BASE_KEYS.settings,
+        settings
+      );
+
+    }
+
+
+    applyTheme();
+
+  }catch(error){
+
+    console.error(
+      "Errore caricamento account:",
+      error
+    );
+
   }
 
-  applyTheme();
 }
 
 
