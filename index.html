@@ -2940,6 +2940,7 @@ async function loadAccountData(){
       schedule=saved.schedule||[];
       exams=saved.exams||[];
       subjects=saved.subjects||[];
+      reportCards=saved.reportCards||[];
       settings=saved.settings||{
         theme:"light"
       };
@@ -3023,6 +3024,7 @@ async function saveAccountValue(key,value){
   if(key==="schedule") schedule=value;
   if(key==="exams") exams=value;
   if(key==="subjects") subjects=value;
+  if(key==="reportCards") reportCards=value;
   if(key==="settings") settings=value;
 
   await saveAll();
@@ -3037,20 +3039,21 @@ async function saveAll(){
     return;
   }
 
-  const dataObject={
-    classes,
-    students,
-    grades,
-    attendance,
-    lessons,
-    activities,
-    homework,
-    notes,
-    schedule,
-    exams,
-    subjects,
-    settings
-  };
+const dataObject={
+  classes,
+  students,
+  grades,
+  attendance,
+  lessons,
+  activities,
+  homework,
+  notes,
+  schedule,
+  exams,
+  subjects,
+  reportCards,
+  settings
+};
 
   const {error}=await supabaseClient
     .from("classio_data")
@@ -3172,6 +3175,7 @@ async function handleAuth(event){
   const confirm=
     document.getElementById("auth-confirm").value;
 
+
   if(username.length<3){
 
     showAuthError(
@@ -3180,6 +3184,7 @@ async function handleAuth(event){
 
     return;
   }
+
 
   if(password.length<6){
 
@@ -3191,7 +3196,8 @@ async function handleAuth(event){
   }
 
 
-  const email=`${username.toLowerCase()}@classio.app`;
+  const email=
+    `${username.toLowerCase()}@classio.app`;
 
 
   if(mode==="register"){
@@ -3234,7 +3240,20 @@ async function handleAuth(event){
     }
 
 
+    if(!data.session){
+
+      showAuthError(
+        "Account creato. Controlla la conferma email nelle impostazioni di Supabase."
+      );
+
+      return;
+    }
+
+
+    currentUser=data.user;
+
     currentAccount=username;
+
 
     localStorage.setItem(
       SESSION_KEY,
@@ -3242,7 +3261,9 @@ async function handleAuth(event){
     );
 
 
-    initializeNewAccount();
+    await initializeNewAccount();
+
+    await loadAccountData();
 
     enterApp();
 
@@ -3272,6 +3293,8 @@ async function handleAuth(event){
   }
 
 
+  currentUser=data.user;
+
   currentAccount=
     data.user.user_metadata?.username ||
     username;
@@ -3283,7 +3306,7 @@ async function handleAuth(event){
   );
 
 
-  loadAccountData();
+  await loadAccountData();
 
   enterApp();
 
