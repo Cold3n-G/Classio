@@ -3215,19 +3215,20 @@ async function handleAuth(event){
     const {
       data,
       error
-    }=await supabaseClient.auth.signUp({
+    }=
+      await supabaseClient.auth.signUp({
 
-      email:email,
+        email:email,
 
-      password:password,
+        password:password,
 
-      options:{
-        data:{
-          username:username
+        options:{
+          data:{
+            username:username
+          }
         }
-      }
 
-    });
+      });
 
 
     if(error){
@@ -3240,26 +3241,8 @@ async function handleAuth(event){
     }
 
 
-    if(!data.session){
-
-      showAuthError(
-        "Account creato. Controlla la conferma email nelle impostazioni di Supabase."
-      );
-
-      return;
-    }
-
-
     currentUser=data.user;
-
     currentAccount=username;
-
-
-    localStorage.setItem(
-      SESSION_KEY,
-      username
-    );
-
 
     await initializeNewAccount();
 
@@ -3268,19 +3251,21 @@ async function handleAuth(event){
     enterApp();
 
     return;
+
   }
 
 
   const {
     data,
     error
-  }=await supabaseClient.auth.signInWithPassword({
+  }=
+    await supabaseClient.auth.signInWithPassword({
 
-    email:email,
+      email:email,
 
-    password:password
+      password:password
 
-  });
+    });
 
 
   if(error){
@@ -3300,11 +3285,9 @@ async function handleAuth(event){
     username;
 
 
-  localStorage.setItem(
-    SESSION_KEY,
-    currentAccount
-  );
+  await loadAccountData();
 
+  await migrateOldLocalData();
 
   await loadAccountData();
 
@@ -3313,7 +3296,107 @@ async function handleAuth(event){
 }
 
 
-function initializeNewAccount(){
+async function migrateOldLocalData(){
+
+  if(!currentUser)return;
+
+  const flag=
+    `classio_local_migrated_v1_${currentUser.id}`;
+
+  if(localStorage.getItem(flag)==="1")return;
+
+  const u=currentAccount;
+
+  const keys=[
+    "classes",
+    "students",
+    "grades",
+    "attendance",
+    "lessons",
+    "activities",
+    "homework",
+    "notes",
+    "schedule",
+    "exams",
+    "subjects",
+    "settings",
+    "reportCards"
+  ];
+
+  const migrated={};
+  let found=false;
+
+  for(const k of keys){
+
+    try{
+
+      const raw=
+        localStorage.getItem(
+          `classio_${u}_${k}`
+        );
+
+      if(raw!==null){
+
+        migrated[k]=JSON.parse(raw);
+        found=true;
+
+      }
+
+    }catch{}
+
+  }
+
+  if(found){
+
+    if(Array.isArray(migrated.classes))
+      classes=migrated.classes;
+
+    if(Array.isArray(migrated.students))
+      students=migrated.students;
+
+    if(Array.isArray(migrated.grades))
+      grades=migrated.grades;
+
+    if(Array.isArray(migrated.attendance))
+      attendance=migrated.attendance;
+
+    if(Array.isArray(migrated.lessons))
+      lessons=migrated.lessons;
+
+    if(Array.isArray(migrated.activities))
+      activities=migrated.activities;
+
+    if(Array.isArray(migrated.homework))
+      homework=migrated.homework;
+
+    if(Array.isArray(migrated.notes))
+      notes=migrated.notes;
+
+    if(Array.isArray(migrated.schedule))
+      schedule=migrated.schedule;
+
+    if(Array.isArray(migrated.exams))
+      exams=migrated.exams;
+
+    if(Array.isArray(migrated.subjects))
+      subjects=migrated.subjects;
+
+    if(Array.isArray(migrated.reportCards))
+      reportCards=migrated.reportCards;
+
+    if(migrated.settings)
+      settings=migrated.settings;
+
+    await saveAll();
+
+  }
+
+  localStorage.setItem(flag,"1");
+
+}
+
+
+async function initializeNewAccount(){
 
   classes=[];
   students=[];
@@ -3325,21 +3408,20 @@ function initializeNewAccount(){
   notes=[];
   schedule=[];
   exams=[];
-
   subjects=[
     "Informatica",
     "Intelligenza Artificiale"
   ];
-
   settings={
     theme:"light"
   };
+  reportCards=[];
 
-  saveAll();
+  await saveAll();
 
 }
 
-
+  
 function enterApp(){
 
   document.getElementById("auth-screen")
@@ -3359,12 +3441,13 @@ function enterApp(){
 }
 
 
-function logout(){
+async function logout(){
 
   if(!confirm("Vuoi uscire da questo account?"))return;
 
-  localStorage.removeItem(SESSION_KEY);
+  await supabaseClient.auth.signOut();
 
+  currentUser=null;
   currentAccount=null;
 
   document.getElementById("app")
