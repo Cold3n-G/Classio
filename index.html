@@ -4368,6 +4368,7 @@ function renderQuickGradeStudents(){
             <th>N.</th>
             <th>Studente</th>
             <th>Voto</th>
+            <th>Media</th>
           </tr>
 
         </thead>
@@ -4381,14 +4382,7 @@ function renderQuickGradeStudents(){
               <td>${s.number}</td>
 
               <td>
-                <strong>
-                  ${escapeHTML(s.lastName)}
-                  ${escapeHTML(s.firstName)}
-                </strong>
-              </td>
-
-              <td>
-
+                
                 <select
                   class="quick-grade-select"
                   id="modal-grade-${s.id}">
@@ -4403,7 +4397,20 @@ function renderQuickGradeStudents(){
 
                 </select>
 
-              </td>
+             </td>
+
+             <td>
+
+               <select
+                 class="quick-type-select"
+                 id="modal-media-${s.id}">
+
+                 <option value="true" selected>Fa media</option>
+                 <option value="false">Non fa media</option>
+
+               </select>
+
+             </td>
 
             </tr>
 
