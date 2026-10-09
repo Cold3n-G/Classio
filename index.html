@@ -627,6 +627,7 @@ textarea{
 .grade-good{color:var(--green)}
 .grade-mid{color:var(--orange)}
 .grade-bad{color:var(--red)}
+.grade-special{color:var(--primary)}
 
 .average-box{
   display:inline-flex;
@@ -4630,7 +4631,15 @@ function renderGradesPage(){
           </td>
 
           <td>
-            <span class="grade grade-mid">
+            <span class="grade ${
+              g.isSpecial
+                ?"grade-special"
+                :Number(g.value)>=6
+                  ?"grade-good"
+                  :Number(g.value)>=5
+                    ?"grade-mid"
+                    :"grade-bad"
+            }">
               ${escapeHTML(
                 g.displayValue||
                 String(g.value)
