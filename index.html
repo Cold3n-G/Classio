@@ -4191,7 +4191,12 @@ function populateSubjectSelect(selectId,selected=null){
    VOTI
 ========================================================= */
 
+const specialGradeValues=[
+  "IP","NP","SQ","SL","IG","ING","R","NR"
+];
+
 const gradeValues=[
+  ...specialGradeValues,
   "1","1+","1,5","2-","2","2+","2,5",
   "3-","3","3+","3,5",
   "4-","4","4+","4,5",
