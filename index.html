@@ -4475,9 +4475,11 @@ function saveQuickGrades(){
 
       subject,
 
-      value:gradeToNumber(displayValue),
+      value:specialGradeValues.includes(displayValue)?null:gradeToNumber(displayValue),
 
       displayValue,
+
+      isSpecial:specialGradeValues.includes(displayValue),
 
       type,
 
