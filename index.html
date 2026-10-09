@@ -4533,12 +4533,13 @@ function renderGradeRows(list,showClass=true){
 
     const v=Number(g.value);
 
-    const cls=
-      v>=7
-      ?"grade-good"
-      :v>=6
-        ?"grade-mid"
-        :"grade-bad";
+const cls=g.isSpecial
+  ?"grade-special"
+  :v>=6
+    ?"grade-good"
+    :v>=5
+      ?"grade-mid"
+      :"grade-bad";
 
     return `
 
