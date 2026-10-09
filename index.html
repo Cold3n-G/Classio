@@ -4473,6 +4473,14 @@ function saveQuickGrades(){
 
     const displayValue=select.value;
 
+    const mediaSelect=document.getElementById(
+      `modal-media-${s.id}`
+    );
+
+    const faMedia=mediaSelect
+      ?mediaSelect.value==="true"
+      :true;
+
     grades.push({
 
       id:id(),
@@ -4486,6 +4494,13 @@ function saveQuickGrades(){
       value:specialGradeValues.includes(displayValue)?null:gradeToNumber(displayValue),
 
       displayValue,
+
+      countsForAverage:
+
+        faMedia &&
+        !specialGradeValues.includes(displayValue),
+
+      type,
 
       isSpecial:specialGradeValues.includes(displayValue),
 
