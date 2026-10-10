@@ -4673,13 +4673,15 @@ function renderGradesPage(){
 
           <td>
             <span class="grade ${
-              g.isSpecial
-                ?"grade-special"
-                :Number(g.value)>=6
-                  ?"grade-good"
-                  :Number(g.value)>=5
-                    ?"grade-mid"
-                    :"grade-bad"
+              g.countsForAverage===false
+                ?"grade-no-average"
+                :g.isSpecial
+                  ?"grade-special"
+                  :Number(g.value)>=6
+                    ?"grade-good"
+                    :Number(g.value)>=5
+                      ?"grade-mid"
+                      :"grade-bad"
             }">
               ${escapeHTML(
                 g.displayValue||
