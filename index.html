@@ -4573,10 +4573,10 @@ function renderGradeRows(list,showClass=true){
     const v=Number(g.value);
 
 const cls=
-  g.countsForAverage===false
-    ?"grade-no-average"
-    :g.isSpecial
-      ?"grade-special"
+  g.isSpecial
+    ?"grade-special"
+    :g.countsForAverage===false
+      ?"grade-no-average"
       :v>=6
         ?"grade-good"
         :v>=5
@@ -4673,10 +4673,10 @@ function renderGradesPage(){
 
           <td>
             <span class="grade ${
-              g.countsForAverage===false
-                ?"grade-no-average"
-                :g.isSpecial
-                  ?"grade-special"
+              g.isSpecial
+                ?"grade-special"
+                :g.countsForAverage===false
+                  ?"grade-no-average"
                   :Number(g.value)>=6
                     ?"grade-good"
                     :Number(g.value)>=5
