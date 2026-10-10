@@ -3505,7 +3505,11 @@ function getStudentName(studentId){
 function averageForStudent(studentId){
 
   const list=grades.filter(
-    g=>g.studentId===studentId
+    g=>
+      g.studentId===studentId &&
+      !g.isSpecial &&
+      g.countsForAverage!==false &&
+      Number.isFinite(Number(g.value))
   );
 
   if(!list.length)return null;
@@ -3520,7 +3524,11 @@ function averageForStudent(studentId){
 function averageForClass(classId){
 
   const list=grades.filter(
-    g=>g.classId===classId
+    g=>
+      g.classId===classId &&
+      !g.isSpecial &&
+      g.countsForAverage!==false &&
+      Number.isFinite(Number(g.value))
   );
 
   if(!list.length)return null;
@@ -3534,12 +3542,19 @@ function averageForClass(classId){
 
 function overallAverage(){
 
-  if(!grades.length)return null;
+  const list=grades.filter(
+    g=>
+      !g.isSpecial &&
+      g.countsForAverage!==false &&
+      Number.isFinite(Number(g.value))
+  );
 
-  return grades.reduce(
+  if(!list.length)return null;
+
+  return list.reduce(
     (sum,g)=>sum+Number(g.value),
     0
-  )/grades.length;
+  )/list.length;
 
 }
 
