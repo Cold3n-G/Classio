@@ -6691,7 +6691,12 @@ function renderStatistics(){
 
   document.getElementById(
     "stat-grades"
-  ).textContent=grades.length;
+  ).textContent=grades.filter(
+    g=>!g.isSpecial &&
+       g.countsForAverage!==false &&
+       g.value!==null &&
+       Number.isFinite(Number(g.value))
+  ).length;
 
   const avg=overallAverage();
 
@@ -6734,7 +6739,11 @@ function renderStatistics(){
 
       const gs=
         grades.filter(
-          g=>g.classId===c.id
+          g=>g.classId===c.id &&
+             !g.isSpecial &&
+             g.countsForAverage!==false &&
+             g.value!==null &&
+             Number.isFinite(Number(g.value))
         );
 
       const ats=
