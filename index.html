@@ -7448,6 +7448,10 @@ function getGradeAverage(studentId,subject,period){
 
   const list=grades.filter(g=>{
 
+    if(g.isSpecial)return false;
+    if(g.countsForAverage===false)return false;
+    if(!Number.isFinite(Number(g.value)))return false;
+
     if(g.studentId!==studentId)return false;
     if(g.subject!==subject)return false;
     if(!g.date)return false;
