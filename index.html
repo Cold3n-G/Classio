@@ -628,6 +628,7 @@ textarea{
 .grade-mid{color:var(--orange)}
 .grade-bad{color:var(--red)}
 .grade-special{color:var(--primary)}
+.grade-no-average{color:#38bdf8}
 
 .average-box{
   display:inline-flex;
@@ -4571,13 +4572,16 @@ function renderGradeRows(list,showClass=true){
 
     const v=Number(g.value);
 
-const cls=g.isSpecial
-  ?"grade-special"
-  :v>=6
-    ?"grade-good"
-    :v>=5
-      ?"grade-mid"
-      :"grade-bad";
+const cls=
+  g.countsForAverage===false
+    ?"grade-no-average"
+    :g.isSpecial
+      ?"grade-special"
+      :v>=6
+        ?"grade-good"
+        :v>=5
+          ?"grade-mid"
+          :"grade-bad";
 
     return `
 
