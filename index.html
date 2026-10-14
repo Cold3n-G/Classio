@@ -1440,18 +1440,22 @@ textarea{
   <div id="detail-voti" class="detail-panel">
 
     <div class="toolbar">
-
       <h2 class="section-title">
         Voti
       </h2>
 
-      <button class="btn btn-primary" onclick="openQuickGradeModal(currentClassId)">
+      <button 
+        class="btn btn-primary" 
+        onclick="openQuickGradeModal(currentClassId)">
         ＋ Inserisci voti
       </button>
-
     </div>
 
     <div class="card table-wrap">
+      <div id="class-grades-table"></div>
+    </div>
+
+  </div>
 
       <table>
 
