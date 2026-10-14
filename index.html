@@ -4734,24 +4734,159 @@ function renderGradesPage(){
 }
 
 
+
 function renderClassGrades(){
 
-  const box=
-    document.getElementById(
-      "class-grades-table"
-    );
+  const box=document.getElementById(
+    "class-grades-table"
+  );
 
   if(!box)return;
 
-  box.innerHTML=
-    renderGradeRows(
-      grades.filter(
-        g=>g.classId===currentClassId
-      ),
-      false
-    );
+  const studentsInClass=getStudentsForClass(
+    currentClassId
+  );
+
+  const classGrades=grades.filter(
+    g=>g.classId===currentClassId
+  );
+
+  // Tipi di voto effettivamente utilizzati
+  const types=[
+    ...new Set(
+      classGrades
+        .filter(g=>!g.isSpecial)
+        .map(g=>g.type||"Altro")
+    )
+  ];
+
+  // Tabella vuota se non ci sono alunni
+  if(!studentsInClass.length){
+
+    box.innerHTML=`
+      <p class="empty">
+        Nessuno studente presente in questa classe.
+      </p>
+    `;
+
+    return;
+  }
+
+  box.innerHTML=`
+
+    <table class="class-gradebook">
+
+      <thead>
+
+        <tr>
+          <th class="gradebook-action">＋</th>
+          <th class="gradebook-average">Media</th>
+
+          ${types.map(type=>`
+            <th>${escapeHTML(type)}</th>
+          `).join("")}
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        ${studentsInClass.map(student=>{
+
+          const studentGrades=classGrades.filter(
+            g=>g.studentId===student.id
+          );
+
+          const validGrades=studentGrades.filter(
+            g=>g.value!==null&&
+               g.value!==undefined&&
+               !Number.isNaN(Number(g.value))
+          );
+
+          const average=validGrades.length
+            ?validGrades.reduce(
+                (sum,g)=>sum+Number(g.value),
+                0
+              )/validGrades.length
+            :null;
+
+          return `
+
+            <tr>
+
+              <td class="gradebook-action">
+
+                <button
+                  class="btn btn-primary btn-small"
+                  onclick="openQuickGradeModal(currentClassId)"
+                  title="Inserisci voti">
+                  ＋
+                </button>
+
+                <div class="gradebook-student">
+                  ${escapeHTML(student.lastName)}
+                  ${escapeHTML(student.firstName)}
+                </div>
+
+              </td>
+
+              <td class="gradebook-average">
+
+                ${average===null
+                  ?"—"
+                  :average.toFixed(2).replace(".",",")}
+
+              </td>
+
+              ${types.map(type=>{
+
+                const typeGrades=studentGrades
+                  .filter(g=>(g.type||"Altro")===type)
+                  .sort(
+                    (a,b)=>String(a.date)
+                      .localeCompare(String(b.date))
+                  );
+
+                return `
+
+                  <td class="gradebook-type">
+
+                    ${typeGrades.length
+                      ?typeGrades.map(g=>`
+
+                        <div class="gradebook-grade">
+                          <span class="grade">
+                            ${escapeHTML(
+                              g.displayValue||
+                              String(g.value??"")
+                            )}
+                          </span>
+                        </div>
+
+                      `).join("")
+                      :`<div class="gradebook-grade">—</div>`
+                    }
+
+                  </td>
+
+                `;
+
+              }).join("")}
+
+            </tr>
+
+          `;
+
+        }).join("")}
+
+      </tbody>
+
+    </table>
+
+  `;
 
 }
+
 
 
 function deleteGrade(idValue){
