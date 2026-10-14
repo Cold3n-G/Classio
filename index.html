@@ -4853,17 +4853,33 @@ function renderClassGrades(){
 
                     ${typeGrades.length
                       ?typeGrades.map(g=>`
+                      
+                      <div class="gradebook-grade">
+                       
+                        ${(()=>{
+                          const v=Number(g.value);
+                          
+                          const cls=
+                            v>=7
+                              ?"grade-good"
+                              :v>=6
+                                ?"grade-mid"
+                                :"grade-bad";
+                          
+                          return `
+                            <span class="grade ${cls}">
+                              ${escapeHTML(
+                                g.displayValue||
+                                String(g.value??"")
+                              )}
+                            </span>
+                          `;
+                        })()}
+                      
+                      </div>
 
-                        <div class="gradebook-grade">
-                          <span class="grade">
-                            ${escapeHTML(
-                              g.displayValue||
-                              String(g.value??"")
-                            )}
-                          </span>
-                        </div>
 
-                      `).join("")
+`).join("")
                       :`<div class="gradebook-grade">—</div>`
                     }
 
