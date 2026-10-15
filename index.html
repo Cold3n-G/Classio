@@ -2806,6 +2806,7 @@ let editingStudentId=null;
 
 let callDraft={};
 let quickGradeClassId=null;
+let quickGradeStudentId=null;
 
 
 function id(){
@@ -4317,7 +4318,10 @@ function renderTypeSelect(studentId){
 }
 
 
-function openQuickGradeModal(classId=null){
+function openQuickGradeModal(
+  classId=null,
+  studentId=null
+){
 
   if(!classes.length){
 
@@ -4330,6 +4334,7 @@ function openQuickGradeModal(classId=null){
     classId ||
     currentClassId ||
     classes[0].id;
+    quickGradeStudentId=studentId;
 
   populateClassSelect(
     "quick-grade-class",
@@ -4469,9 +4474,13 @@ function saveQuickGrades(){
       "quick-grade-date"
     ).value;
 
-  const list=getStudentsForClass(
-    classId
-  );
+  const list=
+    quickGradeStudentId
+      ? getStudentsForClass(classId)
+          .filter(
+            s=>s.id===quickGradeStudentId
+          )
+      : getStudentsForClass(classId);
 
   if(!classId||!subject||!date){
 
@@ -4831,7 +4840,7 @@ function renderClassGrades(){
 
                 <button
                   class="btn btn-primary btn-small"
-                  onclick="openQuickGradeModal(currentClassId)"
+                  onclick="openQuickGradeModal(currentClassId, '${student.id}')"
                   title="Inserisci voti">
                   ＋
                 </button>
