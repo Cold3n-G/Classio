@@ -4751,16 +4751,16 @@ function renderClassGrades(){
     g=>g.classId===currentClassId
   );
 
-  // Tipi di voto effettivamente utilizzati
+  // Tutti i tipi di voto utilizzati,
+  // compresi IP, NP, SQ, SL, IG, ING, R e NR
   const types=[
     ...new Set(
-      classGrades
-        .filter(g=>!g.isSpecial)
-        .map(g=>g.type||"Altro")
+      classGrades.map(
+        g=>g.type||"Altro"
+      )
     )
   ];
 
-  // Tabella vuota se non ci sono alunni
   if(!studentsInClass.length){
 
     box.innerHTML=`
@@ -4777,38 +4777,51 @@ function renderClassGrades(){
     <table class="class-gradebook">
 
       <thead>
-
         <tr>
-          <th class="gradebook-action">＋</th>
-          <th class="gradebook-average">Media</th>
+
+          <th class="gradebook-action">
+            ＋
+          </th>
+
+          <th class="gradebook-average">
+            Media
+          </th>
 
           ${types.map(type=>`
-            <th>${escapeHTML(type)}</th>
+            <th>
+              ${escapeHTML(type)}
+            </th>
           `).join("")}
-        </tr>
 
+        </tr>
       </thead>
 
       <tbody>
 
         ${studentsInClass.map(student=>{
 
-          const studentGrades=classGrades.filter(
-            g=>g.studentId===student.id
-          );
+          const studentGrades=
+            classGrades.filter(
+              g=>g.studentId===student.id
+            );
 
-          const validGrades=studentGrades.filter(
-            g=>g.value!==null&&
-               g.value!==undefined&&
-               !Number.isNaN(Number(g.value))
-          );
+          const validGrades=
+            studentGrades.filter(
+              g=>
+                g.value!==null &&
+                g.value!==undefined &&
+                !Number.isNaN(Number(g.value)) &&
+                g.countsForAverage!==false
+            );
 
-          const average=validGrades.length
-            ?validGrades.reduce(
-                (sum,g)=>sum+Number(g.value),
-                0
-              )/validGrades.length
-            :null;
+          const average=
+            validGrades.length
+              ?validGrades.reduce(
+                  (sum,g)=>
+                    sum+Number(g.value),
+                  0
+                )/validGrades.length
+              :null;
 
           return `
 
@@ -4832,55 +4845,93 @@ function renderClassGrades(){
 
               <td class="gradebook-average">
 
-                ${average===null
-                  ?"—"
-                  :average.toFixed(2).replace(".",",")}
+                ${
+                  average===null
+                    ?"—"
+                    :average
+                        .toFixed(2)
+                        .replace(".",",")
+                }
 
               </td>
 
               ${types.map(type=>{
 
-                const typeGrades=studentGrades
-                  .filter(g=>(g.type||"Altro")===type)
-                  .sort(
-                    (a,b)=>String(a.date)
-                      .localeCompare(String(b.date))
-                  );
+                const typeGrades=
+                  studentGrades
+                    .filter(
+                      g=>
+                        (g.type||"Altro")===type
+                    )
+                    .sort(
+                      (a,b)=>
+                        String(a.date)
+                          .localeCompare(
+                            String(b.date)
+                          )
+                    );
 
                 return `
 
                   <td class="gradebook-type">
 
-                    ${typeGrades.length
-                      ?typeGrades.map(g=>`
-                      
-                      <div class="gradebook-grade">
-                       
-                        ${(()=>{
-                          const v=Number(g.value);
-                          
-                          const cls=
-                            v>=7
-                              ?"grade-good"
-                              :v>=6
-                                ?"grade-mid"
-                                :"grade-bad";
-                          
-                          return `
-                            <span class="grade ${cls}">
-                              ${escapeHTML(
-                                g.displayValue||
-                                String(g.value??"")
-                              )}
-                            </span>
-                          `;
-                        })()}
-                      
-                      </div>
+                    ${
+                      typeGrades.length
 
+                        ?`
 
-`).join("")
-                      :`<div class="gradebook-grade">—</div>`
+                          <div
+                            style="
+                              display:flex;
+                              align-items:center;
+                              gap:10px;
+                              flex-wrap:wrap;
+                            "
+                          >
+
+                            ${typeGrades.map(g=>{
+
+                              const v=Number(g.value);
+
+                              let cls="";
+
+                              if(g.isSpecial){
+                                cls="grade-special";
+                              }
+                              else if(
+                                g.countsForAverage===false
+                              ){
+                                cls="grade-no-average";
+                              }
+                              else if(
+                                Number.isFinite(v)
+                              ){
+                                cls=
+                                  v>=7
+                                    ?"grade-good"
+                                    :v>=6
+                                      ?"grade-mid"
+                                      :"grade-bad";
+                              }
+
+                              return `
+
+                                <span class="grade ${cls}">
+                                  ${escapeHTML(
+                                    g.displayValue||
+                                    String(g.value??"")
+                                  )}
+                                </span>
+
+                              `;
+
+                            }).join("")}
+
+                          </div>
+
+                        `
+
+                        :`—`
                     }
 
                   </td>
@@ -4900,7 +4951,6 @@ function renderClassGrades(){
     </table>
 
   `;
-
 }
 
 
