@@ -4368,7 +4368,13 @@ function renderQuickGradeStudents(){
       "quick-grade-students"
     );
 
-  const list=getStudentsForClass(classId);
+  const list=
+  quickGradeStudentId
+    ? getStudentsForClass(classId)
+        .filter(
+          s=>s.id===quickGradeStudentId
+        )
+    : getStudentsForClass(classId);
 
   if(!list.length){
 
