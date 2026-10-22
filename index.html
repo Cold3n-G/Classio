@@ -5477,7 +5477,7 @@ function renderClassCall(){
   const records=getClassHourRecords();
   const hourRecord=records[classHourKey(currentClassId)];
   const symbol=hourRecord
-    ? (hourRecord.type==="firma" ? "↕" : "⇅")
+    ? (hourRecord.type==="firma" ? "✔" : "⇅")
     : "+";
 
   const actionLabel=hourRecord
@@ -5502,6 +5502,9 @@ function renderClassCall(){
             <button class="btn btn-secondary"
               style="display:block;width:100%;margin-bottom:5px"
               onclick="chooseHourAction('firma')">Firma l'ora</button>
+            <button class="btn btn-danger"
+               style="display:block;width:100%;margin-top:5px"
+               onclick="deleteHourRecord()">Elimina</button>
             <button class="btn btn-secondary"
               style="display:block;width:100%"
               onclick="chooseHourAction('sostituzione')">Sostituzione</button>
@@ -7459,6 +7462,30 @@ function chooseHourAction(action){
     populateSubjectSelect("substitution-subject");
     openModal("substitution-modal");
   }
+}
+
+function deleteHourRecord(){
+  const menu=document.getElementById("hour-action-menu");
+  if(menu)menu.style.display="none";
+
+  if(!currentClassId)return;
+
+  const records=getClassHourRecords();
+  const key=classHourKey(currentClassId);
+
+  if(!records[key]){
+    alert("Non c'è nessuna firma o sostituzione da eliminare.");
+    return;
+  }
+
+  if(!confirm("Vuoi eliminare la firma o la sostituzione di oggi?")){
+    return;
+  }
+
+  delete records[key];
+
+  save(BASE_KEYS.settings,settings);
+  renderClassCall();
 }
 
 function saveSubstitution(){
