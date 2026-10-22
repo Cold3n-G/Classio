@@ -1959,6 +1959,22 @@ textarea{
     </div>
 
 
+    <!-- DOCENTE -->
+    
+    <div class="card card-pad">
+      <h2 class="section-title">👩‍🏫👨‍🏫 Docente</h2>
+      <p style="color:var(--muted);font-size:14px">
+        Nome visualizzato quando firmi l'ora o registri una sostituzione.
+      </p>
+      <div class="form-group">
+        <label for="teacher-name">Nome e cognome del docente</label>
+        <input id="teacher-name" placeholder="Es. Maria Rossi"
+               value="" onkeydown="if(event.key==='Enter')saveTeacherName()">
+      </div>
+      <button class="btn btn-primary" onclick="saveTeacherName()">Salva docente</button>
+    </div>
+
+
     <!-- TEMA -->
 
     <div class="card card-pad">
