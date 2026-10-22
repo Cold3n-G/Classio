@@ -7371,6 +7371,16 @@ function renderSettings(){
     "theme-select"
   ).value=settings.theme||"light";
 
+  const hoursCount=document.getElementById("school-hours-count");
+  if(hoursCount){
+    hoursCount.value=String(settings.schoolHoursCount||6);
+  }
+
+  const hourDuration=document.getElementById("school-hour-duration");
+  if(hourDuration){
+    hourDuration.value=String(settings.schoolHourDuration||60);
+  }
+
   const teacherInput=document.getElementById("teacher-name");
   if(teacherInput && document.activeElement!==teacherInput){
     teacherInput.value=settings.teacherName||"";
@@ -7438,6 +7448,30 @@ function saveTeacherName(){
   save(BASE_KEYS.settings,settings);
   renderClassCall();
   alert("Docente salvato.");
+}
+
+function saveSchoolHoursSettings(){
+
+  const hoursCount=document.getElementById(
+    "school-hours-count"
+  );
+
+  const hourDuration=document.getElementById(
+    "school-hour-duration"
+  );
+
+  if(!hoursCount || !hourDuration){
+    alert("Impossibile leggere le impostazioni delle ore.");
+    return;
+  }
+
+  settings.schoolHoursCount=Number(hoursCount.value);
+  settings.schoolHourDuration=Number(hourDuration.value);
+
+  save(BASE_KEYS.settings,settings);
+
+  alert("Impostazioni delle ore salvate.");
+
 }
 
 function getClassHourRecords(){
