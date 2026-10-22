@@ -7381,6 +7381,108 @@ function changeTheme(theme){
 }
 
 
+function saveTeacherName(){
+  const input=document.getElementById("teacher-name");
+  const name=input ? input.value.trim() : "";
+
+  if(!name){
+    alert("Inserisci il nome e cognome del docente.");
+    return;
+  }
+
+  settings.teacherName=name;
+  save(BASE_KEYS.settings,settings);
+  renderClassCall();
+  alert("Docente salvato.");
+}
+
+function getClassHourRecords(){
+  if(!settings.classHourRecords || typeof settings.classHourRecords!=="object"){
+    settings.classHourRecords={};
+  }
+  return settings.classHourRecords;
+}
+
+function classHourKey(classId){
+  return `${classId}_${today()}`;
+}
+
+function toggleHourMenu(){
+  const menu=document.getElementById("hour-action-menu");
+  if(menu){
+    menu.style.display=menu.style.display==="block" ? "none" : "block";
+  }
+}
+
+function chooseHourAction(action){
+  const menu=document.getElementById("hour-action-menu");
+  if(menu)menu.style.display="none";
+  if(!currentClassId)return;
+
+  if(action==="firma"){
+    const teacher=(settings.teacherName||"").trim();
+
+    if(!teacher){
+      alert("Prima inserisci il nome del docente in Impostazioni.");
+      return;
+    }
+
+    const records=getClassHourRecords();
+    records[classHourKey(currentClassId)]={
+      type:"firma",
+      teacher,
+      date:today()
+    };
+
+    save(BASE_KEYS.settings,settings);
+    renderClassCall();
+    return;
+  }
+
+  if(action==="sostituzione"){
+    const teacher=(settings.teacherName||"").trim();
+
+    if(!teacher){
+      alert("Prima inserisci il nome del docente in Impostazioni.");
+      return;
+    }
+
+    document.getElementById("substitution-subject-replaced").value="";
+    document.getElementById("substitution-teacher-replaced").value="";
+    document.getElementById("substitution-teacher").value=teacher;
+
+    populateSubjectSelect("substitution-subject");
+    openModal("substitution-modal");
+  }
+}
+
+function saveSubstitution(){
+  const replacedSubject=document.getElementById("substitution-subject-replaced").value.trim();
+  const replacedTeacher=document.getElementById("substitution-teacher-replaced").value.trim();
+  const subject=document.getElementById("substitution-subject").value;
+  const teacher=(settings.teacherName||"").trim();
+
+  if(!replacedSubject || !replacedTeacher || !subject){
+    alert("Compila tutti i campi della sostituzione.");
+    return;
+  }
+
+  const records=getClassHourRecords();
+  records[classHourKey(currentClassId)]={
+    type:"sostituzione",
+    teacher,
+    date:today(),
+    replacedSubject,
+    replacedTeacher,
+    subject
+  };
+
+  save(BASE_KEYS.settings,settings);
+  closeModal("substitution-modal");
+  renderClassCall();
+}
+
+
 function applyTheme(){
 
   document.body.classList.toggle(
