@@ -6786,6 +6786,65 @@ function deleteNote(idValue){
    ORARIO
 ========================================================= */
 
+function getSchoolHourOptions(){
+  const count=Number(settings.schoolHoursCount||6);
+  const duration=Number(settings.schoolHourDuration||60);
+  const options=[];
+
+  let minutes=8*60;
+
+  for(let i=0;i<count;i++){
+    const start=minutes;
+    const end=minutes+duration;
+
+    const formatTime=(value)=>{
+      const hours=Math.floor(value/60);
+      const mins=value%60;
+      return String(hours).padStart(2,"0")+":"+
+             String(mins).padStart(2,"0");
+    };
+
+    options.push({
+      start:formatTime(start),
+      end:formatTime(end),
+      label:formatTime(start)+" - "+formatTime(end)
+    });
+
+    minutes=end;
+  }
+
+  return options;
+}
+
+
+function populateTimeSelect(id,type="range"){
+  const select=document.getElementById(id);
+  if(!select) return;
+
+  const previousValue=select.value;
+  select.innerHTML="";
+
+  const placeholder=document.createElement("option");
+  placeholder.value="";
+  placeholder.textContent="Seleziona l'ora";
+  select.appendChild(placeholder);
+
+  getSchoolHourOptions().forEach(hour=>{
+    const option=document.createElement("option");
+
+    option.value=type==="start"
+      ? hour.start
+      : hour.label;
+
+    option.textContent=option.value;
+    select.appendChild(option);
+  });
+
+  if(previousValue){
+    select.value=previousValue;
+  }
+}
+
 const days=[
   "Lunedì",
   "Martedì",
