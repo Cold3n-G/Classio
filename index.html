@@ -5640,9 +5640,7 @@ function openLessonModal(classId=null){
     "lesson-date"
   ).value=today();
 
-  document.getElementById(
-    "lesson-time"
-  ).value="";
+  populateTimeSelect("lesson-time","range");
 
   document.getElementById(
     "lesson-topic"
@@ -5890,8 +5888,9 @@ function openActivityModal(classId=null){
     "activity-date"
   ).value=today();
 
+  populateTimeSelect("activity-time","range");
+
   [
-    "activity-time",
     "activity-topic",
     "activity-description",
     "activity-notes"
@@ -6145,9 +6144,7 @@ function openExamModal(classId=null){
     "exam-date"
   ).value=today();
 
-  document.getElementById(
-    "exam-time"
-  ).value="";
+  populateTimeSelect("exam-time","start");
 
   document.getElementById(
     "exam-topic"
@@ -6873,10 +6870,8 @@ function openScheduleModal(){
     "schedule-subject"
   );
 
-  document.getElementById(
-    "schedule-time"
-  ).value="";
-
+  populateTimeSelect("schedule-time","range");
+  
   openModal("schedule-modal");
 
 }
