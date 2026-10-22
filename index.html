@@ -2749,6 +2749,37 @@ textarea{
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
+<!-- MODALE SOSTITUZIONE ORA -->
+
+<div class="modal-overlay" id="substitution-modal">
+  <div class="modal">
+    <h2>🔁 Registra sostituzione</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="substitution-subject-replaced">Materia da sostituire</label>
+        <input id="substitution-subject-replaced" placeholder="Scrivi la materia">
+      </div>
+      <div class="form-group">
+        <label for="substitution-teacher-replaced">Prof. da sostituire</label>
+        <input id="substitution-teacher-replaced" placeholder="Nome del docente">
+      </div>
+      <div class="form-group">
+        <label for="substitution-subject">Materia</label>
+        <select id="substitution-subject"></select>
+      </div>
+      <div class="form-group">
+        <label for="substitution-teacher">Professore che sostituisce</label>
+        <input id="substitution-teacher" readonly>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('substitution-modal')">Annulla</button>
+      <button class="btn btn-primary" onclick="saveSubstitution()">Salva sostituzione</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL="https://hygwtdnvgbcbkenhfgbs.supabase.co";
 const SUPABASE_KEY="sb_publishable_fBg6a17SDJ-UWo_DNFkGIQ_s_sQzkhY";
