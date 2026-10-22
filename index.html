@@ -7332,6 +7332,11 @@ function renderSettings(){
     "theme-select"
   ).value=settings.theme||"light";
 
+  const teacherInput=document.getElementById("teacher-name");
+  if(teacherInput && document.activeElement!==teacherInput){
+    teacherInput.value=settings.teacherName||"";
+  }
+
   const box=
     document.getElementById(
       "subject-list"
