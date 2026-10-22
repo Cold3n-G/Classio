@@ -6980,93 +6980,64 @@ type:
 
 
 function renderSchedule(){
+  
+  const box = document.getElementById("schedule-grid");
+  if(!box) return;
 
-  const box=
-    document.getElementById(
-      "schedule-grid"
-    );
+  const hours = getSchoolHourOptions();
 
-  if(!box)return;
+  const escape = value => escapeHTML(String(value ?? ""));
 
-  box.innerHTML=
-    days.map(day=>{
+  box.innerHTML = `
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th class="hour-cell">Ora</th>
+          ${days.map(day => `<th>${escape(day)}</th>`).join("")}
+        </tr>
+      </thead>
+      <tbody>
+        ${hours.map(hour => `
+          <tr>
+            <td class="hour-cell">${escape(hour.label)}</td>
+            ${days.map(day => {
+              const entries = schedule.filter(s =>
+                s.day === day &&
+                s.time === hour.label
+              );
 
-      const list=
-        schedule
-          .filter(
-            s=>s.day===day
-          )
-          .sort(
-            (a,b)=>String(a.time)
-              .localeCompare(String(b.time))
-          );
-
-      return `
-
-        <div class="day-column">
-
-          <div class="day-title">
-            ${day}
-          </div>
-
-          ${
-            list.length
-            ?list.map(s=>`
-
-              <div class="schedule-item">
-
-                <strong>
-                  ${escapeHTML(s.time)}
-                </strong>
-
-                <br>
-
-                ${escapeHTML(
-                  getClassName(s.classId)
-                )}
-
-                <br>
-
-                ${escapeHTML(s.subject)}
-
-                <div class="schedule-type ${
-                 (s.type || "Teoria").toLowerCase() === "laboratorio"
-                    ? "laboratorio"
-                    : "teoria"
-                }">
-                  ${
-                    (s.type || "Teoria") === "Laboratorio"
-                      ? "💻 Laboratorio"
-                      : "📚 Teoria"
-                  }
-                </div>
-               
-                <button
-                  class="btn btn-danger btn-small"
-                  style="margin-top:6px;width:100%"
-                  onclick="deleteSchedule('${s.id}')">
-
-                  Elimina
-
-                </button>
-
-              </div>
-
-            `).join("")
-            :`<div style="
-                text-align:center;
-                color:var(--muted);
-                font-size:12px">
-                Nessuna lezione
-              </div>`
-          }
-
-        </div>
-
-      `;
-
-    }).join("");
-
+              return `
+                <td class="schedule-cell">
+                  ${entries.map(s => `
+                    <div class="schedule-item">
+                      <strong>${escape(getClassName(s.classId))}</strong>
+                      <br>
+                      ${escape(s.subject)}
+                      <div class="schedule-type ${
+                        (s.type || "Teoria").toLowerCase() === "laboratorio"
+                          ? "laboratorio"
+                          : "teoria"
+                      }">
+                        ${(s.type || "Teoria") === "Laboratorio"
+                          ? "💻 Laboratorio"
+                          : "📚 Teoria"}
+                      </div>
+                      <button
+                        class="btn btn-danger btn-small"
+                        style="margin-top:6px;width:100%"
+                        onclick="deleteSchedule('${s.id}')">
+                        Elimina
+                      </button>
+                    </div>
+                  `).join("")}
+                </td>
+              `;
+            }).join("")}
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
 }
 
 
