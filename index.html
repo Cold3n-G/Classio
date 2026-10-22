@@ -5471,32 +5471,59 @@ function renderCallTable(classId){
 
 function renderClassCall(){
 
-  const box=
-    document.getElementById(
-      "class-call-area"
-    );
-
+  const box=document.getElementById("class-call-area");
   if(!box)return;
 
+  const records=getClassHourRecords();
+  const hourRecord=records[classHourKey(currentClassId)];
+  const symbol=hourRecord
+    ? (hourRecord.type==="firma" ? "↕" : "⇅")
+    : "+";
+
+  const actionLabel=hourRecord
+    ? `<span style="font-weight:600">${escapeHTML(hourRecord.teacher||"")}</span>`
+    : "";
+
+  const detail=hourRecord && hourRecord.type==="sostituzione"
+    ? `<div style="font-size:13px;color:var(--muted);margin-top:7px">Sostituzione: ${escapeHTML(hourRecord.replacedSubject)} · Prof. ${escapeHTML(hourRecord.replacedTeacher)} → ${escapeHTML(hourRecord.subject)}</div>`
+    : "";
+
   box.innerHTML=`
+    <div class="card card-pad" style="margin-bottom:15px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="position:relative">
+          <button class="btn btn-secondary"
+            aria-label="Firma l'ora o sostituzione"
+            style="width:48px;height:48px;padding:0;font-size:25px;border-radius:8px"
+            onclick="toggleHourMenu()">${symbol}</button>
 
-    <div class="card card-pad"
-         style="margin-bottom:15px">
+          <div id="hour-action-menu"
+            style="display:none;position:absolute;z-index:30;top:52px;left:0;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.14)">
+            <button class="btn btn-secondary"
+              style="display:block;width:100%;margin-bottom:5px"
+              onclick="chooseHourAction('firma')">Firma l'ora</button>
+            <button class="btn btn-secondary"
+              style="display:block;width:100%"
+              onclick="chooseHourAction('sostituzione')">Sostituzione</button>
+          </div>
+        </div>
 
-      <strong>
-        Appello di oggi
-      </strong>
+        <div>
+          <strong>Ora di oggi</strong>
+          <div style="margin-top:4px">
+            ${actionLabel || '<span style="color:var(--muted)">Non firmata</span>'}
+          </div>
+          ${detail}
+        </div>
+      </div>
 
-      <p style="color:var(--muted);font-size:13px">
+      <p style="color:var(--muted);font-size:13px;margin:12px 0 0">
         ${formatDate(today())}
       </p>
-
     </div>
 
     ${renderCallTable(currentClassId)}
-
   `;
-
 }
 
 
