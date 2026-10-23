@@ -6730,6 +6730,134 @@ function deleteHomework(idValue){
 
 
 /* =========================================================
+   BACHECA
+========================================================= */
+
+function populateAnnouncementStudents(){
+  const classId=document.getElementById("announcement-class").value;
+  const select=document.getElementById("announcement-student");
+  if(!select)return;
+
+  select.innerHTML=
+    `<option value="">Tutta la classe</option>`+
+    getStudentsForClass(classId)
+      .map(student=>`<option value="${student.id}">${student.number} — ${escapeHTML(student.lastName)} ${escapeHTML(student.firstName)}</option>`)
+      .join("");
+}
+
+function openAnnouncementModal(){
+  if(!classes.length){
+    alert("Prima crea almeno una classe.");
+    return;
+  }
+
+  populateClassSelect(
+    "announcement-class",
+    currentClassId||classes[0].id
+  );
+
+  populateAnnouncementStudents();
+
+  document.getElementById("announcement-student").value="";
+  document.getElementById("announcement-type").value="avviso";
+  document.getElementById("announcement-date").value=today();
+  document.getElementById("announcement-text").value="";
+
+  openModal("announcement-modal");
+}
+
+function saveAnnouncement(){
+  const item={
+    id:id(),
+    classId:document.getElementById("announcement-class").value,
+    studentId:document.getElementById("announcement-student").value||null,
+    type:document.getElementById("announcement-type").value,
+    date:document.getElementById("announcement-date").value,
+    text:document.getElementById("announcement-text").value.trim()
+  };
+
+  if(!item.classId||!item.date||!item.text){
+    alert("Seleziona una classe e una data e inserisci il testo dell'annuncio.");
+    return;
+  }
+
+  announcements.push(item);
+  save(BASE_KEYS.announcements,announcements);
+  closeModal("announcement-modal");
+  updateAll();
+}
+
+function deleteAnnouncement(announcementId){
+  if(!confirm("Eliminare questo annuncio dalla Bacheca?"))return;
+
+  announcements=announcements.filter(item=>item.id!==announcementId);
+  save(BASE_KEYS.announcements,announcements);
+  updateAll();
+}
+
+function renderBoard(){
+  const box=document.getElementById("board-announcements");
+  const classFilter=document.getElementById("board-class-filter");
+  const typeFilter=document.getElementById("board-type-filter");
+
+  if(!box||!classFilter||!typeFilter)return;
+
+  const previousClass=classFilter.value||boardClassFilter;
+
+  classFilter.innerHTML=
+    `<option value="tutte">Tutte le classi</option>`+
+    classes.map(c=>`<option value="${c.id}">${escapeHTML(c.name)}</option>`).join("");
+
+  classFilter.value=
+    previousClass==="tutte"||classes.some(c=>c.id===previousClass)
+      ?previousClass
+      :"tutte";
+
+  boardClassFilter=classFilter.value;
+  boardTypeFilter=typeFilter.value||"tutti";
+
+  const filtered=announcements
+    .filter(item=>boardTypeFilter==="tutti"||item.type===boardTypeFilter)
+    .filter(item=>boardClassFilter==="tutte"||item.classId===boardClassFilter)
+    .slice()
+    .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+
+  if(!filtered.length){
+    box.innerHTML=`<div class="card empty">Nessun annuncio da mostrare. Premi <strong>＋ Aggiungi</strong> per pubblicare il primo.</div>`;
+    return;
+  }
+
+  box.innerHTML=filtered.map(item=>{
+    const isNotice=item.type==="avviso";
+    const typeLabel=isNotice?"⚠️ Avviso":"💬 Comunicazione";
+    const className=getClassName(item.classId);
+    const target=item.studentId
+      ?getStudentName(item.studentId)
+      :"Tutta la classe";
+
+    return `
+      <article class="card announcement-card ${isNotice?"avviso":"comunicazione"}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+          <div>
+            <strong>${typeLabel}</strong>
+            <div class="announcement-meta">
+              <span>🏫 ${escapeHTML(className)}</span>
+              <span>·</span>
+              <span>👤 ${escapeHTML(target)}</span>
+              <span>·</span>
+              <span>📅 ${formatDate(item.date)}</span>
+            </div>
+          </div>
+          <button class="btn btn-danger btn-small" onclick="deleteAnnouncement('${item.id}')">Elimina</button>
+        </div>
+        <div class="announcement-text">${escapeHTML(item.text)}</div>
+      </article>
+    `;
+  }).join("");
+}
+
+
+/* =========================================================
    NOTE
 ========================================================= */
 
