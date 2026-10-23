@@ -1214,6 +1214,10 @@ textarea{
       🕐 Orario
     </button>
 
+    <button onclick="showPage('bacheca')" id="nav-bacheca">
+      📌 Bacheca
+    </button>
+
     <button onclick="showPage('lezioni')" id="nav-lezioni">
       📚 Lezioni
     </button>
@@ -1645,6 +1649,46 @@ textarea{
   </div>
 
   <div class="schedule-grid" id="schedule-grid"></div>
+
+</section>
+
+
+<!-- =========================================================
+     BACHECA
+========================================================= -->
+
+<section id="page-bacheca" class="page">
+
+  <div class="page-header">
+    <div>
+      <h1>📌 Bacheca</h1>
+      <p>Avvisi e comunicazioni per le tue classi.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAnnouncementModal()">
+      ＋ Aggiungi
+    </button>
+  </div>
+
+  <div class="card card-pad" style="margin-bottom:18px">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="board-type-filter">Tipo di annuncio</label>
+        <select id="board-type-filter" onchange="renderBoard()">
+          <option value="tutti">Tutti</option>
+          <option value="avviso">⚠️ Avvisi</option>
+          <option value="comunicazione">💬 Comunicazioni</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="board-class-filter">Classe</label>
+        <select id="board-class-filter" onchange="renderBoard()">
+          <option value="tutte">Tutte le classi</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="board-announcements"></div>
 
 </section>
 
