@@ -3180,6 +3180,7 @@ async function loadAccountData(){
       activities=saved.activities||[];
       homework=saved.homework||[];
       notes=saved.notes||[];
+      announcements=saved.announcements||[];
       schedule=saved.schedule||[];
       exams=saved.exams||[];
       subjects=saved.subjects||[];
@@ -3198,6 +3199,7 @@ async function loadAccountData(){
       activities=[];
       homework=[];
       notes=[];
+      announcements=[];
       schedule=[];
       exams=[];
       subjects=[];
@@ -3264,6 +3266,7 @@ async function saveAccountValue(key,value){
   if(key==="activities") activities=value;
   if(key==="homework") homework=value;
   if(key==="notes") notes=value;
+  if(key==="announcements") announcements=value;
   if(key==="schedule") schedule=value;
   if(key==="exams") exams=value;
   if(key==="subjects") subjects=value;
@@ -3291,6 +3294,7 @@ const dataObject={
   activities,
   homework,
   notes,
+  announcements,
   schedule,
   exams,
   subjects,
