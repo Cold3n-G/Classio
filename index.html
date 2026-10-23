@@ -7941,7 +7941,7 @@ function exportBackup(){
 
   const backup={
 
-    version:"1.3",
+    version:"1.4",
 
     exportedAt:
       new Date().toISOString(),
@@ -7956,6 +7956,7 @@ function exportBackup(){
     activities,
     homework,
     notes,
+    announcements,
     schedule,
     exams,
     subjects,
@@ -8035,6 +8036,7 @@ function importBackup(event){
       activities=data.activities||[];
       homework=data.homework||[];
       notes=data.notes||[];
+      announcements=data.announcements||[];
       schedule=data.schedule||[];
       exams=data.exams||[];
       subjects=data.subjects||[];
@@ -8156,6 +8158,7 @@ function deleteAllData(){
   activities=[];
   homework=[];
   notes=[];
+  announcements=[]
   schedule=[];
   exams=[];
   subjects=[];
