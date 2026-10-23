@@ -2997,6 +2997,7 @@ const supabaseClient=supabase.createClient(
 ========================================================= */
 
 const BASE_KEYS={
+  announcements:"announcements",
   classes:"classes",
   students:"students",
   grades:"grades",
@@ -3024,6 +3025,9 @@ let lessons=[];
 let activities=[];
 let homework=[];
 let notes=[];
+let announcements=[];
+  let boardTypeFilter="tutti";
+  let boardClassFilter="tutte";
 let schedule=[];
 let exams=[];
 let subjects=[];
