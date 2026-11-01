@@ -6143,13 +6143,13 @@ function openActivityModal(classId=null){
 
   populateTimeSelect("activity-time","range");
 
-  [
-    "activity-topic",
-    "activity-description",
-    "activity-notes"
-  ].forEach(x=>{
-    document.getElementById(x).value="";
-  });
+  document.getElementById(
+    "activity-topic"
+  ).value="";
+
+  document.getElementById(
+    "activity-type"
+  ).value="teoria";
 
   openModal("activity-modal");
 
