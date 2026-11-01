@@ -6006,6 +6006,52 @@ function lessonCard(l){
 }
 
 
+function renderLessonGroups(list){
+
+  const teoria=list.filter(
+    l=>(l.type||"teoria")==="teoria"
+  );
+
+  const laboratorio=list.filter(
+    l=>l.type==="laboratorio"
+  );
+
+  function group(title,items){
+
+    return `
+
+      <div style="margin-bottom:24px">
+
+        <h3 style="
+          margin-bottom:12px;
+          padding-bottom:8px;
+          border-bottom:1px solid var(--border)
+        ">
+          ${title}
+        </h3>
+
+        ${
+          items.length
+          ?items.map(lessonCard).join("")
+          :`<div class="card empty">
+              Nessuna lezione di ${title.toLowerCase()}.
+            </div>`
+        }
+
+      </div>
+
+    `;
+
+  }
+
+  return (
+    group("Teoria",teoria)+
+    group("Laboratorio",laboratorio)
+  );
+
+}
+
+
 function renderAllLessons(){
 
   const box=
@@ -6022,11 +6068,7 @@ function renderAllLessons(){
     );
 
   box.innerHTML=
-    list.length
-    ?list.map(lessonCard).join("")
-    :`<div class="card empty">
-        Nessuna lezione registrata.
-      </div>`;
+    renderLessonGroups(list);
 
 }
 
@@ -6051,11 +6093,7 @@ function renderClassLessons(){
       );
 
   box.innerHTML=
-    list.length
-    ?list.map(lessonCard).join("")
-    :`<div class="card empty">
-        Nessuna lezione registrata.
-      </div>`;
+    renderLessonGroups(list);
 
 }
 
