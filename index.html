@@ -6160,7 +6160,7 @@ function saveActivity(){
 
   const item={
 
-    id:id(),
+    id:window.editingActivityId || id(),
 
     classId:
       document.getElementById(
@@ -6187,15 +6187,10 @@ function saveActivity(){
         "activity-topic"
       ).value.trim(),
 
-    description:
+    type:
       document.getElementById(
-        "activity-description"
-      ).value.trim(),
-
-    notes:
-      document.getElementById(
-        "activity-notes"
-      ).value.trim()
+        "activity-type"
+      ).value
 
   };
 
@@ -6203,17 +6198,33 @@ function saveActivity(){
     !item.classId||
     !item.subject||
     !item.date||
-    !item.topic
+    !item.time||
+    !item.topic||
+    !item.type
   ){
 
     alert(
-      "Compila almeno classe, materia, data e argomento."
+      "Compila tutti i campi dell'attività."
     );
 
     return;
   }
 
-  activities.push(item);
+  if(window.editingActivityId){
+
+    activities=activities.map(
+      a=>a.id===window.editingActivityId
+        ?item
+        :a
+    );
+
+  }else{
+
+    activities.push(item);
+
+  }
+
+  window.editingActivityId=null;
 
   save(
     BASE_KEYS.activities,
