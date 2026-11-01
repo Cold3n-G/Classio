@@ -5793,6 +5793,8 @@ function openLessonModal(classId=null){
     return;
   }
 
+  window.editingLessonId=null;
+
   populateClassSelect(
     "lesson-class",
     classId ||
@@ -5814,7 +5816,50 @@ function openLessonModal(classId=null){
     "lesson-type"
   ).value="teoria";
 
+  document.querySelector(
+    "#lesson-modal h2"
+  ).textContent="Nuova lezione";
+
   openModal("lesson-modal");
+
+}
+
+
+function editLesson(idValue){
+
+  const lesson=lessons.find(
+    l=>l.id===idValue
+  );
+
+  if(!lesson)return;
+
+  openLessonModal(lesson.classId);
+
+  window.editingLessonId=lesson.id;
+
+  document.getElementById(
+    "lesson-class"
+  ).value=lesson.classId;
+
+  document.getElementById(
+    "lesson-subject"
+  ).value=lesson.subject;
+
+  document.getElementById(
+    "lesson-date"
+  ).value=lesson.date;
+
+  document.getElementById(
+    "lesson-time"
+  ).value=lesson.time;
+
+  document.getElementById(
+    "lesson-type"
+  ).value=lesson.type || "teoria";
+
+  document.querySelector(
+    "#lesson-modal h2"
+  ).textContent="Modifica lezione";
 
 }
 
