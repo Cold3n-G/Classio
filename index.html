@@ -5845,20 +5845,10 @@ function saveLesson(){
         "lesson-time"
       ).value.trim(),
 
-    topic:
+    type:
       document.getElementById(
-        "lesson-topic"
-      ).value.trim(),
-
-    description:
-      document.getElementById(
-        "lesson-description"
-      ).value.trim(),
-
-    notes:
-      document.getElementById(
-        "lesson-notes"
-      ).value.trim()
+        "lesson-type"
+      ).value
 
   };
 
@@ -5866,11 +5856,12 @@ function saveLesson(){
     !item.classId||
     !item.subject||
     !item.date||
-    !item.topic
+    !item.time||
+    !item.type
   ){
 
     alert(
-      "Compila almeno classe, materia, data e argomento."
+      "Compila tutti i campi della lezione."
     );
 
     return;
