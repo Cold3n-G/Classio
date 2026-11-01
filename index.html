@@ -5894,7 +5894,7 @@ function lessonCard(l){
         <div>
 
           <strong>
-            ${escapeHTML(l.topic)}
+            ${escapeHTML(l.subject)}
           </strong>
 
           <div style="
@@ -5906,32 +5906,39 @@ function lessonCard(l){
             ${formatDate(l.date)}
             · ${escapeHTML(l.time||"")}
             · ${escapeHTML(getClassName(l.classId))}
-            · ${escapeHTML(l.subject)}
+
+          </div>
+
+          <div style="
+            margin-top:8px;
+            font-size:13px
+          ">
+
+            ${l.type==="laboratorio"?"Laboratorio":"Teoria"}
 
           </div>
 
         </div>
 
-        <button class="btn btn-danger btn-small"
-                onclick="deleteLesson('${l.id}')">
-          Elimina
-        </button>
+        <div style="
+          display:flex;
+          flex-direction:column;
+          gap:6px
+        ">
+
+          <button class="btn btn-small"
+                  onclick="editLesson('${l.id}')">
+            Modifica
+          </button>
+
+          <button class="btn btn-danger btn-small"
+                  onclick="deleteLesson('${l.id}')">
+            Elimina
+          </button>
+
+        </div>
 
       </div>
-
-      ${
-        l.description
-        ?`<p>${escapeHTML(l.description)}</p>`
-        :""
-      }
-
-      ${
-        l.notes
-        ?`<p style="color:var(--muted);font-size:13px">
-            📝 ${escapeHTML(l.notes)}
-          </p>`
-        :""
-      }
 
     </div>
 
