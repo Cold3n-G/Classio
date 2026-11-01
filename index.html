@@ -6332,32 +6332,20 @@ function activityCard(a){
 
 function renderClassActivities(){
 
-  const box=
-    document.getElementById(
-      "class-activities-list"
-    );
+  const box=document.getElementById("class-activities-list");
 
   if(!box)return;
 
-  const list=
-    activities
-      .filter(
-        a=>a.classId===currentClassId
-      )
-      .sort(
-        (a,b)=>String(b.date)
-          .localeCompare(String(a.date))
-      );
+  const list=activities
+    .filter(a=>a.classId===currentClassId)
+    .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
 
-  const examList=
-    exams
-      .filter(
-        e=>e.classId===currentClassId
-      )
-      .sort(
-        (a,b)=>String(a.date)
-          .localeCompare(String(b.date))
-      );
+  const examList=exams
+    .filter(e=>e.classId===currentClassId)
+    .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+
+  const teoria=list.filter(a=>a.type!=="laboratorio");
+  const laboratorio=list.filter(a=>a.type==="laboratorio");
 
   let html="";
 
@@ -6379,12 +6367,25 @@ function renderClassActivities(){
 
   }
 
-  html+=
-    list.length
-    ?list.map(activityCard).join("")
-    :`<div class="card empty">
-        Nessuna attività registrata.
-      </div>`;
+  html+=`
+    <h3 style="margin:15px 0 12px">
+      📖 Teoria
+    </h3>
+  `;
+
+  html+=teoria.length
+    ?teoria.map(activityCard).join("")
+    :`<div class="card empty">Nessuna attività di teoria.</div>`;
+
+  html+=`
+    <h3 style="margin:25px 0 12px">
+      🧪 Laboratorio
+    </h3>
+  `;
+
+  html+=laboratorio.length
+    ?laboratorio.map(activityCard).join("")
+    :`<div class="card empty">Nessuna attività di laboratorio.</div>`;
 
   box.innerHTML=html;
 
