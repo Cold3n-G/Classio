@@ -6119,37 +6119,59 @@ function deleteLesson(idValue){
 
 function openActivityModal(classId=null){
 
+  window.editingActivityId=null;
+
+  document.querySelector(
+    "#activity-modal h2"
+  ).textContent="Nuova attività";
+
   if(!classes.length){
-
     alert("Prima crea almeno una classe.");
-
     return;
   }
 
   populateClassSelect(
     "activity-class",
-    classId ||
-    currentClassId ||
-    classes[0].id
+    classId || currentClassId || classes[0].id
   );
 
-  populateSubjectSelect(
-    "activity-subject"
-  );
+  populateSubjectSelect("activity-subject");
 
-  document.getElementById(
-    "activity-date"
-  ).value=today();
+  document.getElementById("activity-date").value=today();
 
   populateTimeSelect("activity-time","range");
 
-  document.getElementById(
-    "activity-topic"
-  ).value="";
+  document.getElementById("activity-topic").value="";
 
-  document.getElementById(
-    "activity-type"
-  ).value="teoria";
+  document.getElementById("activity-type").value="teoria";
+
+  openModal("activity-modal");
+
+}
+
+
+function editActivity(idValue){
+
+  const a=activities.find(x=>x.id===idValue);
+
+  if(!a)return;
+
+  window.editingActivityId=idValue;
+
+  populateClassSelect("activity-class",a.classId);
+
+  populateSubjectSelect("activity-subject");
+
+  document.getElementById("activity-class").value=a.classId;
+  document.getElementById("activity-subject").value=a.subject;
+  document.getElementById("activity-date").value=a.date;
+  document.getElementById("activity-time").value=a.time;
+  document.getElementById("activity-topic").value=a.topic;
+  document.getElementById("activity-type").value=a.type || "teoria";
+
+  document.querySelector(
+    "#activity-modal h2"
+  ).textContent="Modifica attività";
 
   openModal("activity-modal");
 
