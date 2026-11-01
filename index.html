@@ -5868,7 +5868,7 @@ function saveLesson(){
 
   const item={
 
-    id:id(),
+    id:window.editingLessonId || id(),
 
     classId:
       document.getElementById(
@@ -5912,7 +5912,21 @@ function saveLesson(){
     return;
   }
 
-  lessons.push(item);
+  if(window.editingLessonId){
+
+    lessons=lessons.map(
+      l=>l.id===window.editingLessonId
+        ?item
+        :l
+    );
+
+  }else{
+
+    lessons.push(item);
+
+  }
+
+  window.editingLessonId=null;
 
   save(BASE_KEYS.lessons,lessons);
 
