@@ -6265,32 +6265,41 @@ function activityCard(a){
 
             ${formatDate(a.date)}
             · ${escapeHTML(a.time||"")}
+            · ${escapeHTML(getClassName(a.classId))}
             · ${escapeHTML(a.subject)}
+
+          </div>
+
+          <div style="
+            margin-top:8px;
+            font-size:13px
+          ">
+
+            ${a.type==="laboratorio"?"Laboratorio":"Teoria"}
 
           </div>
 
         </div>
 
-        <button class="btn btn-danger btn-small"
-                onclick="deleteActivity('${a.id}')">
-          Elimina
-        </button>
+        <div style="
+          display:flex;
+          flex-direction:column;
+          gap:6px
+        ">
+
+          <button class="btn btn-small"
+                  onclick="editActivity('${a.id}')">
+            Modifica
+          </button>
+
+          <button class="btn btn-danger btn-small"
+                  onclick="deleteActivity('${a.id}')">
+            Elimina
+          </button>
+
+        </div>
 
       </div>
-
-      ${
-        a.description
-        ?`<p>${escapeHTML(a.description)}</p>`
-        :""
-      }
-
-      ${
-        a.notes
-        ?`<p style="color:var(--muted);font-size:13px">
-            📝 ${escapeHTML(a.notes)}
-          </p>`
-        :""
-      }
 
     </div>
 
