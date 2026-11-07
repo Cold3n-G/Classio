@@ -7479,7 +7479,7 @@ function renderStatistics(){
     "stat-present"
   ).textContent=
     attendance.filter(
-      a=>a.status==="presente"
+      a=>["presente","ritardo","ingresso","uscita"].includes(a.status)
     ).length;
 
   document.getElementById(
