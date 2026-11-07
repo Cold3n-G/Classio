@@ -4302,7 +4302,7 @@ function renderStudents(){
         </td>
 
         <td>
-          ${att.filter(a=>a.status==="presente").length} P ·
+          ${att.filter(a=>["presente","ritardo","ingresso","uscita"].includes(a.status)).length} P ·
           ${att.filter(a=>a.status==="assente").length} A ·
           ${att.filter(a=>a.status==="ritardo").length} R
         </td>
