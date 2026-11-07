@@ -7548,7 +7548,7 @@ function renderStatistics(){
 
           <td>
             ${ats.filter(
-              a=>a.status==="presente"
+              a=>["presente","ritardo","ingresso","uscita"].includes(a.status)
             ).length}
           </td>
 
