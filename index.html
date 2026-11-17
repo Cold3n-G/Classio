@@ -5153,90 +5153,93 @@ function renderClassGrades(){
 
               </td>
 
-              ${types.map(type=>{
+              ${types.map(type=>
+                subjectsByType[type].map(subject=>{
 
-                const typeGrades=
-                  studentGrades
-                    .filter(
-                      g=>
-                        (g.type||"Altro")===type
-                    )
-                    .sort(
-                      (a,b)=>
-                        String(a.date)
-                          .localeCompare(
-                            String(b.date)
-                          )
-                    );
+                  const subjectGrades=
+                    studentGrades
+                      .filter(
+                        g=>
+                          (g.type||"Altro")===type &&
+                          (g.subject||"Senza materia")===subject
+                      )
+                      .sort(
+                        (a,b)=>
+                          String(a.date)
+                            .localeCompare(
+                              String(b.date)
+                            )
+                      );
 
-                return `
+                  return `
 
-                  <td class="gradebook-type">
+                    <td class="gradebook-type">
 
-                    ${
-                      typeGrades.length
+                      ${
+                        subjectGrades.length
 
-                        ?`
+                          ?`
 
-                          <div
-                            style="
-                              display:flex;
-                              align-items:center;
-                              gap:10px;
-                              flex-wrap:wrap;
-                            "
-                          >
+                            <div
+                              style="
+                                display:flex;
+                                align-items:center;
+                                gap:10px;
+                                flex-wrap:wrap;
+                              "
+                            >
 
-                            ${typeGrades.map(g=>{
+                              ${subjectGrades.map(g=>{
 
-                              const v=Number(g.value);
+                                const v=Number(g.value);
 
-                              let cls="";
+                                let cls="";
 
-                              if(g.isSpecial){
-                                cls="grade-special";
-                              }
-                              else if(
-                                g.countsForAverage===false
-                              ){
-                                cls="grade-no-average";
-                              }
-                              else if(
-                                Number.isFinite(v)
-                              ){
-                                cls=
-                                  v>=6
-                                    ?"grade-good"
-                                    :v>=5
-                                      ?"grade-mid"
-                                      :"grade-bad";
-                              }
+                                if(g.isSpecial){
+                                  cls="grade-special";
+                                }
+                                else if(
+                                  g.countsForAverage===false
+                                ){
+                                  cls="grade-no-average";
+                                }
+                                else if(
+                                  Number.isFinite(v)
+                                ){
+                                  cls=
+                                    v>=6
+                                      ?"grade-good"
+                                      :v>=5
+                                        ?"grade-mid"
+                                        :"grade-bad";
+                                }
 
-                              return `
+                                return `
 
-                                <span class="grade ${cls}">
-                                  ${escapeHTML(
-                                    g.displayValue||
-                                    String(g.value??"")
-                                  )}
-                                </span>
+                                  <span class="grade ${cls}">
+                                    ${escapeHTML(
+                                      g.displayValue||
+                                      String(g.value??"")
+                                    )}
+                                  </span>
 
-                              `;
+                                `;
 
-                            }).join("")}
+                              }).join("")}
 
-                          </div>
+                            </div>
 
-                        `
+                          `
 
-                        :`—`
-                    }
+                          :`—`
+                      }
 
-                  </td>
+                    </td>
 
-                `;
+                  `;
 
-              }).join("")}
+                }).join("")
+              ).join("")}
 
             </tr>
 
