@@ -5047,23 +5047,45 @@ function renderClassGrades(){
     <table class="class-gradebook">
 
       <thead>
+
         <tr>
 
-          <th class="gradebook-action">
+          <th class="gradebook-action" rowspan="2">
             ＋
           </th>
 
-          <th class="gradebook-average">
+          <th rowspan="2">
+            N.
+          </th>
+
+          <th rowspan="2">
+            Alunno
+          </th>
+
+          <th class="gradebook-average" rowspan="2">
             Media
           </th>
 
           ${types.map(type=>`
-            <th>
+            <th colspan="${subjectsByType[type].length}">
               ${escapeHTML(type)}
             </th>
           `).join("")}
 
         </tr>
+
+        <tr>
+
+          ${types.map(type=>
+            subjectsByType[type].map(subject=>`
+              <th>
+                ${escapeHTML(subject)}
+              </th>
+            `).join("")
+          ).join("")}
+
+        </tr>
+
       </thead>
 
       <tbody>
