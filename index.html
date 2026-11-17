@@ -5090,7 +5090,7 @@ function renderClassGrades(){
 
       <tbody>
 
-        ${studentsInClass.map(student=>{
+        ${studentsInClass.map((student, studentIndex)=>{
 
           const studentGrades=
             classGrades.filter(
@@ -5128,11 +5128,17 @@ function renderClassGrades(){
                   ＋
                 </button>
 
+              </td>
+
+              <td>
+                ${studentIndex+1}
+              </td>
+
+              <td>
                 <div class="gradebook-student">
                   ${escapeHTML(student.lastName)}
                   ${escapeHTML(student.firstName)}
                 </div>
-
               </td>
 
               <td class="gradebook-average">
