@@ -5011,6 +5011,26 @@ function renderClassGrades(){
     )
   ];
 
+  const subjectsByType={};
+
+  types.forEach(type=>{
+
+    subjectsByType[type]=[
+      ...new Set(
+        classGrades
+          .filter(
+            g=>(g.type||"Altro")===type
+          )
+          .map(
+            g=>g.subject||"Senza materia"
+          )
+      )
+    ].sort((a,b)=>
+      a.localeCompare(b,"it")
+    );
+
+  });
+
   if(!studentsInClass.length){
 
     box.innerHTML=`
